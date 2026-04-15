@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "beastform4r"
+version = "0.1"
+
+[tool.hatch.build.targets.wheel]
+packages = ["beastform4r"]
+
+[tool.hatch.build]
+dev-mode = true
