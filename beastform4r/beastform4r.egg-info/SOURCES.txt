@@ -1,7 +1,6 @@
 beastform4r/__init__.py
 beastform4r/cognate_evolution.py
 beastform4r/file_generation.py
-beastform4r/priors.py
 beastform4r/trees.py
 beastform4r.egg-info/PKG-INFO
 beastform4r.egg-info/SOURCES.txt

@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import random
 from .cognate_evolution import evolve_cognate
 import pandas as pd
@@ -197,58 +197,58 @@ class Tree:
         self.method = method
         print(f"Generated {method} tree with {n_leaves} leaves.")
         
-    def plot(self):
-        if self.root is None:
-            raise ValueError("Tree is empty.")
+    # def plot(self):
+    #     if self.root is None:
+    #         raise ValueError("Tree is empty.")
 
-        self._assign_y_positions()
+    #     self._assign_y_positions()
 
-        fig, ax = plt.subplots(figsize=(8, 5))
-        self._plot_node(self.root, ax, 0)
+    #     fig, ax = plt.subplots(figsize=(8, 5))
+    #     self._plot_node(self.root, ax, 0)
 
-        ax.invert_yaxis()
-        ax.set_yticks([])
-        ax.set_xlabel("Time / Branch length")
+    #     ax.invert_yaxis()
+    #     ax.set_yticks([])
+    #     ax.set_xlabel("Time / Branch length")
 
-        plt.show()
+    #     plt.show()
     
-    def _plot_node(self, node, ax, x):
-        if node is None:
-            return
+    # def _plot_node(self, node, ax, x):
+    #     if node is None:
+    #         return
 
-        x_end = x + node.branch_length
+    #     x_end = x + node.branch_length
 
-        # Draw horizontal branch
-        ax.plot([x, x_end], [node.y, node.y], 'k-')
+    #     # Draw horizontal branch
+    #     ax.plot([x, x_end], [node.y, node.y], 'k-')
 
-        if not node.is_leaf():
-            # Draw vertical connector between children
-            y_left = node.left.y
-            y_right = node.right.y
-            ax.plot([x_end, x_end], [y_left, y_right], 'k-')
+    #     if not node.is_leaf():
+    #         # Draw vertical connector between children
+    #         y_left = node.left.y
+    #         y_right = node.right.y
+    #         ax.plot([x_end, x_end], [y_left, y_right], 'k-')
 
-            # Recurse
-            self._plot_node(node.left, ax, x_end)
-            self._plot_node(node.right, ax, x_end)
-        else:
-            # Label leaf
-            ax.text(x_end + 0.1, node.y, node.name,
-                    va='center')
+    #         # Recurse
+    #         self._plot_node(node.left, ax, x_end)
+    #         self._plot_node(node.right, ax, x_end)
+    #     else:
+    #         # Label leaf
+    #         ax.text(x_end + 0.1, node.y, node.name,
+    #                 va='center')
 
-    def _assign_y_positions(self):
-        """
-        Assign y positions to leaves (evenly spaced).
-        """
-        self._y_counter = 0
-        def dfs(node):
-            if node.is_leaf():
-                node.y = self._y_counter
-                self._y_counter += 1
-            else:
-                dfs(node.left)
-                dfs(node.right)
-                node.y = (node.left.y + node.right.y) / 2
-        dfs(self.root)
+    # def _assign_y_positions(self):
+    #     """
+    #     Assign y positions to leaves (evenly spaced).
+    #     """
+    #     self._y_counter = 0
+    #     def dfs(node):
+    #         if node.is_leaf():
+    #             node.y = self._y_counter
+    #             self._y_counter += 1
+    #         else:
+    #             dfs(node.left)
+    #             dfs(node.right)
+    #             node.y = (node.left.y + node.right.y) / 2
+    #     dfs(self.root)
 
     def get_leaf_names(self):
         leaves = []

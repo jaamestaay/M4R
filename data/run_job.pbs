@@ -2,16 +2,10 @@
 #PBS -l select=1:ncpus=1:mem=1gb
 
 ml tools/prod
+ml OpenJPEG
 ml Python
 ml Beast
 
-#move python script into staging directory
-cp $PBS_O_WORKDIR/hellohpc.py $TMPDIR
-
-#run python script and write result in staging directory
-python $TMPDIR/hellohpc.py > $TMPDIR/myresult.txt
-
-#move result back to submit directory
-mv $TMPDIR/myresult.txt $PBS_O_WORKDIR
-
-
+cd $PBS_O_WORKDIR
+source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+python program.py > my_output.txt
