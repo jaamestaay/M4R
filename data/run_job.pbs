@@ -2,10 +2,16 @@
 #PBS -l select=1:ncpus=1:mem=1gb
 
 ml tools/prod
-ml OpenJPEG
 ml Python
-ml Beast
+ml Java
+ml beagle-lib/4.0.0-GCC-11.3.0
 
 cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+
+echo "Running Python script..."
 python program.py > my_output.txt
+
+echo "Running BEAST..."
+cd pytesting
+java -jar ../../beast.jar pytesting.xml > beast_output.txt
