@@ -4,7 +4,8 @@ import sys
 
 prefix = sys.argv[1]
 method = sys.argv[2]
-n_leaves = sys.argv[3]
+n_leaves = int(sys.argv[3])
+sites = int(sys.argv[4])
 
 # maybe to be redefined here?
 birth_rate = 2.0
@@ -20,7 +21,7 @@ tree = beastform4r.Tree(n_leaves=n_leaves,
 
 # Generate independent data
 independent_data = tree.generate_independent_data(
-    n_sites=500,
+    n_sites=sites,
     gain_rate=0.04,
     loss_rate=0.06,
     ascertain=True

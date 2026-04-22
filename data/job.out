@@ -1,0 +1,16 @@
+PREFIX=run_sites2000_seed2
+METHOD=yule
+LEAVES=30
+SITES=2000
+Running Python script...
+Generated yule tree with 30 leaves.
+Running BEAST...
+
+====================================
+CPU Time used: 00:05:04
+CPU Percent: 99%
+Memory usage: 159408kb
+Approx Power usage: 0.001
+Walltime usage: 00:05:15
+
+====================================
