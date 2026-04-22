@@ -14,8 +14,7 @@ PREFIX=output_check
 METHOD='yule'
 
 echo "Running Python script..."
-python program.py $PREFIX > my_output.txt
-
+python program.py $PREFIX #METHOD
 echo "Running BEAST..."
 cd ${PREFIX}
 java -jar ../../beast.jar ${PREFIX}.xml > beast_output.txt
