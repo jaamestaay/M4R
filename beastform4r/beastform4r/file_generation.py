@@ -11,6 +11,7 @@ def df_to_sequences(df):
         sequences[lang] = "".join(df[lang].astype(str).tolist())
     return sequences
 
+# Write Nexus file for data
 def write_nexus(df, outfile):
     sequences = df_to_sequences(df)
 
@@ -38,6 +39,14 @@ def write_nexus(df, outfile):
         for taxon in taxa:
             f.write(f"\t\t{taxon} {sequences[taxon]}\n")
         f.write("\t;\n")
+        f.write("END;\n")
+
+# Write Nexus file for true tree
+def write_nexus_tree(tree, outfile):
+    with open(outfile, "w") as f:
+        f.write("#NEXUS\n\n")
+        f.write("begin trees;\n")
+        f.write(f"\tTREE true_tree = [&R] {tree.to_newick()}\n")
         f.write("END;\n")
 
 def write_xml_file(template_filepath, df, prefix):

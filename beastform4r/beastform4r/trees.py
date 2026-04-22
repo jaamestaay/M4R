@@ -280,4 +280,15 @@ class Tree:
         if ascertain:
             df = df.loc[df.sum(axis=1) > 0].copy()
         return df
+
+    def to_newick(self):
+        def recurse(node):
+            if node.is_leaf():
+                return node.name
+            else:
+                left_str = recurse(node.left)
+                right_str = recurse(node.right)
+                return f"({left_str}:{node.left.branch_length:.4f}," \
+                       f"{right_str}:{node.right.branch_length:.4f})"
+        return recurse(self.root) + ";"
         

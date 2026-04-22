@@ -5,14 +5,17 @@ n_leaves = 30
 birth_rate = 2.0
 death_rate = 0.5
 method = 'yule'
+prefix = "testing2204"
 
-template = "templates/template_yule.xml"
-prefix = "pytesting"
+template = f"templates/template_{method}.xml"
+
 
 tree = beastform4r.Tree(n_leaves=n_leaves,
                         birth_rate=birth_rate,
-                        method='yule')
+                        death_rate=death_rate,
+                        method=method)
 
+# Generate independent data
 independent_data = tree.generate_independent_data(
     n_sites=500,
     gain_rate=0.04,
@@ -20,8 +23,14 @@ independent_data = tree.generate_independent_data(
     ascertain=True
 )
 
+# Generate dependent data (TBC)
+
+# Create data xml file
 beastform4r.write_xml_file(
     template,
     independent_data,
     prefix
 )
+
+# Creates true nexus file
+beastform4r.write_nexus_tree(tree, f"{prefix}/{prefix}_true.nex")
