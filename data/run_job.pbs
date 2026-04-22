@@ -1,5 +1,7 @@
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1:mem=1gb
+#PBS -o job.out
+#PBS -e job.err
 
 ml tools/prod
 ml Python
@@ -10,18 +12,18 @@ cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
 
 # Parameters for simulation
-PREFIX=output_check
-METHOD='yule'
+PREFIX=$PREFIX
+METHOD=$METHOD
+LEAVES=$LEAVES
+SITES=$SITES
+
+echo "PREFIX=$PREFIX"
+echo "METHOD=$METHOD"
+echo "LEAVES=$LEAVES"
+echo "SITES=$SITES"
 
 echo "Running Python script..."
 python program.py $PREFIX #METHOD
 echo "Running BEAST..."
 cd ${PREFIX}
 java -jar ../../beast.jar ${PREFIX}.xml > beast_output.txt
-
-#PBS -o ${PREFIX}/job.out
-#PBS -e ${PREFIX}/job.err
-
-#for i in {1..10}; do
-#  qsub -v PREFIX=run_$i run_job.pbs
-#done

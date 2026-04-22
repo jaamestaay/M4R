@@ -4,9 +4,9 @@ import sys
 
 prefix = sys.argv[1]
 method = sys.argv[2]
+n_leaves = sys.argv[3]
 
 # maybe to be redefined here?
-n_leaves = 30
 birth_rate = 2.0
 death_rate = 0.5
 
