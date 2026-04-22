@@ -6,3 +6,7 @@
 
 # my own notes
 notes.txt
+
+# R stuff
+.RData
+.Rhistory
