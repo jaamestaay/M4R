@@ -3,7 +3,7 @@ library(phytools)
 library(phangorn)
 
 metrics <- list(
-    RF = function(tr1, tr2) RF.dist(tr1, tr2),
+    RF = function(tr1, tr2) RF.dist(tr1, tr2)
     # OTHER METRICS TO CONSIDER
     # Normalised RF distance
     # Quartet distance
@@ -18,21 +18,21 @@ compute_metrics <- function(tree_list, ref_tree, metrics) {
     })
 }
 
-# prefix, for now is hardcoded, but should be an argument in calling this program
-prefix <- "testing2204"
+args <- commandArgs(trailingOnly = TRUE)
+prefix <- args[1]
 burnin_frac <- 0.1
 
 true_tree <- read.nexus(paste0(prefix, "/", prefix, "_true.nex"))
 # Independent Data Tree
 independent_trees <- read.nexus(paste0(prefix, "/", prefix, ".trees"))
-n <- length(trees)
+n <- length(independent_trees)
 start <- floor(n * burnin_frac) + 1
-post_burnin_trees <- trees[start:n]
+post_burnin_trees <- independent_trees[start:n]
 # Dependent Data Tree
 # 
 
 results <- list(
-    independent = compute_metrics(independent_trees, true_tree, metrics)
+    independent = compute_metrics(post_burnin_trees, true_tree, metrics)
     # dependent one as well
 )
 
