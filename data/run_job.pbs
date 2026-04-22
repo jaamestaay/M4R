@@ -23,7 +23,7 @@ echo "LEAVES=$LEAVES"
 echo "SITES=$SITES"
 
 echo "Running Python script..."
-python program.py $PREFIX #METHOD
+python program.py $PREFIX $METHOD $LEAVES $SITES
 echo "Running BEAST..."
 cd ${PREFIX}
 java -jar ../../beast.jar ${PREFIX}.xml > beast_output.txt
