@@ -9,9 +9,20 @@ ml beagle-lib/4.0.0-GCC-11.3.0
 cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
 
+# Parameters for simulation
+PREFIX=output_check
+METHOD='yule'
+
 echo "Running Python script..."
-python program.py > my_output.txt
+python program.py $PREFIX > my_output.txt
 
 echo "Running BEAST..."
-cd pytesting
-java -jar ../../beast.jar pytesting.xml > beast_output.txt
+cd ${PREFIX}
+java -jar ../../beast.jar ${PREFIX}.xml > beast_output.txt
+
+#PBS -o ${PREFIX}/job.out
+#PBS -e ${PREFIX}/job.err
+
+#for i in {1..10}; do
+#  qsub -v PREFIX=run_$i run_job.pbs
+#done

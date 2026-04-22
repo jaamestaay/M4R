@@ -1,11 +1,14 @@
 import beastform4r
+import sys
 
 
+prefix = sys.argv[1]
+method = sys.argv[2]
+
+# maybe to be redefined here?
 n_leaves = 30
 birth_rate = 2.0
 death_rate = 0.5
-method = 'yule'
-prefix = "testing2204"
 
 template = f"templates/template_{method}.xml"
 
