@@ -8,5 +8,5 @@
 notes.txt
 
 # R stuff
-.RData
-.Rhistory
+data/.RData
+data/.Rhistory

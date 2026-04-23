@@ -31,6 +31,7 @@ cd ${PREFIX}
 java -jar ../../beast.jar ${PREFIX}.xml > beast_output.txt
 
 echo "Running tree comparison..."
+cd ..
 Rscript tree_comparison.r $PREFIX
 
 echo "Complete."
