@@ -7,7 +7,7 @@ ml tools/prod
 ml Python
 ml Java
 ml beagle-lib/4.0.0-GCC-11.3.0
-ml R
+ml R-bundle-CRAN
 
 cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
@@ -31,7 +31,7 @@ cd ${PREFIX}
 java -jar ../../beast.jar ${PREFIX}.xml > beast_output.txt
 
 echo "Running tree comparison..."
-cd ..
+cd $PBS_O_WORKDIR
 Rscript tree_comparison.r $PREFIX
 
 echo "Complete."

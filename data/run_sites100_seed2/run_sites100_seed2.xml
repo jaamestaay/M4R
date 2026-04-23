@@ -12,36 +12,36 @@
 	<!-- The list of taxa to be analysed (can also include dates/ages).          -->
 	<!-- ntax=4                                                                  -->
 	<taxa id="taxa">
-    		<taxon id="t3"/>
-		<taxon id="t4"/>
-		<taxon id="t6"/>
-		<taxon id="t9"/>
-		<taxon id="t10"/>
-		<taxon id="t8"/>
-		<taxon id="t19"/>
-		<taxon id="t20"/>
-		<taxon id="t16"/>
+    		<taxon id="t23"/>
+		<taxon id="t24"/>
 		<taxon id="t17"/>
+		<taxon id="t18"/>
+		<taxon id="t19"/>
 		<taxon id="t29"/>
 		<taxon id="t30"/>
-		<taxon id="t18"/>
-		<taxon id="t15"/>
-		<taxon id="t27"/>
-		<taxon id="t28"/>
-		<taxon id="t2"/>
-		<taxon id="t25"/>
-		<taxon id="t26"/>
+		<taxon id="t8"/>
+		<taxon id="t6"/>
 		<taxon id="t7"/>
-		<taxon id="t21"/>
-		<taxon id="t22"/>
-		<taxon id="t23"/>
-		<taxon id="t24"/>
-		<taxon id="t13"/>
-		<taxon id="t14"/>
 		<taxon id="t11"/>
 		<taxon id="t12"/>
-		<taxon id="t5"/>
+		<taxon id="t14"/>
+		<taxon id="t15"/>
+		<taxon id="t16"/>
+		<taxon id="t27"/>
+		<taxon id="t28"/>
+		<taxon id="t22"/>
+		<taxon id="t20"/>
+		<taxon id="t21"/>
+		<taxon id="t4"/>
+		<taxon id="t25"/>
+		<taxon id="t26"/>
+		<taxon id="t13"/>
 		<taxon id="t1"/>
+		<taxon id="t3"/>
+		<taxon id="t5"/>
+		<taxon id="t9"/>
+		<taxon id="t10"/>
+		<taxon id="t2"/>
 	</taxa>
 	
 	
@@ -50,124 +50,124 @@
 	<!-- ntax=4 nchar=207                                                        -->
 	<alignment id="alignment" dataType="binary">
 	        <sequence>
-            <taxon idref="t3"/>
-            111010101100101111101110110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t4"/>
-            110010101100101111101100110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t6"/>
-            111010101100101110101110110111101100101010111
-        </sequence>
-        <sequence>
-            <taxon idref="t9"/>
-            111010101100001111101110110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t10"/>
-            111010101100111111101010110111101100110010111
-        </sequence>
-        <sequence>
-            <taxon idref="t8"/>
-            111000101100001011001110110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t19"/>
-            111000101100001111001110110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t20"/>
-            111000101100001111001110110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t16"/>
-            111000101110001111001100110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t17"/>
-            111000101110001111001110110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t29"/>
-            111000101100001011001110110111101000111011111
-        </sequence>
-        <sequence>
-            <taxon idref="t30"/>
-            111000101100001011001110110111101000111011111
-        </sequence>
-        <sequence>
-            <taxon idref="t18"/>
-            111000101100001111001110110111101000111011111
-        </sequence>
-        <sequence>
-            <taxon idref="t15"/>
-            111000101100001111001110110111101100111011111
-        </sequence>
-        <sequence>
-            <taxon idref="t27"/>
-            111000101000001110001111110111001100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t28"/>
-            111000101000001111001111110111001100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t2"/>
-            111000101100001111001110111111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t25"/>
-            111000101100001111001100110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t26"/>
-            111000101100001111001100110111101100111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t7"/>
-            111000101100001111001010110111101101111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t21"/>
-            111000101100001111001110110111101110111010111
-        </sequence>
-        <sequence>
-            <taxon idref="t22"/>
-            111000101100001111001110110111101110111010111
-        </sequence>
-        <sequence>
             <taxon idref="t23"/>
-            111100101100001111111100110101100101010010111
+            01111110001100101011101000100110111101111101111100101000100
         </sequence>
         <sequence>
             <taxon idref="t24"/>
-            111000101100101111111100110101100101011010111
+            01111110001100101011101000100110111101111101111100101000100
         </sequence>
         <sequence>
-            <taxon idref="t13"/>
-            111000101001001111101110110101110100011010111
+            <taxon idref="t17"/>
+            01111110001100101011101000100110111101111101111100101000100
         </sequence>
         <sequence>
-            <taxon idref="t14"/>
-            111000111101001111101110110101110100011010111
+            <taxon idref="t18"/>
+            01011010000100010011101000101110111101111111111101101000110
+        </sequence>
+        <sequence>
+            <taxon idref="t19"/>
+            01011010001100010011101000101110111101111111111101101000110
+        </sequence>
+        <sequence>
+            <taxon idref="t29"/>
+            01011010001100011011101000100110111101011111111100111000110
+        </sequence>
+        <sequence>
+            <taxon idref="t30"/>
+            01011010001100011011101000100110111101011111111100111000110
+        </sequence>
+        <sequence>
+            <taxon idref="t8"/>
+            01011010001100011011101000100110111101011111111100111000110
+        </sequence>
+        <sequence>
+            <taxon idref="t6"/>
+            01011010000100011011101000100110111101111111111100100000110
+        </sequence>
+        <sequence>
+            <taxon idref="t7"/>
+            01011010001100011011101000100111111101111111111100100000110
         </sequence>
         <sequence>
             <taxon idref="t11"/>
-            111000101101001111101110110101110100011010111
+            01111010000101011011101000100110111101111111111101101000100
         </sequence>
         <sequence>
             <taxon idref="t12"/>
-            111000101101001111101110110101110100011010111
+            01011010000101011011111000000110111101111111111101101000100
         </sequence>
         <sequence>
-            <taxon idref="t5"/>
-            111001101101001111101110110101110100011010111
+            <taxon idref="t14"/>
+            01011010001101011011101000100110111101111111111101101000000
+        </sequence>
+        <sequence>
+            <taxon idref="t15"/>
+            01011010001101011011101000100110111101111111111101101000000
+        </sequence>
+        <sequence>
+            <taxon idref="t16"/>
+            01011010111111011011101000100110111101111111111101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t27"/>
+            01011010111111011011101000100110111101111111111101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t28"/>
+            01011010111111011011101000100110111101111111111101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t22"/>
+            01011010111111011011101000100110111101111111111101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t20"/>
+            01010010011101011011101000100110111101111111111101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t21"/>
+            01010010011101011011101000100110111101111111111101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t4"/>
+            11011011001100011011101000100110111101111111111001001000101
+        </sequence>
+        <sequence>
+            <taxon idref="t25"/>
+            11011011001101011111101000100110111101110111111111101000101
+        </sequence>
+        <sequence>
+            <taxon idref="t26"/>
+            11011011001101011111101000100110111101110111111111101000101
+        </sequence>
+        <sequence>
+            <taxon idref="t13"/>
+            11011011001101011011101001100110111101111111111011101000101
         </sequence>
         <sequence>
             <taxon idref="t1"/>
-            111000101100001111101110110101110100011110111
+            01011010001101011011101100100110111101111111111101101010000
+        </sequence>
+        <sequence>
+            <taxon idref="t3"/>
+            01101010001000011101101010100110111110111101010101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t5"/>
+            01111010001000001101101010110100111110111101010101001000100
+        </sequence>
+        <sequence>
+            <taxon idref="t9"/>
+            01111010001000011101101010100110111110111101010101101000100
+        </sequence>
+        <sequence>
+            <taxon idref="t10"/>
+            01111010001000011101101010100110111110111101010101101100100
+        </sequence>
+        <sequence>
+            <taxon idref="t2"/>
+            01011010001000011101101010100100111100111101011101101001110
         </sequence>
 	</alignment>
 	
