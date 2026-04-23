@@ -1,4 +1,4 @@
-PREFIX=run_sites2000_seed3
+PREFIX=run_sites2000_seed2
 METHOD=yule
 LEAVES=30
 SITES=2000
@@ -9,10 +9,10 @@ Running tree comparison...
 Complete.
 
 ====================================
-CPU Time used: 00:07:26
+CPU Time used: 00:05:56
 CPU Percent: 99%
-Memory usage: 190624kb
-Approx Power usage: 0.0014
-Walltime usage: 00:09:32
+Memory usage: 184552kb
+Approx Power usage: 0.001
+Walltime usage: 00:07:48
 
 ====================================
