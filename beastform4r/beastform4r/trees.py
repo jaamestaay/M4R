@@ -285,7 +285,7 @@ class Tree:
     def generate_dependent_data(self, n_sites,
                                 gain_rate=0.4, loss_rate=0.6,
                                 root_freq=0.3, site_dep_prob=0.5,
-                                site_dep_mean=10, ascertain=True)
+                                site_dep_mean=10, ascertain=True):
         # Probably can look to setting this up with more ability to shift
         # parameters (increase change probabilities more)
         # and add more tiers perhaps
