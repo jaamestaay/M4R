@@ -162,6 +162,7 @@ class Node:
         """
         return self.left is None and self.right is None
 
+
 class Tree:
     """
     Tree class for representing phylogenetic trees, containing Nodes.
@@ -169,7 +170,7 @@ class Tree:
     allowed_tree_methods = ['yule', 'birthDeath']
     
     def __init__(self, n_leaves, method='yule', birth_rate=1.0,
-                      death_rate=0.0, seed=None):
+                 death_rate=0.0, seed=None):
         """
         Generate (ultrametric) tree with a specified number of leaves using a
         given method.
@@ -193,10 +194,10 @@ class Tree:
             self.root = yule_prior(n_leaves, birth_rate, seed)
         elif method == 'birthDeath':
             self.root = birth_death_prior(n_leaves, birth_rate, death_rate,
-                                         seed)
+                                          seed)
         self.method = method
         print(f"Generated {method} tree with {n_leaves} leaves.")
-        
+
     # def plot(self):
     #     if self.root is None:
     #         raise ValueError("Tree is empty.")
@@ -211,7 +212,7 @@ class Tree:
     #     ax.set_xlabel("Time / Branch length")
 
     #     plt.show()
-    
+
     # def _plot_node(self, node, ax, x):
     #     if node is None:
     #         return
@@ -252,23 +253,23 @@ class Tree:
 
     def get_leaf_names(self):
         leaves = []
+
         def collect(node):
             if node.is_leaf():
                 leaves.append(node.name)
             else:
                 collect(node.left)
                 collect(node.right)
+
         collect(self.root)
         self.leaves = leaves
         return leaves
 
     def generate_independent_data(self, n_sites,
-                                gain_rate=0.4, loss_rate=0.6,
-                                root_freq=0.3, ascertain=True):
-        
+                                  gain_rate=0.4, loss_rate=0.6,
+                                  root_freq=0.3, ascertain=True):
         languages = self.get_leaf_names()
         rows = []
-
         for _ in range(n_sites):
             root_state = int(np.random.rand() < root_freq)
             states = evolve_cognate(self.root, root_state,
@@ -281,6 +282,21 @@ class Tree:
             df = df.loc[df.sum(axis=1) > 0].copy()
         return df
 
+    def generate_dependent_data(self, n_sites,
+                                gain_rate=0.4, loss_rate=0.6,
+                                root_freq=0.3, site_dep_prob=0.5,
+                                site_dep_mean=10, ascertain=True)
+        # Probably can look to setting this up with more ability to shift
+        # parameters (increase change probabilities more)
+        # and add more tiers perhaps
+        # tier 1: generate independent sites y_1, ..., y_{n_sites}
+
+        # tier 2: generate number of dependent sites per site 
+
+        # tier 2: generate \tilde{z_i} and compute z_is
+
+        # combine all and return
+
     def to_newick(self):
         def recurse(node):
             if node.is_leaf():
@@ -291,4 +307,3 @@ class Tree:
                 return f"({left_str}:{node.left.branch_length:.4f}," \
                        f"{right_str}:{node.right.branch_length:.4f})"
         return recurse(self.root) + ";"
-        
