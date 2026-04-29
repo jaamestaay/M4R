@@ -1,0 +1,22 @@
+PREFIX=run_sites200_seed5
+METHOD=yule
+LEAVES=30
+SITES=200
+SEED=5
+Running Python script...
+Generated yule tree with 30 leaves.
+Dependent sites after ascertainment: 516
+Independent sites after subsampling: 516
+Running BEAST [Independent Data]...
+Running BEAST [Dependent Data]...
+Running tree comparison...
+Complete.
+
+====================================
+CPU Time used: 00:07:27
+CPU Percent: 98%
+Memory usage: 206068kb
+Approx Power usage: 0.0014
+Walltime usage: 00:09:54
+
+====================================

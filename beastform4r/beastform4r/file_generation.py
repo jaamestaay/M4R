@@ -72,13 +72,13 @@ def write_xml_file(template_filepath, df, prefix, independent=True):
         filename = f"{prefix}_independent"
     else:
         filename = f"{prefix}_dependent"
-    new_name = f"{new_dir}/{filename}.xml"
     filled_xml = template.format(
         taxa_block=taxa_block,
         alignment_block=alignment_block,
-        prefix=f"{filename}"
+        prefix=filename
     )
     new_dir = Path(prefix)
     new_dir.mkdir(exist_ok=True)
+    new_name = f"{new_dir}/{filename}.xml"
     with open(new_name, "w") as f:
         f.write(filled_xml)
