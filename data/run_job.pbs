@@ -25,7 +25,7 @@ echo "SITES=$SITES"
 echo "SEED=$SEED"
 
 echo "Running Python script..."
-python program.py $PREFIX $METHOD $LEAVES $SITES
+python program.py $PREFIX $METHOD $LEAVES $SITES $SEED
 
 echo "Running BEAST [Independent Data]..."
 cd ${PREFIX}

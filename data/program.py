@@ -50,17 +50,17 @@ print(f"Dependent sites after ascertainment: {len(dependent_data)}")
 print(f"Independent sites after subsampling: {len(independent_data)}")
 
 # Create data xml file
-prefix_indep = f"{prefix}_independent"
-prefix_dep = f"{prefix}_dependent"
 beastform4r.write_xml_file(
     template,
     independent_data,
-    prefix_indep
+    prefix,
+    independent=True
 )
 beastform4r.write_xml_file(
     template,
     dependent_data,
-    prefix_dep
+    prefix,
+    independent=False
 )
 
 # Creates true nexus file
