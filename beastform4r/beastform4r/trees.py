@@ -197,6 +197,7 @@ class Tree:
                                           seed)
         self.method = method
         print(f"Generated {method} tree with {n_leaves} leaves.")
+        self.languages = self.get_leaf_names()
 
     # def plot(self):
     #     if self.root is None:
@@ -267,35 +268,77 @@ class Tree:
 
     def generate_independent_data(self, n_sites,
                                   gain_rate=0.4, loss_rate=0.6,
-                                  root_freq=0.3, ascertain=True):
-        languages = self.get_leaf_names()
+                                  root_freq=0.3, ascertain=True,
+                                  dataframe=True):
         rows = []
         for _ in range(n_sites):
             root_state = int(np.random.rand() < root_freq)
             states = evolve_cognate(self.root, root_state,
                                     gain_rate, loss_rate)
-            rows.append([states[lang] for lang in languages])
+            rows.append([states[lang] for lang in self.languages])
 
-        df = pd.DataFrame(rows, columns=languages)
+        if not dataframe:
+            return np.array(rows)
+
+        df = pd.DataFrame(rows, columns=self.languages)
         df.index = [f"cog_{i}" for i in range(len(df))]
         if ascertain:
             df = df.loc[df.sum(axis=1) > 0].copy()
         return df
+    
+    def _generate_zip_variables(self, prob, mean, size):
+            return (
+                np.random.binomial(1, prob, size)
+                * np.random.poisson(mean, size)
+            )
 
-    def generate_dependent_data(self, n_sites,
+    def generate_dependent_tier(self, df_prev_tier, site_dep_prob,
+                                site_dep_mean, gain_rate, loss_rate,
+                                root_freq):
+        n, n_lang = df_prev_tier.shape
+        dependencies_size = self._generate_zip_variables(site_dep_prob,
+                                                         site_dep_mean,
+                                                         n)
+        total_size = np.sum(dependencies_size)
+        dep_dfs = np.zeros((np.sum(dependencies_size), n_lang))
+        starts = np.cumsum(dependencies_size) - dependencies_size
+        ends = np.cumsum(dependencies_size)
+        for i in range(n):
+            if not dependencies_size[i]:
+                continue
+            z_tilde = self.generate_independent_data(dependencies_size[i],
+                                                     gain_rate, loss_rate,
+                                                     root_freq,
+                                                     ascertain=False,
+                                                     dataframe=False)
+            dep_dfs[starts[i]:ends[i]] = z_tilde * df_prev_tier.values[i]
+        return dep_dfs
+            
+
+    def generate_dependent_data(self, n_indep_sites, tiers=2,
                                 gain_rate=0.4, loss_rate=0.6,
-                                root_freq=0.3, site_dep_prob=0.5,
+                                root_freq=0.3, site_dep_prob=0.7,
                                 site_dep_mean=10, ascertain=True):
-        # Probably can look to setting this up with more ability to shift
-        # parameters (increase change probabilities more)
-        # and add more tiers perhaps
-        # tier 1: generate independent sites y_1, ..., y_{n_sites}
+        # might want to let gain_rate, loss_rate, root_freq, site_dep_prob,
+        # site_dep_mean take in arrays instead of just flat values for diff
+        # tiers.
 
-        # tier 2: generate number of dependent sites per site 
-
-        # tier 2: generate \tilde{z_i} and compute z_is
-
-        # combine all and return
+        # generate unascertained independent data
+        indep_arr = self.generate_independent_data(n_indep_sites, gain_rate,
+                                                  loss_rate, root_freq, False,
+                                                  False)
+        tier_data = [indep_arr]
+        for i in range(1, tiers):
+            tier_data.append(self.generate_dependent_tier(
+                tier_data[i-1], site_dep_prob, site_dep_mean, gain_rate,
+                loss_rate, root_freq
+            ))
+        all_data = np.vstack(tier_data)
+        df = pd.DataFrame(all_data, columns=self.languages)
+        df.index = [f"cog_{i}" for i in range(len(df))]
+        if ascertain:
+            df = df.loc[df.sum(axis=1) > 0].copy()
+        return df
 
     def to_newick(self):
         def recurse(node):
