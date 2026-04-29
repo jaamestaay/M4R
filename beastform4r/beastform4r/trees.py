@@ -299,7 +299,6 @@ class Tree:
         dependencies_size = self._generate_zip_variables(site_dep_prob,
                                                          site_dep_mean,
                                                          n)
-        total_size = np.sum(dependencies_size)
         dep_dfs = np.zeros((np.sum(dependencies_size), n_lang))
         starts = np.cumsum(dependencies_size) - dependencies_size
         ends = np.cumsum(dependencies_size)
@@ -311,7 +310,7 @@ class Tree:
                                                      root_freq,
                                                      ascertain=False,
                                                      dataframe=False)
-            dep_dfs[starts[i]:ends[i]] = z_tilde * df_prev_tier.values[i]
+            dep_dfs[starts[i]:ends[i]] = (z_tilde * df_prev_tier[i])
         return dep_dfs
             
 
@@ -333,7 +332,7 @@ class Tree:
                 tier_data[i-1], site_dep_prob, site_dep_mean, gain_rate,
                 loss_rate, root_freq
             ))
-        all_data = np.vstack(tier_data)
+        all_data = np.vstack(tier_data).astype(int)
         df = pd.DataFrame(all_data, columns=self.languages)
         df.index = [f"cog_{i}" for i in range(len(df))]
         if ascertain:
