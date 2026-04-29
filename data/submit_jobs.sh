@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for SITES in 100 200 500 1000 2000
+for SITES in 10 20 50 100 200
 do
   for SEED in 1 2 3 4 5
   do
@@ -10,6 +10,6 @@ do
 
     echo "Submitting $PREFIX"
 
-    qsub -v PREFIX=$PREFIX,METHOD=$METHOD,LEAVES=$LEAVES,SITES=$SITES run_job.pbs
+    qsub -v PREFIX=$PREFIX,METHOD=$METHOD,LEAVES=$LEAVES,SITES=$SITES,SEED=$SEED run_job.pbs
   done
 done

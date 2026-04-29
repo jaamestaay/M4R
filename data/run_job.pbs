@@ -1,4 +1,4 @@
-#PBS -l walltime=00:10:00
+#PBS -l walltime=00:20:00
 #PBS -l select=1:ncpus=1:mem=1gb
 #PBS -o job.out
 #PBS -e job.err
@@ -22,13 +22,17 @@ echo "PREFIX=$PREFIX"
 echo "METHOD=$METHOD"
 echo "LEAVES=$LEAVES"
 echo "SITES=$SITES"
+echo "SEED=$SEED"
 
 echo "Running Python script..."
 python program.py $PREFIX $METHOD $LEAVES $SITES
 
-echo "Running BEAST..."
+echo "Running BEAST [Independent Data]..."
 cd ${PREFIX}
-java -jar ../../beast.jar ${PREFIX}.xml > beast_output.txt
+java -jar ../../beast.jar ${PREFIX}_independent.xml > beast_output_indep.txt
+
+echo "Running BEAST [Dependent Data]..."
+java -jar ../../beast.jar ${PREFIX}_dependent.xml > beast_output_dep.txt
 
 echo "Running tree comparison..."
 cd $PBS_O_WORKDIR

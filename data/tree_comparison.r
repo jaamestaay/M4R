@@ -24,16 +24,18 @@ burnin_frac <- 0.1
 
 true_tree <- read.nexus(paste0(prefix, "/", prefix, "_true.nex"))
 # Independent Data Tree
-independent_trees <- read.nexus(paste0(prefix, "/", prefix, ".trees"))
+independent_trees <- read.nexus(paste0(prefix, "/", prefix, "_independent.trees"))
 n <- length(independent_trees)
 start <- floor(n * burnin_frac) + 1
-post_burnin_trees <- independent_trees[start:n]
+independent_trees <- independent_trees[start:n]
 # Dependent Data Tree
-# 
+dependent_trees <- read.nexus(paste0(prefix, "/", prefix, "_dependent.trees"))
+dependent_trees <- dependent_trees[start:n]
+
 
 results <- list(
-    independent = compute_metrics(post_burnin_trees, true_tree, metrics)
-    # dependent one as well
+    independent = compute_metrics(independent_trees, true_tree, metrics),
+    dependent = compute_metrics(dependent_trees, true_tree, metrics)
 )
 
 # Convert results into a dataframe for csv output
