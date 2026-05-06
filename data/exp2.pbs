@@ -16,7 +16,7 @@ mkdir -p logs
 exec > logs/${PREFIX}.out 2> logs/${PREFIX}.err
 
 echo "Running Python script..."
-python program.py $PREFIX $METHOD $LEAVES $SITES $SEED $OUTDIR/$PREFIX
+python program.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX"
 
 echo "Running BEAST on all generated data..."
 cd "$OUTDIR/$PREFIX"
