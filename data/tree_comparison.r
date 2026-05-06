@@ -23,7 +23,6 @@ metrics <- list(
     HighSupportCladesProp = function(values) {
         mean(values$CladeRecovery > 0.9)
     }, # Proportion of Internal Nodes well supported by posterior
-    # posteriorESS = function(values) values$ESS["posterior"],
     likelihoodESS = function(values) values$ESS["likelihood"],
     priorESS = function(values) values$ESS["prior"],
     treeLikelihoodESS = function(values) values$ESS["treeLikelihood"]

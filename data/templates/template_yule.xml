@@ -190,7 +190,6 @@
 		<log id="fileLog" logEvery="1000" fileName="{prefix}.log" overwrite="false">
 			<joint idref="joint"/>
 			<prior idref="prior"/>
-			<posterior idref="posterior"/>
 			<likelihood idref="likelihood"/>
 			<treeHeightStatistic idref="rootHeight"/>
 			<treeLengthStatistic idref="treeLength"/>
