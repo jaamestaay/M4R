@@ -49,7 +49,7 @@ def write_nexus_tree(tree, outfile):
         f.write(f"\tTREE true_tree = [&R] {tree.to_newick()}\n")
         f.write("END;\n")
 
-def write_xml_file(template_filepath, df, prefix, independent=True, outdir=None):
+def write_xml_file(template_filepath, df, filename, outdir=None):
     # Parse template XML and get sequences from df
     with open(template_filepath, "r") as f:
         template = f.read()
@@ -68,10 +68,6 @@ def write_xml_file(template_filepath, df, prefix, independent=True, outdir=None)
         for taxon in taxa
     )
     # 3. Fill Template and Write File
-    if independent:
-        filename = f"{prefix}_independent"
-    else:
-        filename = f"{prefix}_dependent"
     filled_xml = template.format(
         taxa_block=taxa_block,
         alignment_block=alignment_block,
@@ -80,7 +76,7 @@ def write_xml_file(template_filepath, df, prefix, independent=True, outdir=None)
     if outdir:
         new_dir = Path(f"{outdir}")
     else:
-        new_dir = Path(prefix)
+        new_dir = Path(".")
     new_dir.mkdir(exist_ok=True)
     new_name = f"{new_dir}/{filename}.xml"
     with open(new_name, "w") as f:

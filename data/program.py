@@ -7,7 +7,7 @@ method = sys.argv[2]
 n_leaves = int(sys.argv[3])
 sites = int(sys.argv[4])
 seed = int(sys.argv[5])
-outdir = sys.argv[6]
+outloc = sys.argv[6]
 
 # maybe to be redefined here?
 birth_rate = 2.0
@@ -56,15 +56,15 @@ beastform4r.write_xml_file(
     independent_data,
     prefix,
     independent=True,
-    outdir=outdir
+    outdir=outloc
 )
 beastform4r.write_xml_file(
     template,
     dependent_data,
     prefix,
     independent=False,
-    outdir=outdir
+    outdir=outloc
 )
 
 # Creates true nexus file
-beastform4r.write_nexus_tree(tree, f"{outdir}/{prefix}_true.nex")
+beastform4r.write_nexus_tree(tree, f"{outloc}/{prefix}_true.nex")

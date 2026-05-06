@@ -34,22 +34,32 @@ compute_metrics <- function(tree_list, ref_tree, values, metrics) {
   for (metric in names(metrics)) {
     summary[[metric]] <- metrics[[metric]](raw)
   }
-  return summary
+  return (summary)
 }
 
 args <- commandArgs(trailingOnly = TRUE)
-prefix <- args[1]
+outdir <- args[1]
+prefix <- args[2]
 burnin_frac <- 0.1
 
+# function to post process
+post_process <- function(filename, burnin_frac) {
+    trees <- read.nexus(filename)
+    n <- length(trees)
+    start <- ceiling(n * burnin_frac)
+    trees <- trees[start:n]
+    return (trees)
+}
+
 # 060526 change this to accommodate for ALL trees 
-true_tree <- read.nexus(paste0(prefix, "/", prefix, "_true.nex"))
+true_tree <- read.nexus(paste0(outdir, "/", prefix, "/true.nex"))
 # Independent Data Tree
-independent_trees <- read.nexus(paste0(prefix, "/", prefix, "_independent.trees"))
+independent_trees <- read.nexus(paste0(outdir, "/", prefix, "/independent.trees"))
 n <- length(independent_trees)
 start <- floor(n * burnin_frac) + 1
 independent_trees <- independent_trees[start:n]
 # Dependent Data Tree
-dependent_trees <- read.nexus(paste0(prefix, "/", prefix, "_dependent.trees"))
+dependent_trees <- read.nexus(paste0(outdir, "/", prefix, "/dependent.trees"))
 dependent_trees <- dependent_trees[start:n]
 
 # 060526 change this to accommodate for ALL trees 
@@ -66,4 +76,4 @@ df <- do.call(rbind, lapply(names(results), function(dataset) {
     metrics_df$dataset <- dataset
     metrics_df
 }))
-write.csv(df, paste0(prefix, "/", prefix, "_tree_comparison_results.csv"), row.names = FALSE)
+write.csv(df, paste0(outdir, "/", prefix, "/", prefix, "_tree_comparison_results.csv"), row.names = FALSE)
