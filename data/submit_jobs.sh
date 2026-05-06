@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Command: ./submit_jobs.sh > full_output.txt
+# Command: ./submit_jobs.sh
 # EXPERIMENT 1
 
 # EXPERIMENT 2

@@ -7,6 +7,7 @@ method = sys.argv[2]
 n_leaves = int(sys.argv[3])
 sites = int(sys.argv[4])
 seed = int(sys.argv[5])
+outdir = sys.argv[6]
 
 birth_rate = 2.0
 death_rate = 0.5

@@ -56,15 +56,15 @@ beastform4r.write_xml_file(
     independent_data,
     prefix,
     independent=True,
-    outfile=outdir
+    outdir=outdir
 )
 beastform4r.write_xml_file(
     template,
     dependent_data,
     prefix,
     independent=False,
-    outfile=outdir
+    outdir=outdir
 )
 
 # Creates true nexus file
-beastform4r.write_nexus_tree(tree, f"{outdir}/{prefix}/{prefix}_true.nex")
+beastform4r.write_nexus_tree(tree, f"{outdir}/{prefix}_true.nex")
