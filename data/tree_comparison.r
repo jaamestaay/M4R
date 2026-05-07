@@ -12,14 +12,23 @@ values <- list(
     },
     ESS = function(data) {
         effectiveSize(data$log)
+    },
+    NumberofTaxa = function(data) {
+        data$true$Nnode + 1 # 1 more than number of internal nodes/bifurcations
     }
 )
 
 metrics <- list(
     meanRF = function(values) mean(values$RF),
     varRF = function(values) var(values$RF),
-    meanNRF = function(values) mean(values$RF/length(values$RF)),
-    varNRF = function(values) var(values$RF/length(values$RF)),
+    meanNRF = function(values) {
+        maxRF = 2 * (values$NumberofTaxa - 3)
+        mean(values$RF/maxRF)
+    },
+    varNRF = function(values) {
+        maxRF = 2 * (values$NumberofTaxa - 3)
+        var(values$RF/maxRF)
+    },
     HighSupportCladesProp = function(values) {
         mean(values$CladeRecovery > 0.9)
     }, # Proportion of Internal Nodes well supported by posterior
@@ -72,8 +81,6 @@ post_process_log <- function(filename, burnin_frac) {
     return (log)
 }
 
-
-# 060526 change this to accommodate for ALL trees 
 true_tree <- read.nexus(paste0(outdir, "/", prefix, "/true.nex"))
 # Independent Data Tree
 independent_trees <- post_process_trees(

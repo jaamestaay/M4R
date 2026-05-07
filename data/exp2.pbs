@@ -1,4 +1,4 @@
-#PBS -l walltime=02:00:00
+#PBS -l walltime=03:00:00
 #PBS -l select=1:ncpus=16:mem=16gb
 
 ml tools/prod
@@ -12,8 +12,8 @@ source /rds/general/user/jst21/home/m4r/.venv/bin/activate
 
 mkdir -p "$OUTDIR"
 mkdir -p "$OUTDIR/$PREFIX"
-mkdir -p logs
-exec > "logs/${PREFIX}_${PBS_JOBID}.out" 2> "logs/${PREFIX}_${PBS_JOBID}.err"
+exec > "$OUTDIR/logs/${PREFIX}_${PBS_JOBID}.out" \
+     2> "$OUTDIR/logs/${PREFIX}_${PBS_JOBID}.err"
 
 echo "Running Python script..."
 python exp2.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX"
@@ -26,6 +26,11 @@ do
   java -jar ../../../beast.jar -threads 1 dependent_${i}.xml &
 done
 wait
+
+echo "Cleaning unnecessary files..."
+cd "$OUTDIR/$PREFIX"
+rm -f *.chkpt
+rm -f *.citations.txt
 
 echo "Running tree comparison..."
 cd $PBS_O_WORKDIR
