@@ -318,14 +318,20 @@ class Tree:
                                 gain_rate=0.4, loss_rate=0.6,
                                 root_freq=0.3, site_dep_prob=0.7,
                                 site_dep_mean=10, ascertain=True):
-        # might want to let gain_rate, loss_rate, root_freq, site_dep_prob,
-        # site_dep_mean take in arrays instead of just flat values for diff
-        # tiers.
+        # DESIGN CONSIDERATION: might want to let gain_rate, loss_rate,
+        # root_freq, site_dep_prob, site_dep_mean take in arrays instead of
+        # just flat values for diff tiers.
 
-        # generate unascertained independent data
-        indep_arr = self.generate_independent_data(n_indep_sites, gain_rate,
-                                                  loss_rate, root_freq, False,
-                                                  False)
+        # generate ascertained independent data
+        # DESIGN CONSIDERATION: start with fixed amount of independent data,
+        # of which we can build more information on using dependent data
+        shape = 0
+        while not shape:
+            indep_arr = self.generate_independent_data(5*n_indep_sites, 
+                                                       gain_rate, loss_rate, 
+                                                       root_freq, True, False)
+            shape = indep_arr.shape[0]
+        indep_arr = indep_arr.sample(n=n_indep_sites, replace=False).copy()
         tier_data = [indep_arr]
         for i in range(1, tiers):
             tier_data.append(self.generate_dependent_tier(
