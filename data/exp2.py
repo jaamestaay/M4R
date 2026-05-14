@@ -47,15 +47,19 @@ for i in range(n):
         site_dep = site_dep_params[i]
         tier = tier_params[j]
         val = i*m + j + 1
-        dependent_data = tree.generate_dependent_data(
-            n_indep_sites=sites,
-            tiers=tier,
-            gain_rate=0.04,
-            loss_rate=0.06,
-            site_dep_prob=site_dep[0],
-            site_dep_mean=site_dep[1],
-            ascertain=True
-        )
+        # to ensure there is at least data generated
+        shape = 0
+        while not shape:
+            dependent_data = tree.generate_dependent_data(
+                n_indep_sites=sites,
+                tiers=tier,
+                gain_rate=0.04,
+                loss_rate=0.06,
+                site_dep_prob=site_dep[0],
+                site_dep_mean=site_dep[1],
+                ascertain=True
+            )
+            shape = dependent_data.shape[0]
         beastform4r.write_xml_file(
             template,
             dependent_data,
