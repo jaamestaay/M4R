@@ -9,15 +9,16 @@ mkdir -p experiment2/logs/out
 mkdir -p experiment2/logs/err
 OUTDIR="experiment2"
 
-LEAVES_LIST=(10 20 30 50)
-SEED_LIST=({1..20})
-SITES_LIST=(10 50 100 200)
+source exp2_config.env
+read -ra LEAVES_ARR <<< "$LEAVES_LIST"
+read -ra SEED_ARR <<< "$SEED_LIST"
+read -ra SITES_ARR <<< "$SITES_LIST"
 JOB_IDS=()
-for LEAVES in "${LEAVES_LIST[@]}"
+for LEAVES in "${LEAVES_ARR[@]}"
 do
-  for SEED in "${SEED_LIST[@]}"
+  for SEED in "${SEED_ARR[@]}"
   do
-    for SITES in "${SITES_LIST[@]}"
+    for SITES in "${SITES_ARR[@]}"
     do
       PREFIX="exp2_${LEAVES}_${SEED}_${SITES}"
       METHOD="yule"
@@ -34,12 +35,8 @@ done
 
 # do separately for experiments
 mkdir -p experiment2/postprocessing
-LEAVES_STR=$(IFS=,; echo "${LEAVES_LIST[*]}")
-SEED_STR=$(IFS=,; echo "${SEED_LIST[*]}")
-SITES_STR=$(IFS=,; echo "${SITES_LIST[*]}")
 DEPENDENCY=$(IFS=:; echo "${JOB_IDS[*]}")
 qsub -W depend=afterok:$DEPENDENCY \
   -o experiment2/postprocessing \
   -e experiment2/postprocessing \
-  -v LEAVES_LIST="$LEAVES_STR",SEED_LIST="$SEED_STR",SITES_LIST="$SITES_STR" \
   exp2_postprocessing.pbs

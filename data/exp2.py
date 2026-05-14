@@ -1,5 +1,6 @@
 import beastform4r
 import sys
+import os
 
 
 prefix = sys.argv[1]
@@ -38,8 +39,14 @@ beastform4r.write_xml_file(
 
 # Dependent Data
 # Varying Parameters
-site_dep_params = [(0.2, 3.75), (0.5, 6), (0.7, 10), (0.9, 30)]
-tier_params = [2, 3, 4]
+site_dep_params_data = os.environ["SITE_DEP_PARAMS"]
+site_dep_params = [
+    tuple(map(float, x.split(":")))
+    for x in site_dep_params_data.split()
+]
+tier_params = list(map(int, os.environ["TIER_PARAMS"].split()))
+# site_dep_params = [(0.2, 3.75), (0.5, 6), (0.7, 10), (0.9, 30)]
+# tier_params = [2, 3, 4]
 n, m = len(site_dep_params), len(tier_params)
 
 for i in range(n):

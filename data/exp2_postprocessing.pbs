@@ -6,7 +6,11 @@ ml Python
 
 cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+source exp2_config.env
 
 echo "Running post-processing python script..."
-python exp2_postprocessing.py "$LEAVES_LIST" "$SEED_LIST" "$SITES_LIST"
+python exp2_postprocessing.py \
+  "$LEAVES_LIST" \
+  "$SEED_LIST" \
+  "$SITES_LIST"
 echo "Post-processing complete"

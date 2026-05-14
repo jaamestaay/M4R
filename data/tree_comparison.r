@@ -107,13 +107,20 @@ dependent_logs <- lapply(logfiles, function(f) {
     post_process_log(f, burnin_frac)
 })
 
-site_dep_params <- list(
-    c(0.2, 3.75),
-    c(0.5, 6),
-    c(0.7, 10),
-    c(0.9, 30)
-)
-tier_params <- c(2, 3, 4)
+# fetch parameters
+raw <- Sys.getenv("SITE_DEP_PARAMS")
+site_dep_params <- strsplit(raw, " ")[[1]]
+site_dep_params <- lapply(site_dep_params, function(x) {
+  as.numeric(strsplit(x, ":")[[1]])
+})
+tier_params <- as.numeric(strsplit(Sys.getenv("TIER_PARAMS"), " ")[[1]])
+# site_dep_params <- list(
+#     c(0.2, 3.75),
+#     c(0.5, 6),
+#     c(0.7, 10),
+#     c(0.9, 30)
+# )
+# tier_params <- c(2, 3, 4)
 get_params <- function(idx, site_dep_params, tier_params) {
     m <- length(tier_params)
     i <- (idx - 1) %/% m + 1
@@ -129,8 +136,8 @@ get_params <- function(idx, site_dep_params, tier_params) {
 indep_metrics <- compute_metrics(independent_trees, true_tree, independent_log, values, metrics)
 indep_df <- as.data.frame(indep_metrics)
 indep_df$dataset <- "independent"
-indep_df$prob <- NA
-indep_df$mean <- NA
+indep_df$prob <- 0
+indep_df$mean <- 0
 indep_df$tier <- 1
 indep_df$id <- 0
 

@@ -2,9 +2,9 @@ import sys
 import pandas as pd
 
 
-leaves_list = sys.argv[1].split(",")
-seed_list = sys.argv[2].split(",")
-sites_list = sys.argv[3].split(",")
+leaves_list = sys.argv[1].split(" ")
+seed_list = sys.argv[2].split(" ")
+sites_list = sys.argv[3].split(" ")
 
 def file_name(leaves, seed, sites):
     return f"experiment2/exp2_{leaves}_{seed}_{sites}/tree_comparison_results.csv"
@@ -12,11 +12,14 @@ def file_name(leaves, seed, sites):
 def process_data(leaves, seed, sites, flag):
     data = pd.read_csv(file_name(leaves, seed, sites))
     data[['prob', 'mean']] = data[['prob', 'mean']].fillna(0) # Independent values
-    data = data.drop(columns=["dataset", "id"]) # Can infer independence from prob and mean values
+    data['ZIP'] = list(zip(data["prob"], data["mean"]))
+    data['ZIP'] = 'ZIP' + data['ZIP'].astype(str)
+    data.loc[data["ZIP"] == "ZIP(0.0, 0.0)", "ZIP"] = "independent"
+    data = data.drop(columns=["dataset", "id", "prob", "mean"])
     data['leaves'] = leaves
-    data['sites'] = sites
+    data['independent_sites'] = sites
     data.to_csv(
-        "experiment2/postprocessing/combined_data.csv",
+        "experiment2/postprocessing/exp2_combined_data.csv",
         mode="w" if flag else "a",
         header=flag,
         index=False
