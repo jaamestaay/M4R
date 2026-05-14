@@ -7,6 +7,9 @@
 # my own notes
 notes.txt
 
+# Generated files (include Experiment 1 later)
+experiment2/
+
 # R stuff
 data/.RData
 data/.Rhistory
