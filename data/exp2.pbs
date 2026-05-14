@@ -9,11 +9,12 @@ ml R-bundle-CRAN
 
 cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+source exp2_config.env
 
 mkdir -p "$OUTDIR"
 mkdir -p "$OUTDIR/$PREFIX"
-exec > "$OUTDIR/logs/${PREFIX}_${PBS_JOBID}.out" \
-     2> "$OUTDIR/logs/${PREFIX}_${PBS_JOBID}.err"
+exec > "$OUTDIR/logs/out/${PREFIX}_${PBS_JOBID}.out" \
+     2> "$OUTDIR/logs/err/${PREFIX}_${PBS_JOBID}.err"
 
 echo "Running Python script..."
 python exp2.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX"

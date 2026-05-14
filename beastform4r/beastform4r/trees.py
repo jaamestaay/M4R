@@ -331,8 +331,8 @@ class Tree:
                                                        gain_rate, loss_rate, 
                                                        root_freq, True, False)
             shape = indep_arr.shape[0]
-        indep_arr = indep_arr.sample(n=n_indep_sites, replace=False).copy()
-        tier_data = [indep_arr]
+        idx = np.random.choice(shape, size=n_indep_sites, replace=False)
+        tier_data = [indep_arr[idx]]
         for i in range(1, tiers):
             tier_data.append(self.generate_dependent_tier(
                 tier_data[i-1], site_dep_prob, site_dep_mean, gain_rate,

@@ -11,7 +11,6 @@ def file_name(leaves, seed, sites):
 
 def process_data(leaves, seed, sites, flag):
     data = pd.read_csv(file_name(leaves, seed, sites))
-    data[['prob', 'mean']] = data[['prob', 'mean']].fillna(0) # Independent values
     data['ZIP'] = list(zip(data["prob"], data["mean"]))
     data['ZIP'] = 'ZIP' + data['ZIP'].astype(str)
     data.loc[data["ZIP"] == "ZIP(0.0, 0.0)", "ZIP"] = "independent"
