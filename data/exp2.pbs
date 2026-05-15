@@ -29,7 +29,6 @@ done
 wait
 
 echo "Cleaning unnecessary files..."
-cd "$OUTDIR/$PREFIX"
 rm -f *.chkpt
 rm -f *.citations.txt
 

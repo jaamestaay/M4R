@@ -34,7 +34,7 @@ metrics <- list(
     }, # Proportion of Internal Nodes well supported by posterior
     likelihoodESS = function(values) values$ESS["likelihood"],
     priorESS = function(values) values$ESS["prior"],
-    treeLikelihoodESS = function(values) values$ESS["treeLikelihood"]
+    jointESS = function(values) values$ESS["joint"]
     # OTHER METRICS TO CONSIDER
     # Quartet distance
     # Branch Score distance
@@ -78,7 +78,7 @@ post_process_log <- function(filename, burnin_frac) {
     start <- ceiling(n * burnin_frac)
     log <- log[start:n, ]
     mcmc_obj <- as.mcmc(log)
-    return (log)
+    return (mcmc_obj)
 }
 
 true_tree <- read.nexus(paste0(outdir, "/", prefix, "/true.nex"))
@@ -90,11 +90,19 @@ independent_log <- post_process_log(
     paste0(outdir, "/", prefix, "/independent.log"), burnin_frac
 )
 # Dependent Data Trees
+extract_id <- function(files, ext) {
+    as.numeric(sub(
+        paste0("^.*dependent_(\\d+)\\.", ext, "$"),
+        "\\1",
+        files
+    ))
+}
 treefiles <- list.files(
     path = paste0(outdir, "/", prefix),
     pattern = "^dependent_\\d+\\.trees$",
     full.names = TRUE
 )
+treefiles <- treefiles[order(extract_id(treefiles, "trees"))]
 dependent_trees <- lapply(treefiles, function(f) {
     post_process_trees(f, burnin_frac)
 })
@@ -103,6 +111,7 @@ logfiles <- list.files(
     pattern = "^dependent_\\d+\\.log$",
     full.names = TRUE
 )
+logfiles <- logfiles[order(extract_id(logfiles, "log"))]
 dependent_logs <- lapply(logfiles, function(f) {
     post_process_log(f, burnin_frac)
 })
@@ -114,13 +123,6 @@ site_dep_params <- lapply(site_dep_params, function(x) {
   as.numeric(strsplit(x, ":")[[1]])
 })
 tier_params <- as.numeric(strsplit(Sys.getenv("TIER_PARAMS"), " ")[[1]])
-# site_dep_params <- list(
-#     c(0.2, 3.75),
-#     c(0.5, 6),
-#     c(0.7, 10),
-#     c(0.9, 30)
-# )
-# tier_params <- c(2, 3, 4)
 get_params <- function(idx, site_dep_params, tier_params) {
     m <- length(tier_params)
     i <- (idx - 1) %/% m + 1
