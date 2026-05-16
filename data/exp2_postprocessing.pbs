@@ -1,3 +1,4 @@
+#PBS -S /bin/bash
 #PBS -l walltime=00:20:00
 #PBS -l select=1:ncpus=1:mem=1gb
 
@@ -5,6 +6,11 @@ ml tools/prod
 ml Python
 
 cd $PBS_O_WORKDIR
+if [ ! -f exp2_config.env ]; then
+    echo "Missing exp2_config.env in $PBS_O_WORKDIR"
+    exit 1
+fi
+
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
 source exp2_config.env
 
