@@ -1,0 +1,5 @@
+data/ export-ignore
+*.log linguist-vendored
+*.trees linguist-vendored
+*.xml linguist-vendored
+*.txt linguist-vendored
