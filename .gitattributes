@@ -1,5 +1,21 @@
-data/ export-ignore
+data/ linguist-vendored
+figures/ linguist-vendored
+report/ linguist-vendored
+
 *.log linguist-vendored
 *.trees linguist-vendored
 *.xml linguist-vendored
 *.txt linguist-vendored
+*.csv linguist-vendored
+*.chkpt linguist-vendored
+*.nex linguist-vendored
+*.out linguist-vendored
+*.err linguist-vendored
+
+*.py linguist-detectable=true
+*.R linguist-detectable=true
+*.sh linguist-detectable=true
+*.pbs linguist-detectable=true
+
+# Optional: if you want notebooks still counted as Python
+*.ipynb linguist-language=Python
