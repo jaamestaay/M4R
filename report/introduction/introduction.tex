@@ -6,56 +6,37 @@ should demonstrate that you are aware of what you are doing, and how it relates 
 highlight your individual contributions and any novel result: which of the calculations, theorems,
 examples, proofs, conjectures, codes etc. are your own?
 
+Language diversification and phylogenetic inference
+\section{History of Language Diversification Methods}
+\section{Bayesian Phylogenetic Methods}
+    Bayesian phylogenetic methods
+\subsection{Site Independence}
+    The independence assumption
+    Why independence may fail in linguistic data
+\section{Previous Work}
+\subsubsection{In Comparative Biology}
+            Maddison's Tail Colour Problem
+            Longobardi Correlated Issues
+\subsubsection{In Phylogenetic Inference}
+        In phylogenetic inference
+            see examples in readings file
+\subsubsection{In Linguistic Data}
+        Dependence in linguistic data
+            Kra-dai data
+\subsection{Outstanding gap in Literature}
+        Outstanding gap in literature
+\section{Research Questions and Contributions}
+    Research questions and contributions (Novel work)
+        (1) how does an increased proportion of fixed amounts of data being dependent (on the remaining independent data) affect 
+        reconstruction? if we didnt know how much data was actually dependent and assumed independence, how badly does this 
+        affect reconstruction? 
+        (2) how does adding dependent data to a set amount of independent data affect reconstruction? is it worth adding more 
+        data even though the data becomes misspecified by the model? 
 
-\begin{figure}[b!] %Use h,t,b,! to enforce the location of the figure
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/imperial.jpg}
-    \caption{This is an example of how you include a figure with a descriptive caption. This is an image of the South Kensington campus of Imperial College London on which we can recognize Queen's tower.}
-    \label{fig:imperial-picture}
-\end{figure}
+\section{Thesis Structure}
 
-Here is some filler text to show you what a few pages may look like. 
-\lipsum[2-4] See Figure \ref{fig:imperial-picture}. \textbf{This is how you reference your figure in the text.}
 
-\begin{table}[]
-    \centering
-    \begin{tabular}{llr}  
-        \toprule
-        \multicolumn{2}{c}{Module} \\
-        \cmidrule(r){1-2}
-        Module code    & Module name & Number of students \\
-        \midrule
-              & per gram    & 13.65      \\
-                      &    each     & 0.01       \\
-        Gnu       & stuffed     & 92.50      \\
-        Emu       & stuffed     & 33.33      \\
-        Armadillo & frozen      & 8.99       \\
-        \bottomrule
-    \end{tabular}
-    \caption{Example booktabs table. Booktabs tables are nicer than regular ones. This site has a nice GUI for making LaTeX tables, and has a Booktabs option: https://www.tablesgenerator.com/}
-    \label{tab:my_label}
-\end{table}
-
-\lipsum[1-4] \textbf{This is how you would reference a table:} Table \ref{tab:my_label}. 
-
-\section{Section Example}
-\label{sec:sec_example}
-\lipsum[1]
-\subsection{Subsection Example}
-\label{sec:subsec_example}
-\lipsum[1]
-
-\subsubsection{Subsubsection Example}
-
-Note that you can reference chapters, sections, subsections and subsubsections. For example: Subsection \ref{sec:subsec_example}!
-
-\section{Math Example}
-
-While math can be written inline like so $f(x) = \sum_{n=0}^{\infty} \frac{x^n}{n!}$, we often need to write stand-alone equations like so
-\begin{equation}
-\textrm{score}(x) = \left(\lambda_m\sum_{i=0}^{|\mathbf{m}|} \log \hat{p}_m(d(x, \mathbf{m}_i) \mid l_i)\right) + \left(\lambda_l\sum_{i=0}^{|\mathbf{l}|} \log\hat{p}_l(d(x, \mathbf{l}_i) \mid \mathbf{v}_i)\right) + \lambda_p \hat{p}_p(x)
-\end{equation}
-
+\section{ (TBD) helpful things (subequations, algorithms)}
 To write equations over multiple lines (like systems of equation or equations too long to fit the page), one can use the \textit{align} environment coupled to the \textit{subequations} environment like so
 \begin{subequations}
 \begin{align}
@@ -63,10 +44,6 @@ To write equations over multiple lines (like systems of equation or equations to
     \mathbb{P}(0 \leadsto b) &= -D\int_0^\infty dt\, k_r e^{-k_r t}\int_0^t d\tau\,\partial_x u \big|_{x=b}.
 \end{align}
 \end{subequations}
-
-\section{Algorithm Example}
-
-See Algorithm \ref{algorithm:posit}
 
 \begin{algorithm}[]
 \SetAlgoLined
@@ -106,8 +83,3 @@ $\mathbf{C_l}$ $\gets$ \{$m \in \mathbf{m} \mid \mathbf{C}$ contains $m\} \cup \
  \caption{Algorithm example}
  \label{algorithm:posit}
 \end{algorithm}
-
-
-\section{Reference Example}
-
-Here is how you can cite papers which you have added in the \verb!/bibs/bibliography.bib! file. You can cite single references as such \cite{Einstein1905} or multiple references like so \cite{Dirac1981,Einstein1905}. Here is a reference to a website \cite{Riemann2024}.

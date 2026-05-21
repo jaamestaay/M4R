@@ -1,2 +1,38 @@
 \chapter{Background}
+\section{Phylogenetic Trees}
+    Tree model and how to formulate likelihood on tree space 
 
+\subsection{Evolution Model: Continuous-Time Markov Models}
+    What does the (generated) data look like? 
+        Generation using evolution models (specifically CTMCs) and transition diagrams 
+\subsection{Tree Priors: Yule models}
+    Tree priors (specifically Yule and others that I will use) 
+
+\section{Bayesian Phylogenetic Inference}
+\subsection{Likelihood Computation}
+\subsection{Posterior Sampling with Markov Chain Monte Carlo methods}
+\subsection{Implementation in BEAST}
+
+\section{Independent Paradigm}
+        likelihood calculations, quality checks and convergence guarantees under such a model 
+        
+        can make this section + model misspecification its own chapter if its too long
+\section{Dependent Paradigm}
+\subsection{ZIP Construction}
+\subsection{CTMC Product Construction}
+Transition diagram
+\subsection{Likelihood Formulation}
+
+\section{Model Misspecification}
+    Model misspecification induced by dependence
+        Data generation under P\_dependent but being evaluated on model under P\_independent
+
+\section{Evaluation Metrics}
+\subsection{Tree Recovery Metrics}
+        Robinson-Foulds (RF) and nRF 
+        Clade recovery (over 90\% of trees in posterior) 
+        ... and maybe more if time allows 
+\subsection{MCMC Diagnostics}
+        Autocorrelation, and thus ESS 
+        Mixing of chains (visual) 
+        Thinning of data perhaps 
