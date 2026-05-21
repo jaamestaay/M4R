@@ -317,7 +317,8 @@ class Tree:
     def generate_dependent_data(self, n_indep_sites, tiers=2,
                                 gain_rate=0.4, loss_rate=0.6,
                                 root_freq=0.3, site_dep_prob=0.7,
-                                site_dep_mean=10, ascertain=True):
+                                site_dep_mean=10, ascertain=True,
+                                weights=None):
         # DESIGN CONSIDERATION: might want to let gain_rate, loss_rate,
         # root_freq, site_dep_prob, site_dep_mean take in arrays instead of
         # just flat values for diff tiers.
@@ -333,17 +334,32 @@ class Tree:
             shape = indep_arr.shape[0]
         idx = np.random.choice(shape, size=n_indep_sites, replace=False)
         tier_data = [indep_arr[idx]]
+        tier_sizes = [n_indep_sites]
         for i in range(1, tiers):
-            tier_data.append(self.generate_dependent_tier(
+            new_data = self.generate_dependent_tier(
                 tier_data[i-1], site_dep_prob, site_dep_mean, gain_rate,
                 loss_rate, root_freq
-            ))
+            )
+            tier_data.append(new_data)
+            tier_sizes.append(new_data.shape[0])
+
+        # apply weights
+        if weights is not None:
+            # check if number of weights corroborate with tiers
+            # if no weights specified, then the implicit weights is 1 per tier
+            if len(weights) < tiers:
+                raise ValueError("Not enought weights")
+            elif len(weights) > tiers:
+                print("UserWarning: More weights than tiers, "
+                      "ignoring extra weights.")
+                tier_data = [tier * weights[i]
+                             for i, tier in enumerate(tier_data)]
         all_data = np.vstack(tier_data).astype(int)
         df = pd.DataFrame(all_data, columns=self.languages)
         df.index = [f"cog_{i}" for i in range(len(df))]
         if ascertain:
             df = df.loc[df.sum(axis=1) > 0].copy()
-        return df
+        return df, tier_sizes
 
     def to_newick(self):
         def recurse(node):

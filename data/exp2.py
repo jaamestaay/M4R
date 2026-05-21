@@ -10,8 +10,8 @@ sites = int(sys.argv[4])
 seed = int(sys.argv[5])
 outloc = sys.argv[6]
 
-birth_rate = 2.0
-death_rate = 0.5
+birth_rate = float(os.environ["BIRTH_RATE"])
+death_rate = float(os.environ["DEATH_RATE"])
 
 template = f"templates/template_{method}.xml"
 
@@ -45,8 +45,6 @@ site_dep_params = [
     for x in site_dep_params_data.split()
 ]
 tier_params = list(map(int, os.environ["TIER_PARAMS"].split()))
-# site_dep_params = [(0.2, 3.75), (0.5, 6), (0.7, 10), (0.9, 30)]
-# tier_params = [2, 3, 4]
 n, m = len(site_dep_params), len(tier_params)
 
 for i in range(n):
@@ -57,7 +55,7 @@ for i in range(n):
         # to ensure there is at least data generated
         shape = 0
         while not shape:
-            dependent_data = tree.generate_dependent_data(
+            dependent_data, tier_sizes = tree.generate_dependent_data(
                 n_indep_sites=sites,
                 tiers=tier,
                 gain_rate=0.04,
@@ -67,6 +65,9 @@ for i in range(n):
                 ascertain=True
             )
             shape = dependent_data.shape[0]
+        # record tier sizes for later analysis
+        with open(f"{outloc}/dependent_{val}_tiersizes.txt", "w") as f:
+            f.write(",".join(map(str, tier_sizes)))
         beastform4r.write_xml_file(
             template,
             dependent_data,
