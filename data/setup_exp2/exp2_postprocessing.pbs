@@ -6,16 +6,16 @@ ml tools/prod
 ml Python
 
 cd $PBS_O_WORKDIR
-if [ ! -f exp2_config.env ]; then
-    echo "Missing exp2_config.env in $PBS_O_WORKDIR"
+if [ ! -f setup_exp2/exp2_config.env ]; then
+    echo "Missing setup_exp2/exp2_config.env in $PBS_O_WORKDIR"
     exit 1
 fi
 
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
-source exp2_config.env
+source setup_exp2/exp2_config.env
 
 echo "Running post-processing python script..."
-python exp2_postprocessing.py \
+python setup_exp2/exp2_postprocessing.py \
   "$LEAVES_LIST" \
   "$SEED_LIST" \
   "$SITES_LIST"

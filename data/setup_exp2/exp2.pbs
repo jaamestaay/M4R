@@ -9,7 +9,7 @@ ml R-bundle-CRAN
 
 cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
-source exp2_e_config.env
+source setup_exp2/exp2_config.env
 
 mkdir -p "$OUTDIR"
 mkdir -p "$OUTDIR/$PREFIX"
@@ -17,7 +17,7 @@ exec > "$OUTDIR/logs/out/${PREFIX}_${PBS_JOBID}.out" \
      2> "$OUTDIR/logs/err/${PREFIX}_${PBS_JOBID}.err"
 
 echo "Running Python script..."
-python exp2.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX" "$BIRTH_RATE" "$DEATH_RATE"
+python setup_exp2/exp2.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX" "$BIRTH_RATE" "$DEATH_RATE"
 
 echo "Running BEAST on all generated data..."
 cd "$OUTDIR/$PREFIX"
@@ -34,7 +34,7 @@ rm -f *.citations.txt
 
 cd $PBS_O_WORKDIR
 echo "Compiling Data Sizes..."
-python exp2_sizes.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX"
+python setup_exp2/exp2_sizes.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX"
 
 echo "Running tree comparison..."
 Rscript tree_comparison.r $OUTDIR $PREFIX
