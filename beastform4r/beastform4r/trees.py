@@ -336,10 +336,17 @@ class Tree:
         tier_data = [indep_arr[idx]]
         tier_sizes = [n_indep_sites]
         for i in range(1, tiers):
-            new_data = self.generate_dependent_tier(
-                tier_data[i-1], site_dep_prob, site_dep_mean, gain_rate,
-                loss_rate, root_freq
-            )
+            # DESIGN CONSIDERATION: Generating Dependent Data for the sake of
+            # adding it. So we will regenerate until we have at least some
+            # data in the tier. This affects mean and variance of tier sizes,
+            # but given that we lose some from ascertainment anyway, it seems
+            # reasonable to do it this way.
+            new_data = []
+            while not len(new_data):
+                new_data = self.generate_dependent_tier(
+                    tier_data[i-1], site_dep_prob, site_dep_mean, gain_rate,
+                    loss_rate, root_freq
+                )
             tier_data.append(new_data)
             tier_sizes.append(new_data.shape[0])
 
