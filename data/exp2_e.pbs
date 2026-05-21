@@ -9,7 +9,7 @@ ml R-bundle-CRAN
 
 cd $PBS_O_WORKDIR
 source /rds/general/user/jst21/home/m4r/.venv/bin/activate
-source exp2_e_config.env
+source exp2_config.env
 
 mkdir -p "$OUTDIR"
 mkdir -p "$OUTDIR/$PREFIX"

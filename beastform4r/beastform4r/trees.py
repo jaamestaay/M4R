@@ -288,7 +288,7 @@ class Tree:
     
     def _generate_zip_variables(self, prob, mean, size):
             return (
-                np.random.binomial(1, prob, size)
+                np.random.binomial(1, 1 - prob, size)
                 * np.random.poisson(mean, size)
             )
 
