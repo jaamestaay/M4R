@@ -1,0 +1,25 @@
+\begin{thebibliography}{3}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Einstein(1905)]{Einstein1905}
+A.~Einstein.
+\newblock {Zur Elektrodynamik bewegter K{\"o}rper}.
+\newblock \emph{Annalen der Physik}, 322\penalty0 (10):\penalty0 891--921,
+  1905.
+
+\bibitem[Dirac(1981)]{Dirac1981}
+P.~A.~M. Dirac.
+\newblock \emph{The Principles of Quantum Mechanics}.
+\newblock International series of monographs on physics. Clarendon Press, 1981.
+
+\bibitem[{Wikipedia Contributors}(2024)]{Riemann2024}
+{Wikipedia Contributors}.
+\newblock {Riemann hypothesis} --- {W}ikipedia{,} the free encyclopedia.
+\newblock \url{https://en.wikipedia.org/wiki/Riemann_hypothesis}, 2024.
+\newblock [Online; accessed 01-February-2024].
+
+\end{thebibliography}
