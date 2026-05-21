@@ -1,0 +1,39 @@
+#PBS -l walltime=03:00:00
+#PBS -l select=1:ncpus=16:mem=16gb
+
+ml tools/prod
+ml Python
+ml Java
+ml beagle-lib/4.0.0-GCC-11.3.0
+ml R-bundle-CRAN
+
+cd $PBS_O_WORKDIR
+source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+source exp2_config.env
+
+mkdir -p "$OUTDIR"
+mkdir -p "$OUTDIR/$PREFIX"
+exec > "$OUTDIR/logs/out/${PREFIX}_${PBS_JOBID}.out" \
+     2> "$OUTDIR/logs/err/${PREFIX}_${PBS_JOBID}.err"
+
+echo "Running Python script..."
+python exp2.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX"
+
+echo "Running BEAST on all generated data..."
+cd "$OUTDIR/$PREFIX"
+java -jar ../../../beast.jar -threads 1 independent.xml &
+for i in {1..12}
+do
+  java -jar ../../../beast.jar -threads 1 dependent_${i}.xml &
+done
+wait
+
+echo "Cleaning unnecessary files..."
+rm -f *.chkpt
+rm -f *.citations.txt
+
+echo "Running tree comparison..."
+cd $PBS_O_WORKDIR
+Rscript tree_comparison.r $OUTDIR $PREFIX
+
+echo "Complete."

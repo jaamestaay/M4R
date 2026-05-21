@@ -1,0 +1,41 @@
+#PBS -l walltime=00:20:00
+#PBS -l select=1:ncpus=1:mem=1gb
+#PBS -o job.out
+#PBS -e job.err
+
+ml tools/prod
+ml Python
+ml Java
+ml beagle-lib/4.0.0-GCC-11.3.0
+ml R-bundle-CRAN
+
+cd $PBS_O_WORKDIR
+source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+
+# Parameters for simulation
+PREFIX=$PREFIX
+METHOD=$METHOD
+LEAVES=$LEAVES
+SITES=$SITES
+
+echo "PREFIX=$PREFIX"
+echo "METHOD=$METHOD"
+echo "LEAVES=$LEAVES"
+echo "SITES=$SITES"
+echo "SEED=$SEED"
+
+echo "Running Python script..."
+python program.py $PREFIX $METHOD $LEAVES $SITES $SEED
+
+echo "Running BEAST [Independent Data]..."
+cd ${PREFIX}
+java -jar ../../beast.jar ${PREFIX}_independent.xml > beast_output_indep.txt
+
+echo "Running BEAST [Dependent Data]..."
+java -jar ../../beast.jar ${PREFIX}_dependent.xml > beast_output_dep.txt
+
+echo "Running tree comparison..."
+cd $PBS_O_WORKDIR
+Rscript tree_comparison.r $PREFIX
+
+echo "Complete."
