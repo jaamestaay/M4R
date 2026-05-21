@@ -12,7 +12,18 @@
 	<!-- The list of taxa to be analysed (can also include dates/ages).          -->
 	<!-- ntax=4                                                                  -->
 	<taxa id="taxa">
-    {taxa_block}
+		<taxon id="t2">
+			<date value="0.0" direction="forwards" units="years"/>
+		</taxon>
+		<taxon id="t3">
+			<date value="0.0" direction="forwards" units="years"/>
+		</taxon>
+		<taxon id="t4">
+			<date value="0.0" direction="forwards" units="years"/>
+		</taxon>
+		<taxon id="t1">
+			<date value="0.0" direction="forwards" units="years"/>
+		</taxon>
 	</taxa>
 	
 	
@@ -20,7 +31,22 @@
 	<!-- The sequence alignment (each sequence refers to a taxon above).         -->
 	<!-- ntax=4 nchar=207                                                        -->
 	<alignment id="alignment" dataType="binary">
-	{alignment_block}
+		<sequence>
+			<taxon idref="t2"/>
+			110000000100011111011100110000111000011101110001100011101100101100011011011101010110101000110011101110010110111011101000001111010111101011101010110010011111110100011111110110001110000001111101010001000100010
+		</sequence>
+		<sequence>
+			<taxon idref="t3"/>
+			000101100111110100010010111000101110010110110001100011110101111101010001011110001000000001000011000101010101010111111111111010010011110101010010110110111111101000010110101100101111000001011101010111011001010
+		</sequence>
+		<sequence>
+			<taxon idref="t4"/>
+			000101100111110100010010111000101110010110110001100011110101111101010001011110001000000001000011000101010101010111111111111010010011110101010010110110111111101000010110101100101111000001011101010111011001010
+		</sequence>
+		<sequence>
+			<taxon idref="t1"/>
+			011010011111001011110101001111010101110001011111111110000010011110101100111010100011111110001111110001111111011000100000111000101010100011110101101111011011000111100011100101011111111111000110101011111011111
+		</sequence>
 	</alignment>
 	
 	
@@ -32,19 +58,11 @@
 	</patterns>
 	
 
-	<!-- A prior on the distribution node heights defined given                  -->
-	<!-- a Yule speciation process (a pure birth process).                       -->
-	<yuleModel id="yule" units="substitutions">
-		<birthRate>
-			<parameter id="yule.birthRate" value="2.0" lower="0.0"/>
-		</birthRate>
-	</yuleModel>
-
-	<!-- This is a simple constant population size coalescent model              -->
-	<!-- that is used to generate an initial tree for the chain.                 -->
-	<constantSize id="initialDemo" units="substitutions">
+	<!-- A prior assumption that the population size has remained constant       -->
+	<!-- throughout the time spanned by the genealogy.                           -->
+	<constantSize id="constant" units="years">
 		<populationSize>
-			<parameter id="initialDemo.popSize" value="100.0"/>
+			<parameter id="constant.popSize" value="1.0" lower="0.0"/>
 		</populationSize>
 	</constantSize>
 	
@@ -52,7 +70,7 @@
 	<!-- Generate a random starting tree under the coalescent process            -->
 	<coalescentSimulator id="startingTree">
 		<taxa idref="taxa"/>
-		<constantSize idref="initialDemo"/>
+		<constantSize idref="constant"/>
 	</coalescentSimulator>
 	
 
@@ -79,23 +97,30 @@
 	<treeLengthStatistic id="treeLength">
 		<treeModel idref="treeModel"/>
 	</treeLengthStatistic>
+
+	<!-- Statistic for time of most recent common ancestor of tree               -->
+	<tmrcaStatistic id="age(root)" absolute="true">
+		<treeModel idref="treeModel"/>
+	</tmrcaStatistic>
 	
 
-	<!-- Generate a speciation likelihood for Yule or Birth Death                -->
-	<speciationLikelihood id="speciation">
+	<!-- Generate a coalescent likelihood                                        -->
+	<coalescentLikelihood id="coalescent">
 		<model>
-			<yuleModel idref="yule"/>
+			<constantSize idref="constant"/>
 		</model>
-		<speciesTree>
-			<treeModel idref="treeModel"/>
-		</speciesTree>
-	</speciationLikelihood>
+		<intervals>
+			<treeIntervals>
+				<treeModel idref="treeModel"/>
+			</treeIntervals>
+		</intervals>
+	</coalescentLikelihood>
 	
 
 	<!-- The strict clock (Uniform rates across branches)                        -->
 	<strictClockBranchRates id="branchRates">
 		<rate>
-			<parameter id="clock.rate" value="1.0"/>
+			<parameter id="clock.rate" value="0.001" lower="0.0"/>
 		</rate>
 	</strictClockBranchRates>
 	
@@ -109,8 +134,9 @@
 	<binarySubstitutionModel id="bsimple">
 		<frequencies>
 			<frequencyModel dataType="binary">
+				<alignment idref="alignment"/>
 				<frequencies>
-					<parameter id="frequencies" value="0.5 0.5"/>
+					<parameter id="frequencies" dimension="2"/>
 				</frequencies>
 			</frequencyModel>
 		</frequencies>
@@ -140,6 +166,35 @@
 
 	<!-- Define operators                                                        -->
 	<operators id="operators" optimizationSchedule="log">
+		<scaleOperator scaleFactor="0.75" weight="3">
+			<parameter idref="clock.rate"/>
+		</scaleOperator>
+		<upDownOperator scaleFactor="0.75" weight="3">
+			<up>
+				<parameter idref="treeModel.allInternalNodeHeights"/>
+			</up>
+			<down>
+				<parameter idref="clock.rate"/>
+			</down>
+		</upDownOperator>
+		<subtreeSlide size="1.0" gaussian="true" weight="30">
+			<treeModel idref="treeModel"/>
+		</subtreeSlide>
+		<narrowExchange weight="30">
+			<treeModel idref="treeModel"/>
+		</narrowExchange>
+		<wideExchange weight="3">
+			<treeModel idref="treeModel"/>
+		</wideExchange>
+		<wilsonBalding weight="3">
+			<treeModel idref="treeModel"/>
+		</wilsonBalding>
+		<scaleOperator scaleFactor="0.75" weight="3">
+			<parameter idref="treeModel.rootHeight"/>
+		</scaleOperator>
+		<uniformOperator weight="30">
+			<parameter idref="treeModel.internalNodeHeights"/>
+		</uniformOperator>
 		<subtreeLeap size="1.0" weight="30">
 			<treeModel idref="treeModel"/>
 		</subtreeLeap>
@@ -147,19 +202,25 @@
 			<treeModel idref="treeModel"/>
 		</fixedHeightSubtreePruneRegraft>
 		<scaleOperator scaleFactor="0.75" weight="3">
-			<parameter idref="yule.birthRate"/>
+			<parameter idref="constant.popSize"/>
 		</scaleOperator>
 	</operators>
 	
 
 	<!-- Define MCMC                                                             -->
-	<mcmc id="mcmc" chainLength="10000000" autoOptimize="true">
+	<mcmc id="mcmc" chainLength="10000000" autoOptimize="true" operatorAnalysis="untitled.ops">
 		<joint id="joint">
 			<prior id="prior">
-				<logNormalPrior mu="1.0" sigma="1.5" offset="0.0">
-					<parameter idref="yule.birthRate"/>
-				</logNormalPrior>
-				<speciationLikelihood idref="speciation"/>
+				<ctmcScalePrior>
+					<ctmcScale>
+						<parameter idref="clock.rate"/>
+					</ctmcScale>
+					<treeModel idref="treeModel"/>
+				</ctmcScalePrior>
+				<gammaPrior shape="0.001" scale="1000.0" offset="0.0">
+					<parameter idref="constant.popSize"/>
+				</gammaPrior>
+				<coalescentLikelihood idref="coalescent"/>
 				
 				
 				<strictClockBranchRates idref="branchRates"/>
@@ -181,29 +242,33 @@
 			<column label="Likelihood" dp="4" width="12">
 				<likelihood idref="likelihood"/>
 			</column>
-			<column label="rootHeight" sf="6" width="12">
-				<treeHeightStatistic idref="rootHeight"/>
+			<column label="age(root)" sf="6" width="12">
+				<tmrcaStatistic idref="age(root)"/>
+			</column>
+			<column label="clock.rate" sf="6" width="12">
+				<parameter idref="clock.rate"/>
 			</column>
 		</log>
 
 		<!-- write log to file                                                       -->
-		<log id="fileLog" logEvery="1000" fileName="{prefix}.log" overwrite="false">
+		<log id="fileLog" logEvery="1000" fileName="untitled.log" overwrite="false">
 			<joint idref="joint"/>
 			<prior idref="prior"/>
 			<likelihood idref="likelihood"/>
 			<treeHeightStatistic idref="rootHeight"/>
+			<tmrcaStatistic idref="age(root)"/>
 			<treeLengthStatistic idref="treeLength"/>
-			<parameter idref="yule.birthRate"/>
+			<parameter idref="constant.popSize"/>
 			<parameter idref="clock.rate"/>
 			<rateStatistic idref="meanRate"/>
 			<treeLikelihood idref="treeLikelihood"/>
 			<strictClockBranchRates idref="branchRates"/>
-			<speciationLikelihood idref="speciation"/>
+			<coalescentLikelihood idref="coalescent"/>
 			
 		</log>
 
 		<!-- write tree log to file                                                  -->
-		<logTree id="treeFileLog" logEvery="1000" nexusFormat="true" fileName="{prefix}.trees" sortTranslationTable="true">
+		<logTree id="treeFileLog" logEvery="1000" nexusFormat="true" fileName="untitled.trees" sortTranslationTable="true">
 			<treeModel idref="treeModel"/>
 			<trait name="rate" tag="rate">
 				<strictClockBranchRates idref="branchRates"/>
@@ -212,7 +277,7 @@
 		</logTree>
 
 		<!-- write state of Markov chain to checkpoint file                          -->
-		<logCheckpoint id="checkpointFileLog" checkpointEvery="1000000" checkpointFinal="10000000" fileName="{prefix}.chkpt" overwrite="false"/>
+		<logCheckpoint id="checkpointFileLog" checkpointEvery="1000000" checkpointFinal="10000000" fileName="untitled.chkpt" overwrite="false"/>
 	</mcmc>
 	
 	<report>
