@@ -11,7 +11,7 @@ if [ ! -f setup_exp2/exp2_config.env ]; then
     exit 1
 fi
 
-source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+source /rds/general/user/jst21/home/m4r/.simenv/bin/activate
 source setup_exp2/exp2_config.env
 
 echo "Running post-processing python script..."

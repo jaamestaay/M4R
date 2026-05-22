@@ -1,5 +1,6 @@
 # Python virtual environment
 .venv/
+.simenv/
 
 # DS Store
 .DS_Store

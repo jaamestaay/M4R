@@ -8,7 +8,7 @@ ml beagle-lib/4.0.0-GCC-11.3.0
 ml R-bundle-CRAN
 
 cd $PBS_O_WORKDIR
-source /rds/general/user/jst21/home/m4r/.venv/bin/activate
+source /rds/general/user/jst21/home/m4r/.simenv/bin/activate
 source exp2_config.env
 
 mkdir -p "$OUTDIR"
