@@ -8,7 +8,8 @@
 # my own notes
 notes.txt
 
-# Generated files (include Experiment 1 later)
+# Generated files
+generated
 experiment1/
 experiment2/
 validation1/
