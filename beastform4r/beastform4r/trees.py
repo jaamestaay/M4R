@@ -374,8 +374,8 @@ class Tree:
                                 root_freq=0.3, prob_indep=0.5,
                                 ascertain=True, weights=None):
         # For Experiment 1
-        dep_sites = (n_sites - n_sites*prob_indep)//(tiers-1)
-        indep_sites = n_sites - dep_sites * (tiers-1)
+        dep_sites = int((n_sites - n_sites*prob_indep)//(tiers-1))
+        indep_sites = int(n_sites - dep_sites * (tiers-1))
         # Generate independent data
         shape = 0
         while not shape:

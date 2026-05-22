@@ -40,10 +40,7 @@ beastform4r.write_xml_file(
 # Dependent Data
 # Varying Parameters
 probs_data = os.environ["PROBS"]
-probs_data = [
-    tuple(map(float, x.split(":")))
-    for x in probs_data.split()
-]
+probs_data = list(map(float, probs_data.split(" ")))
 tier_params = list(map(int, os.environ["TIER_PARAMS"].split()))
 n, m = len(probs_data), len(tier_params)
 

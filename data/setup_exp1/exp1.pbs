@@ -34,6 +34,6 @@ rm -f *.citations.txt
 
 cd $PBS_O_WORKDIR
 echo "Running tree comparison..."
-Rscript tree_comparison.r $OUTDIR $PREFIX
+Rscript setup_exp1/tree_comparison.r $OUTDIR $PREFIX
 
 echo "Complete."
