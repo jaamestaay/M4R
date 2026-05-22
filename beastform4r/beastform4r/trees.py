@@ -319,6 +319,7 @@ class Tree:
                                 root_freq=0.3, site_dep_prob=0.7,
                                 site_dep_mean=10, ascertain=True,
                                 weights=None):
+        # For Experiment 2
         # DESIGN CONSIDERATION: might want to let gain_rate, loss_rate,
         # root_freq, site_dep_prob, site_dep_mean take in arrays instead of
         # just flat values for diff tiers.
@@ -355,7 +356,7 @@ class Tree:
             # check if number of weights corroborate with tiers
             # if no weights specified, then the implicit weights is 1 per tier
             if len(weights) < tiers:
-                raise ValueError("Not enought weights")
+                raise ValueError("Not enought weights.")
             elif len(weights) > tiers:
                 print("UserWarning: More weights than tiers, "
                       "ignoring extra weights.")
@@ -367,6 +368,52 @@ class Tree:
         if ascertain:
             df = df.loc[df.sum(axis=1) > 0].copy()
         return df, tier_sizes
+
+    def generate_dependent_data_fixed(self, n_sites, tiers=2,
+                                gain_rate=0.4, loss_rate=0.6,
+                                root_freq=0.3, prob_indep=0.5,
+                                ascertain=True, weights=None):
+        # For Experiment 1
+        dep_sites = (n_sites - n_sites*prob_indep)//(tiers-1)
+        indep_sites = n_sites - dep_sites * (tiers-1)
+        # Generate independent data
+        shape = 0
+        while not shape:
+            indep_arr = self.generate_independent_data(5*indep_sites, 
+                                                       gain_rate, loss_rate, 
+                                                       root_freq, True, False)
+            shape = indep_arr.shape[0]
+        idx = np.random.choice(shape, size=indep_sites, replace=False)
+        tier_data = [indep_arr[idx]]
+        # Generate dependent data for each tier
+        # DESIGN CONSIDERATION: For simplicity, generate with ZIP(0.2, 10)
+        # for most consistent data generation, before sampling to hit exact
+        # number of sites per tier. Will mess up dependencies but less
+        # important for this experiment.
+        for i in range(1, tiers):
+            new_data = []
+            while len(new_data) < dep_sites:
+                new_data = self.generate_dependent_tier(
+                    tier_data[i-1], 0.2, 10, gain_rate, loss_rate, root_freq
+                )
+            idx = np.random.choice(new_data.shape[0], size=dep_sites,
+                                   replace=False)
+            tier_data.append(new_data[idx])
+        # apply weights
+        if weights is not None:
+            if len(weights) < tiers:
+                raise ValueError("Not enought weights.")
+            elif len(weights) > tiers:
+                print("UserWarning: More weights than tiers, "
+                      "ignoring extra weights.")
+                tier_data = [tier * weights[i]
+                             for i, tier in enumerate(tier_data)]
+        all_data = np.vstack(tier_data).astype(int)
+        df = pd.DataFrame(all_data, columns=self.languages)
+        df.index = [f"cog_{i}" for i in range(len(df))]
+        if ascertain:
+            df = df.loc[df.sum(axis=1) > 0].copy()
+        return df
 
     def to_newick(self):
         def recurse(node):
