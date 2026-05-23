@@ -6,14 +6,20 @@ leaves_list = sys.argv[1].split(" ")
 seed_list = sys.argv[2].split(" ")
 sites_list = sys.argv[3].split(" ")
 
+failed_files = []
+
 def file_name_trees(leaves, seed, sites):
     return f"experiment1/exp1_{leaves}_{seed}_{sites}/tree_comparison_results.csv"
 
 def process_data_trees(leaves, seed, sites, flag):
-    data = pd.read_csv(file_name_trees(leaves, seed, sites))
+    try:
+        data = pd.read_csv(file_name_trees(leaves, seed, sites))
+    except FileNotFoundError:
+        failed_files.append(file_name_trees(leaves, seed, sites))
+        return
     data = data.drop(columns=["dataset", "id", "mean"])
     data['leaves'] = leaves
-    data['independent_sites'] = sites
+    data['total_sites'] = sites
     data.to_csv(
         "experiment1/postprocessing/exp1_combined_data.csv",
         mode="w" if flag else "a",
@@ -48,3 +54,7 @@ for leaves in leaves_list:
             # process_data_sizes(leaves, seed, sites, flag)
             flag = False
 
+if failed_files:
+    print("The following files were not found:")
+    for file in failed_files:
+        print(file)

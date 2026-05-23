@@ -125,7 +125,7 @@ get_params <- function(idx, probs, tier_params) {
     j <- (idx - 1) %% m + 1
     list(
         prob = probs[i],
-        mean = 27, # As defined in trees.py
+        mean = 40, # As defined in trees.py
         tier = tier_params[j]
     )
 }

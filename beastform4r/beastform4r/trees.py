@@ -386,7 +386,7 @@ class Tree:
         idx = np.random.choice(shape, size=indep_sites, replace=False)
         tier_data = [indep_arr[idx]]
         # Generate dependent data for each tier
-        # DESIGN CONSIDERATION: For simplicity, generate with ZIP(0.1, 30)
+        # DESIGN CONSIDERATION: For simplicity, generate with ZIP(0.1, 45)
         # for most consistent data generation, before sampling to hit exact
         # number of sites per tier. Will mess up dependencies but less
         # important for this experiment.
@@ -394,7 +394,7 @@ class Tree:
             new_data = []
             while len(new_data) < dep_sites:
                 new_data = self.generate_dependent_tier(
-                    tier_data[i-1], 0.1, 30, gain_rate, loss_rate, root_freq
+                    tier_data[i-1], 0.1, 45, gain_rate, loss_rate, root_freq
                 )
                 if ascertain:
                     new_data = new_data[new_data.sum(axis=1) > 0].copy()
