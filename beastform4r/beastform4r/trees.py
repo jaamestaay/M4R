@@ -386,7 +386,7 @@ class Tree:
         idx = np.random.choice(shape, size=indep_sites, replace=False)
         tier_data = [indep_arr[idx]]
         # Generate dependent data for each tier
-        # DESIGN CONSIDERATION: For simplicity, generate with ZIP(0.2, 10)
+        # DESIGN CONSIDERATION: For simplicity, generate with ZIP(0.1, 30)
         # for most consistent data generation, before sampling to hit exact
         # number of sites per tier. Will mess up dependencies but less
         # important for this experiment.
@@ -394,8 +394,10 @@ class Tree:
             new_data = []
             while len(new_data) < dep_sites:
                 new_data = self.generate_dependent_tier(
-                    tier_data[i-1], 0.2, 10, gain_rate, loss_rate, root_freq
+                    tier_data[i-1], 0.1, 30, gain_rate, loss_rate, root_freq
                 )
+                if ascertain:
+                    new_data = new_data[new_data.sum(axis=1) > 0].copy()
             idx = np.random.choice(new_data.shape[0], size=dep_sites,
                                    replace=False)
             tier_data.append(new_data[idx])
@@ -411,8 +413,6 @@ class Tree:
         all_data = np.vstack(tier_data).astype(int)
         df = pd.DataFrame(all_data, columns=self.languages)
         df.index = [f"cog_{i}" for i in range(len(df))]
-        if ascertain:
-            df = df.loc[df.sum(axis=1) > 0].copy()
         return df
 
     def to_newick(self):

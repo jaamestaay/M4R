@@ -11,10 +11,7 @@ def file_name_trees(leaves, seed, sites):
 
 def process_data_trees(leaves, seed, sites, flag):
     data = pd.read_csv(file_name_trees(leaves, seed, sites))
-    data['ZIP'] = list(zip(data["prob"], data["mean"]))
-    data['ZIP'] = 'ZIP' + data['ZIP'].astype(str)
-    data.loc[data["ZIP"] == "ZIP(0.0, 0.0)", "ZIP"] = "independent"
-    data = data.drop(columns=["dataset", "id", "prob", "mean"])
+    data = data.drop(columns=["dataset", "id", "mean"])
     data['leaves'] = leaves
     data['independent_sites'] = sites
     data.to_csv(

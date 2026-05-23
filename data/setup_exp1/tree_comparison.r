@@ -125,7 +125,7 @@ get_params <- function(idx, probs, tier_params) {
     j <- (idx - 1) %% m + 1
     list(
         prob = probs[i],
-        mean = 8, # As defined in trees.py
+        mean = 27, # As defined in trees.py
         tier = tier_params[j]
     )
 }
@@ -134,7 +134,7 @@ get_params <- function(idx, probs, tier_params) {
 indep_metrics <- compute_metrics(independent_trees, true_tree, independent_log, values, metrics)
 indep_df <- as.data.frame(indep_metrics)
 indep_df$dataset <- "independent"
-indep_df$prob <- 0
+indep_df$prob <- 1.0
 indep_df$mean <- 0
 indep_df$tier <- 1
 indep_df$id <- 0
