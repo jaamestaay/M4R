@@ -22,7 +22,7 @@ python setup_exp1/exp1.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDI
 echo "Running BEAST on all generated data..."
 cd "$OUTDIR/$PREFIX"
 java -jar ../../../beast.jar -threads 1 independent.xml &
-for i in {1..9}
+for i in {1..12}
 do
   java -jar ../../../beast.jar -threads 1 dependent_${i}.xml &
 done
