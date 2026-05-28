@@ -1,20 +1,231 @@
 \chapter{Introduction}
+Language is, perhaps, one of the most fundamental aspects of human society. Beyond serving practically as a means of communication, languages embody culture, history and collective identity, preserving traditions, belief systems and social structures that have developed over generations. The modern world contains thousands of languages with a remarkable range of similarities and differences. By investigating how languages change and diversify over time, historical linguistics provides a window into the development of human societies themselves.
 
-{\quote{dafsdf}}
+The task of reconstructing and explaining the evolution of all languages is no trivial undertaking. Szathmáry and Smith (1995) posit that language emergence in human societies is one of the major transitions in evolution \cite{Szathmary1995}, while Christiansen and Kirby (2003) describe languages as "by far the most complex behaviour we know of" \cite{Christiansen2003}. Languages undergo evolution at varying timescales \cite{Christiansen2003} while importing words from other languages (or \textit{borrowing}) is commonplace \cite{Campbell2004}. On top of that, there are currently over 7000 languages in the world \cite{Ethnologue}. Furthermore, direct evidence about languages is not readily available and hypotheses about language evolution must be tested through an interdisciplinary analysis \cite{Christiansen2003}.
 
-The modern world contains thousands of languages that exhibit a remarkable range of similarities and differences. After all, languages 
+Despite these challenges, there have been many approaches to reconstruct language evolution. A common starting point is the observation that many languages exhibit systematic similarities, suggesting a shared common historical origin between them. As such, identifying and classifying these relationships has become a central objective of historical linguistics. Parsons (1767) first considered such similarities of numerals of languages in Europe and India, concluding that the languages must be related via a common ancestor \cite{Parsons1767}. These languages would later be proven to be from the same \textit{language family} (the \textit{Indo-European} family) \cite{Bopp1816} - where groups of languages which are said to derive from a common language are \textit{genetically} related via a language family \cite{Rowe2015}. Today, there are now as many as 143 recognised language families \cite{Ethnologue}, similarly identified via studying a plethora of similarities and systematic changes in languages over time \cite{Campbell2004} as well as employing more computational and quantitative methods in the age of big data \cite{Bhattacharya2018}. These methods, which are commonly imported from other disciplines like phylogenetics, need to be carefully considered in the context of historical linguistics.
 
+This chapter introduces the principal statistical methods used in historical linguistics, culminating in the advent of phylogenetic analysis in language evolution. Particular attention is given to the assumptions of the model, especially the assumption of site independence, and the extent of which these assumptions might be violated in linguistic data. Relevant previous work concerning site independence in both phylogenetics and linguistics is then reviewed.
 
-The modern world contains thousands of languages exhibiting a remarkable range of similarities and differences.
-This question is non-trivial. Given the 
-
-Languages, like biological species, diversify through time. As populations separate and interact with different neighbouring communities, linguistic features gradually change, leading to the emergence of distinct language varieties and, ultimately, new languages. Reconstructing these historical relationships is a central problem in historical linguistics, providing insight into the origins of language families, patterns of human migration, and the mechanisms through which linguistic change occurs. Since direct historical evidence is often incomplete or unavailable, researchers must instead infer these relationships from patterns of similarity and variation observed among contemporary and historical languages.
-
-
-
-
-Language diversification and phylogenetic inference
 \section{History of Language Diversification Methods}
+{\color{red} still not convinced on how this sentence opens.} What remains to be seen, then, is how languages from the same language family diverge from each other. We start by considering how language similarities are constructed.
+
+\subsection{Language Simulations and Data Formation}
+As previously mentioned, Parsons presented semantic similarities in basic numerals in what are now the languages of the Indo-European family, some of which are presented in Table \ref{tab:parsonssimilarities}, while other languages such as Malay and Turkish have very different words for numerals, concluding that the aforementioned languages should stem from a common ancestor \cite{Parsons1767}. 
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lcccccccccc}
+\hline
+Language & 1 & 2 & 3 & 10 \\
+\hline
+Latin   & unus & duo & tres & decem \\
+Spanish & uno & dos & tres & diez \\
+German  & eins & zween & drey & zehen \\
+Dutch   & een & twee & drii & tien \\
+Danish  & een & toe & tre & tie \\
+English & one & two & three & ten \\
+Bengali & ake & dho & teen & does \\
+Persian & yek & do & see & da \\
+\hline
+Turkish & beer & echee & ewch & on \\
+Hebrew & ehad & senaim & selosa & hasara \\
+Malay & satoo & duo & teego & sepulo \\
+\hline
+\end{tabular}
+\caption{Numericals in languages as per Parsons' sample \cite{Parsons1767}, where languages which do not use the Latin alphabet have approximated transcriptions.}
+\label{tab:parsonssimilarities}
+\end{table}
+
+More sophisticated methods have since been used to justify systematic similarities and differences between languages for a given meaning \cite{Campbell2004}. While the exact methods used by linguists is outside the scope of this paper, we note that for a given meaning and set of languages, we can group languages together based on how similar the words (or \textit{cognates}) used are. We define several terms to formalise our analysis:
+
+\begin{definition} [Cognate]
+    Consider words (or more generally, lexical items) $w_1^m \in L_1$ and $w_2^m \in L_2$, from languages $L_1$ and $L_2$ respectively, that have meaning $m$. We can define a binary relation $\sim$ representing similarity of words of a given meaning $m$, such that if $w_1^m \sim w_2^m$, we say that $w_1^m$ and $w_2^m$ are cognates.
+\end{definition}
+
+\begin{definition} [Cognacy class]
+\label{def:cognacyclass}
+    Given meaning $m$ and words $w_1^m \in L_1, \dots, w_n^m \in L_n$, the cognacy classes of a given meaning $m$ are the sets $\{P_1^m, \dots, P_K^m\} =: P$ of $\{w_1^m, \dots w_n^m\}$ that represent the equivalence classes of $\sim$ for a given meaning $m$. In other words, if $P$ satisfies:
+    \begin{enumerate}
+        \item $\forall k = 1, \dots, K, \forall w_i^m, w_j^m \in P_k^m, w_i^m \sim w_j^m$ and
+        \item $\forall k, l = 1, \dots, K, l \neq j, \forall w_i^m \in P_k^m, w_j^m \in P_l^m, w_i^m \nsim w_j^m$,
+    \end{enumerate}
+    then $P_1^m, \dots, P_K^m$ are cognacy classes.
+\end{definition}
+
+We note that under the assumption where all languages have exactly one word to describe meaning $m$, $P$ is exactly a partition. However, there are numerous cases where a language has more than one word to describe meaning $m$ which may correspond to multiple cognacy classes, and so we accommodate for this in the definition above. Clearly, the value of $K$ in Definition \ref{def:cognacyclass} can vary between $1$ (all languages have similar words for meaning $m$) and $n$ (no languages have similar words for meaning $m$). Each cognacy class can then be used to encode a vector of languages that belong to the cognacy class, which we will define as a site:
+
+\begin{definition} [Site]
+    Given list of languages $\{L_1, ..., L_n\}$ and cognacy class $P_k^m := \{w_{i_1}^m, \dots, w_{i_P}^m \}$, where $w_{i_1}^m \in L_{i_1}, \dots w_{i_P}^m \in L_{i_P}$ and $1 \leq i_p \leq n, p = 1, \dots, P$. The corresponding site for cognacy class $P_k^m$ is the vector $\mathbf{s} \in [0, 1]^n$ such that $\forall j = 1, ..., n$:
+    \begin{equation}
+    \notag
+        s_j = \begin{cases}
+            1 & j \in \{i_1, ..., i_P\} \\
+            0 & \text{otherwise}
+        \end{cases}.
+    \end{equation}
+\end{definition}
+
+As such, for a given meaning $m$, there are $K$ sites corresponding to the $K$ cognacy classes present amongst the $n$ languages. We can compile all sites across all meanings $m$ to form a binary data matrix $\mathbf{D} \in [0, 1]^{n \times S}$, where $S$ is the total number of sites, encoding all similarities and differences between languages $L_1, \dots, L_n$. Under such a construction, it is clear that the similarity of rows $i$ and $j$ of $\mathbf{D}$ (which we will call sequences) corresponds to how similar the languages are, given a set of meanings. An example of this encoding process can be found in Table \ref{tab:cognatedefinition}.
+
+\begin{table}[h]
+  \centering
+  
+  % Left table (Table 1)
+  \begin{minipage}{0.55\textwidth}
+    \centering
+    \begin{tabular}{lcc|cc}
+      \toprule
+      \multirow{2}{*}{Language} & \multicolumn{2}{c}{`to laugh'} & \multicolumn{2}{c}{\textit{`wing'}} \\
+      \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+      & Word & Class & Word & Class \\
+      \midrule
+      Fijian & dredre & tl-A & taba-na & w-A \\
+      Marquesan & kata & tl-B & peheu & w-B \\
+      Hawaiian & 'aka & tl-B & 'heu & w-B \\
+      Maori & kata & tl-B & parirau & w-C \\
+      Tahitian & 'ata & tl-B & pererau & w-C \\
+      \bottomrule
+    \end{tabular}
+  \end{minipage}
+  \hfill
+  % Right table (Table 2)
+  \begin{minipage}{0.40\textwidth}
+    \centering
+    \begin{tabular}{l|ccccc}
+      \toprule
+      \multirow{2}{*}{Language} & \multicolumn{2}{c}{`to laugh'} & \multicolumn{3}{c}{\textit{`wing'}} \\
+      \cmidrule(lr){2-3} \cmidrule(lr){4-6}
+      & A & B & A & B & C \\
+      \midrule
+      Fijian & 1 & 0 & 1 & 0 & 0 \\
+      Marquesan & 0 & 1 & 0 & 1 & 0 \\
+      Hawaiian & 0 & 1 & 0 & 1 & 0 \\
+      Maori & 0 & 1 & 0 & 0 & 1 \\
+      Tahitian & 0 & 1 & 0 & 0 & 1 \\
+      \bottomrule
+    \end{tabular}
+  \end{minipage}
+  
+  \caption{Binary encoding of cognacy classes from five Oceanic languages. Adapted from \cite{hoffmann_bayesian_2021}.}
+  \label{tab:cognatedefinition}
+\end{table}
+
+A natural question that arises is, then, how one defines a suitable 
+
+\subsection{Language Trees}
+Such relationships between languages are represented, most commonly, in the form of a language tree \cite{Pellard2026}, popularised by Schleicher (1861-62) \cite{Schleicher1861}. 
+
+\begin{definition} [Language Tree]
+    Let $T = (V, E, r)$ be a rooted directed tree, where $V$ is a finite set of vertices, $E \subseteq V \times V$ is a set of directed edges and $r \in V$ is a designated root node. In the context of historical linguistics, $T$ is a language tree if the underlying undirected tree is connected and acyclic (it is a directed acyclic graph), and every vertex $v \in V, v \neq r$ has exactly one parent $u \in V$.
+\end{definition}
+
+An example of a language tree can be found in Figure \ref{fig:tree}. We continue defining the parts of a language tree:
+
+\begin{figure}
+    \centering
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt 
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,254); %set diagram left start at 0, and has height of 254
+
+%Straight Lines [id:da3257804800920273] 
+\draw    (20,129.67) -- (39.67,129.67) ;
+%Straight Lines [id:da1879895115267246] 
+\draw    (40.33,51.67) -- (40.33,201.33) ;
+%Straight Lines [id:da7547316488170631] 
+\draw    (166.33,200.67) -- (40.33,200.67) ;
+%Straight Lines [id:da1518837997335084] 
+\draw    (89.67,51.67) -- (40.33,51.67) ;
+%Straight Lines [id:da17813707076422536] 
+\draw    (89.67,88) -- (89.67,15.33) ;
+%Straight Lines [id:da5742178850240692] 
+\draw    (278.33,88) -- (89.67,88) ;
+%Straight Lines [id:da08856486888921167] 
+\draw    (278.33,118.67) -- (278.33,57.33) ;
+%Straight Lines [id:da1368999559899804] 
+\draw    (370.33,57.33) -- (278.33,57.33) ;
+%Straight Lines [id:da8734787230672283] 
+\draw    (370.33,118.67) -- (278.33,118.67) ;
+%Straight Lines [id:da16448557422854915] 
+\draw    (166.33,231.33) -- (166.33,170) ;
+%Straight Lines [id:da5627659833612433] 
+\draw    (371,170) -- (166.33,170) ;
+%Straight Lines [id:da9682431955713651] 
+\draw    (371,231.33) -- (166.33,231.33) ;
+%Straight Lines [id:da6043034626204192] 
+\draw    (371,15.5) -- (89.67,15.33) ;
+%Flowchart: Connector [id:dp9853027599669008] 
+\draw  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ][fill={rgb, 255:red, 126; green, 211; blue, 33 }  ,fill opacity=1 ] (36.83,130) .. controls (36.83,128.07) and (38.4,126.5) .. (40.33,126.5) .. controls (42.27,126.5) and (43.83,128.07) .. (43.83,130) .. controls (43.83,131.93) and (42.27,133.5) .. (40.33,133.5) .. controls (38.4,133.5) and (36.83,131.93) .. (36.83,130) -- cycle ;
+%Flowchart: Connector [id:dp48558256014686474] 
+\draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ] (86.17,51.67) .. controls (86.17,49.73) and (87.73,48.17) .. (89.67,48.17) .. controls (91.6,48.17) and (93.17,49.73) .. (93.17,51.67) .. controls (93.17,53.6) and (91.6,55.17) .. (89.67,55.17) .. controls (87.73,55.17) and (86.17,53.6) .. (86.17,51.67) -- cycle ;
+%Flowchart: Connector [id:dp39663957586543863] 
+\draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ] (274.83,88) .. controls (274.83,86.07) and (276.4,84.5) .. (278.33,84.5) .. controls (280.27,84.5) and (281.83,86.07) .. (281.83,88) .. controls (281.83,89.93) and (280.27,91.5) .. (278.33,91.5) .. controls (276.4,91.5) and (274.83,89.93) .. (274.83,88) -- cycle ;
+%Flowchart: Connector [id:dp0784800953486885] 
+\draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ] (162.83,200.67) .. controls (162.83,198.73) and (164.4,197.17) .. (166.33,197.17) .. controls (168.27,197.17) and (169.83,198.73) .. (169.83,200.67) .. controls (169.83,202.6) and (168.27,204.17) .. (166.33,204.17) .. controls (164.4,204.17) and (162.83,202.6) .. (162.83,200.67) -- cycle ;
+%Flowchart: Connector [id:dp1367757013604496] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (367.5,15.5) .. controls (367.5,13.57) and (369.07,12) .. (371,12) .. controls (372.93,12) and (374.5,13.57) .. (374.5,15.5) .. controls (374.5,17.43) and (372.93,19) .. (371,19) .. controls (369.07,19) and (367.5,17.43) .. (367.5,15.5) -- cycle ;
+%Flowchart: Connector [id:dp7627314939062558] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (366.83,57.33) .. controls (366.83,55.4) and (368.4,53.83) .. (370.33,53.83) .. controls (372.27,53.83) and (373.83,55.4) .. (373.83,57.33) .. controls (373.83,59.27) and (372.27,60.83) .. (370.33,60.83) .. controls (368.4,60.83) and (366.83,59.27) .. (366.83,57.33) -- cycle ;
+%Flowchart: Connector [id:dp48424635839323904] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (366.83,118.67) .. controls (366.83,116.73) and (368.4,115.17) .. (370.33,115.17) .. controls (372.27,115.17) and (373.83,116.73) .. (373.83,118.67) .. controls (373.83,120.6) and (372.27,122.17) .. (370.33,122.17) .. controls (368.4,122.17) and (366.83,120.6) .. (366.83,118.67) -- cycle ;
+%Flowchart: Connector [id:dp9756544636876575] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (367.5,170) .. controls (367.5,168.07) and (369.07,166.5) .. (371,166.5) .. controls (372.93,166.5) and (374.5,168.07) .. (374.5,170) .. controls (374.5,171.93) and (372.93,173.5) .. (371,173.5) .. controls (369.07,173.5) and (367.5,171.93) .. (367.5,170) -- cycle ;
+%Flowchart: Connector [id:dp027348355373483346] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (367.5,231.33) .. controls (367.5,229.4) and (369.07,227.83) .. (371,227.83) .. controls (372.93,227.83) and (374.5,229.4) .. (374.5,231.33) .. controls (374.5,233.27) and (372.93,234.83) .. (371,234.83) .. controls (369.07,234.83) and (367.5,233.27) .. (367.5,231.33) -- cycle ;
+%Shape: Rectangle [id:dp5006948338841334] 
+\draw  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][dash pattern={on 4.5pt off 4.5pt}] (84.33,8.67) -- (381,8.67) -- (381,130.67) -- (84.33,130.67) -- cycle ;
+%Shape: Rectangle [id:dp08897674539894462] 
+\draw  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][dash pattern={on 4.5pt off 4.5pt}] (271,51.33) -- (376.33,51.33) -- (376.33,126.67) -- (271,126.67) -- cycle ;
+%Shape: Rectangle [id:dp09996586536821073] 
+\draw  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][dash pattern={on 4.5pt off 4.5pt}] (161,162.67) -- (378.33,162.67) -- (378.33,238.67) -- (161,238.67) -- cycle ;
+%Flowchart: Connector [id:dp8130329933973147] 
+\draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ] (402,115.5) .. controls (402,113.57) and (403.57,112) .. (405.5,112) .. controls (407.43,112) and (409,113.57) .. (409,115.5) .. controls (409,117.43) and (407.43,119) .. (405.5,119) .. controls (403.57,119) and (402,117.43) .. (402,115.5) -- cycle ;
+%Flowchart: Connector [id:dp9555969622463265] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (402,95.5) .. controls (402,93.57) and (403.57,92) .. (405.5,92) .. controls (407.43,92) and (409,93.57) .. (409,95.5) .. controls (409,97.43) and (407.43,99) .. (405.5,99) .. controls (403.57,99) and (402,97.43) .. (402,95.5) -- cycle ;
+%Flowchart: Connector [id:dp19252072628787875] 
+\draw  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ][fill={rgb, 255:red, 126; green, 211; blue, 33 }  ,fill opacity=1 ] (402,135.5) .. controls (402,133.57) and (403.57,132) .. (405.5,132) .. controls (407.43,132) and (409,133.57) .. (409,135.5) .. controls (409,137.43) and (407.43,139) .. (405.5,139) .. controls (403.57,139) and (402,137.43) .. (402,135.5) -- cycle ;
+%Shape: Rectangle [id:dp4401421914154309] 
+\draw  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][dash pattern={on 0.84pt off 2.51pt}] (400.17,150.08) -- (410.17,150.08) -- (410.17,160.08) -- (400.17,160.08) -- cycle ;
+%Straight Lines [id:da6032774945973028] 
+\draw    (400.2,175) -- (410.03,175) ;
+%Shape: Rectangle [id:dp1988727501019032] 
+\draw  [color={rgb, 255:red, 155; green, 155; blue, 155 }  ,draw opacity=1 ] (393.67,83.33) -- (690.33,83.33) -- (690.33,186) -- (393.67,186) -- cycle ;
+
+% Text Node
+\draw (422,88) node [anchor=north west][inner sep=0.75pt]  [font=\small,color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ] [align=left] {leaves, observed languages};
+% Text Node
+\draw (422.67,109.33) node [anchor=north west][inner sep=0.75pt]  [font=\small,color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ] [align=left] {internal nodes, unobserved proto-languages};
+% Text Node
+\draw (423.33,129.33) node [anchor=north west][inner sep=0.75pt]  [font=\small,color={rgb, 255:red, 126; green, 211; blue, 33 }  ,opacity=1 ] [align=left] {root node};
+% Text Node
+\draw (422.67,148) node [anchor=north west][inner sep=0.75pt]  [font=\small,color={rgb, 255:red, 208; green, 2; blue, 27 }  ,opacity=1 ] [align=left] {clades};
+% Text Node
+\draw (422,166.67) node [anchor=north west][inner sep=0.75pt]  [font=\small,color={rgb, 255:red, 0; green, 0; blue, 0 }  ,opacity=1 ] [align=left] {branches};
+
+
+\end{tikzpicture}
+    \caption{A phylogenetic tree and its parts.}
+    \label{fig:tree}
+\end{figure}
+
+\begin{definition} [Observed and Unobserved Languages]
+    Let $T = (V, E, r)$ be a language tree. The set of vertices $L := \{v \in V \ | \ \deg^+(v) = 0\}$ with outdegree zero (also known as the leaves or terminal nodes) as the observed languages of the tree. Additionally, the remaining vertices $W := V \setminus L$ represent the unobserved proto-languages that gave rise to events of divergence between languages.
+\end{definition}
+
+\begin{definition} [Clade]
+    Let $T = (V, E, r)$ be a language tree. For some node $v \in V$, define its descendants as $\text{Desc}(v) := \{u \in V \ | \ v \to u \}$. A clade $C(v)$ with ancestor $v$ is defined as $C(v) = \text{Desc}(v) \ \cup \ {v}$, a subgroup including ancestor $v$ and all its descendants. 
+\end{definition}
+
+While other models exist, the tree model has persisted (with good reason) as the primary method in historical linguistics for representing language evolution. {\color{red} paraphrase this, this is directly lifted:} The model assumes linguistic features are inherited with modifications over time, while related languages descend from a single common ancestor via divergence \cite{Pellard2026}. The tree model can be further constrained such that the tree has a \textit{bifurcating} structure and has branches which have lengths proportional to time. This makes comparing events of divergence relevant: the tree model is able to hypothesise when two languages first diverged, and quantify how closely related languages are to each other. Although it is, like any model, unable to represent the full complexity of linguistic change, the model is well suited to cases of well-differentiated and geographically isolated languages \cite{Pellard2026}, thus being applicable to studying language dissimilarity within a language family.
+
+
+\{Explain the tree, root and leaves\}. \{These are some questions that the field would have\}. 
+
+
+While other models exist, the tree (or \textit{dendogram}) model is able to clearly 
+
+
+\{Thus what are some ways that people have historically considered these things?\} \{Glottochronology\} \{Thus paving the way for more quantitative, sophisticated methods\}
 \section{Bayesian Phylogenetic Methods}
     Bayesian phylogenetic methods
 \subsection{Site Independence}
