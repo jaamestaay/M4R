@@ -1,4 +1,5 @@
 #!/bin/bash
+# originally under folder m4r/data/setup_exp1
 OUTDIR="generated/experiment1"
 
 source setup_exp1/exp1_config.env

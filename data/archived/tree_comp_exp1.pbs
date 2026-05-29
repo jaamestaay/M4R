@@ -2,6 +2,8 @@
 #PBS -l walltime=00:20:00
 #PBS -l select=1:ncpus=1:mem=1gb
 
+# originally under folder m4r/data/setup_exp1
+
 ml tools/prod
 ml R-bundle-CRAN
 
