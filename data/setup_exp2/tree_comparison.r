@@ -10,28 +10,36 @@ values <- list(
         support <- support[!is.na(support)]
         support <- support/length(data$trees)
     },
+    RFConsensus = function(data) RF.dist(data$true, data$consensus),
+    CladeRecoveryConsensus = function(data) {
+        support <- prop.clades(data$true, data$consensus)
+        support <- support[!is.na(support)]
+        support <- sum(support)/(data$true$Nnode + 1)
+    },
+    RFMCC = function(data) RF.dist(data$true, data$mcc),
+    CladeRecoveryMCC = function(data) {
+        support <- prop.clades(data$true, data$mcc)
+        support <- support[!is.na(support)]
+        support <- sum(support)/(data$true$Nnode + 1)
+    },
     ESS = function(data) {
         effectiveSize(data$log)
     },
-    NumberofTaxa = function(data) {
-        data$true$Nnode + 1 # 1 more than number of internal nodes/bifurcations
-    }
+    maxRF = function(data) 2 * (data$true$Nnode - 2)
 )
 
 metrics <- list(
     meanRF = function(values) mean(values$RF),
-    varRF = function(values) var(values$RF),
-    meanNRF = function(values) {
-        maxRF = 2 * (values$NumberofTaxa - 3)
-        mean(values$RF/maxRF)
-    },
-    varNRF = function(values) {
-        maxRF = 2 * (values$NumberofTaxa - 3)
-        var(values$RF/maxRF)
-    },
+    meanNRF = function(values) mean(values$RF/values$maxRF),
     HighSupportCladesProp = function(values) {
         mean(values$CladeRecovery > 0.9)
     }, # Proportion of Internal Nodes well supported by posterior
+    RFConsensus = function(values) values$RFConsensus,
+    NRFConsensus = function(values) values$RFConsensus/values$maxRF,
+    CladeRecoveryConsensus = function(values) values$CladeRecoveryConsensus,
+    RFMCC = function(values) values$RFMCC,
+    NRFMCC = function(values) values$RFMCC/values$maxRF,
+    CladeRecoveryMCC = function(values) values$CladeRecoveryMCC,
     likelihoodESS = function(values) values$ESS["likelihood"],
     priorESS = function(values) values$ESS["prior"],
     jointESS = function(values) values$ESS["joint"]
@@ -42,9 +50,14 @@ metrics <- list(
 )
 
 compute_metrics <- function(tree_list, ref_tree, log, values, metrics) {
+  # Define consensus and MCC trees
+  consensus_tree <- consensus(tree_list, p=0.5)
+  mcc_tree <- mcc(tree_list)
   data <- list(
         true = ref_tree,
         trees = tree_list,
+        consensus = consensus_tree,
+        mcc = mcc_tree,
         log = log
     )
   raw <- list()

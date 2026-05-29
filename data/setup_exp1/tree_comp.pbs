@@ -1,0 +1,14 @@
+#PBS -S /bin/bash
+#PBS -l walltime=00:20:00
+#PBS -l select=1:ncpus=1:mem=1gb
+
+ml tools/prod
+ml R-bundle-CRAN
+
+cd $PBS_O_WORKDIR
+
+source /rds/general/user/jst21/home/m4r/.simenv/bin/activate
+source setup_exp1/exp1_config.env
+
+Rscript setup_exp1/tree_comparison.r $OUTDIR $PREFIX
+echo "Complete."

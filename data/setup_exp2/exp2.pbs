@@ -37,6 +37,6 @@ echo "Compiling Data Sizes..."
 python setup_exp2/exp2_sizes.py "$PREFIX" "$METHOD" "$LEAVES" "$SITES" "$SEED" "$OUTDIR/$PREFIX"
 
 echo "Running tree comparison..."
-Rscript tree_comparison.r $OUTDIR $PREFIX
+Rscript setup_exp2/tree_comparison.r $OUTDIR $PREFIX
 
 echo "Complete."
