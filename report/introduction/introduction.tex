@@ -5,12 +5,13 @@ The task of reconstructing and explaining the evolution of all languages is no t
 
 Despite these challenges, there have been many approaches to reconstruct language evolution. A common starting point is the observation that many languages exhibit systematic similarities, suggesting a shared common historical origin between them. As such, identifying and classifying these relationships has become a central objective of historical linguistics. Parsons (1767) first considered such similarities of numerals of languages in Europe and India, concluding that the languages must be related via a common ancestor \cite{Parsons1767}. These languages would later be proven to be from the same \textit{language family} (the \textit{Indo-European} family) \cite{Bopp1816} - where groups of languages which are said to derive from a common language are \textit{genetically} related via a language family \cite{Rowe2015}. Today, there are now as many as 143 recognised language families \cite{Ethnologue}, similarly identified via studying a plethora of similarities and systematic changes in languages over time \cite{Campbell2004} as well as employing more computational and quantitative methods in the age of big data \cite{Bhattacharya2018}. These methods, which are commonly imported from other disciplines like phylogenetics, need to be carefully considered in the context of historical linguistics.
 
-This chapter introduces the principal statistical methods used in historical linguistics, culminating in the advent of phylogenetic analysis in language evolution. Particular attention is given to the assumptions of the model, especially the assumption of site independence, and the extent of which these assumptions might be violated in linguistic data. Relevant previous work concerning site independence in both phylogenetics and linguistics is then reviewed.
+This chapter introduces the principal statistical methods used in historical linguistics, culminating in the advent of Bayesian phylogenetic analysis in language evolution. Particular attention is given to the assumptions of the model, especially the assumption of site independence, and the extent to which these assumptions might be violated in linguistic data. Relevant previous work concerning site independence in both phylogenetics and linguistics is then reviewed.
 
 \section{History of Language Diversification Methods}
-{\color{red} still not convinced on how this sentence opens.} What remains to be seen, then, is how languages from the same language family diverge from each other. We start by considering how language similarities are constructed.
+{\color{red} think of a better way to start.} Having established that related languages share a common origin, a natural next step is: how do languages from the same family diverge from each other over time? We start by considering how language similarities are constructed.
 
-\subsection{Language Simulations and Data Formation}
+\subsection{Language Similarity and Data Generation}
+\label{sec:datageneration}
 As previously mentioned, Parsons presented semantic similarities in basic numerals in what are now the languages of the Indo-European family, some of which are presented in Table \ref{tab:parsonssimilarities}, while other languages such as Malay and Turkish have very different words for numerals, concluding that the aforementioned languages should stem from a common ancestor \cite{Parsons1767}. 
 
 \begin{table}[ht]
@@ -43,6 +44,8 @@ More sophisticated methods have since been used to justify systematic similariti
     Consider words (or more generally, lexical items) $w_1^m \in L_1$ and $w_2^m \in L_2$, from languages $L_1$ and $L_2$ respectively, that have meaning $m$. We can define a binary relation $\sim$ representing similarity of words of a given meaning $m$, such that if $w_1^m \sim w_2^m$, we say that $w_1^m$ and $w_2^m$ are cognates.
 \end{definition}
 
+It is worth discussing that while in general, linguistic data is derived from lexical items, it is possible to consider other data that concern language diversification. For example, Buckley et al. (2025) considered different weaving technologies in addition to linguistics data to understand cultural and linguistic evolution amongst speakers of the Kra-dai language family \cite{Buckley2025}.
+
 \begin{definition} [Cognacy class]
 \label{def:cognacyclass}
     Given meaning $m$ and words $w_1^m \in L_1, \dots, w_n^m \in L_n$, the cognacy classes of a given meaning $m$ are the sets $\{P_1^m, \dots, P_K^m\} =: P$ of $\{w_1^m, \dots w_n^m\}$ that represent the equivalence classes of $\sim$ for a given meaning $m$. In other words, if $P$ satisfies:
@@ -58,7 +61,7 @@ We note that under the assumption where all languages have exactly one word to d
 \begin{definition} [Site]
     Given list of languages $\{L_1, ..., L_n\}$ and cognacy class $P_k^m := \{w_{i_1}^m, \dots, w_{i_P}^m \}$, where $w_{i_1}^m \in L_{i_1}, \dots w_{i_P}^m \in L_{i_P}$ and $1 \leq i_p \leq n, p = 1, \dots, P$. The corresponding site for cognacy class $P_k^m$ is the vector $\mathbf{s} \in [0, 1]^n$ such that $\forall j = 1, ..., n$:
     \begin{equation}
-    \notag
+    \label{eqn:sitedefinitioneqn}
         s_j = \begin{cases}
             1 & j \in \{i_1, ..., i_P\} \\
             0 & \text{otherwise}
@@ -111,9 +114,10 @@ As such, for a given meaning $m$, there are $K$ sites corresponding to the $K$ c
   \label{tab:cognatedefinition}
 \end{table}
 
-A natural question that arises is, then, how one defines a suitable 
+A natural question that arises is, then, how one defines a suitable list of meanings, say the set $\mathcal{M}$, to base these similarities from. This is not merely a practical issue of data collection, but fundamentally shapes the signal that is recovered from a language dataset. A canonical example of such a set $\mathcal{M}$ was put forward by Swadesh (1952) in an attempt to estimate the age of the most recent common ancestor (see Section \ref{sec:treereconstructionmethods}) \cite{Swadesh1952}. Swadesh put forward 200 meanings which, in his view, were considered universal and broad enough for use in most languages. This set of meanings became known as the Swadesh list (which can be found in Table \ref{tab:swadeshlist}). Since then, more analysis has gone into the choices behind $\mathcal{M}$. Zhang and Gong (2016) considered the reliability of the Swadesh list and the statistical invariability of the 100- and 200-Swadesh lists \cite{Zhang2016}, while Dediu and Cysouw (2013) considered the stabilty of meanings in relation to evolution rates, noting the irreducible complexity of linguistic features \cite{Dediu2013}. Many more examples of $\mathcal{M}$ have been generated through larger databases like the Intercontinental Dictionary Series \cite{Borin2013}. The choice of $\mathcal{M}$ is thus paramount to stability and reliability of any results obtained from linguistic data, and thus to making statements regarding relationships between languages.
 
 \subsection{Language Trees}
+\label{sec:trees}
 Such relationships between languages are represented, most commonly, in the form of a language tree \cite{Pellard2026}, popularised by Schleicher (1861-62) \cite{Schleicher1861}. 
 
 \begin{definition} [Language Tree]
@@ -204,7 +208,7 @@ An example of a language tree can be found in Figure \ref{fig:tree}. We continue
 
 
 \end{tikzpicture}
-    \caption{A phylogenetic tree and its parts.}
+    \caption{A language tree and its parts.}
     \label{fig:tree}
 \end{figure}
 
@@ -216,88 +220,76 @@ An example of a language tree can be found in Figure \ref{fig:tree}. We continue
     Let $T = (V, E, r)$ be a language tree. For some node $v \in V$, define its descendants as $\text{Desc}(v) := \{u \in V \ | \ v \to u \}$. A clade $C(v)$ with ancestor $v$ is defined as $C(v) = \text{Desc}(v) \ \cup \ {v}$, a subgroup including ancestor $v$ and all its descendants. 
 \end{definition}
 
-While other models exist, the tree model has persisted (with good reason) as the primary method in historical linguistics for representing language evolution. {\color{red} paraphrase this, this is directly lifted:} The model assumes linguistic features are inherited with modifications over time, while related languages descend from a single common ancestor via divergence \cite{Pellard2026}. The tree model can be further constrained such that the tree has a \textit{bifurcating} structure and has branches which have lengths proportional to time. This makes comparing events of divergence relevant: the tree model is able to hypothesise when two languages first diverged, and quantify how closely related languages are to each other. Although it is, like any model, unable to represent the full complexity of linguistic change, the model is well suited to cases of well-differentiated and geographically isolated languages \cite{Pellard2026}, thus being applicable to studying language dissimilarity within a language family.
+While other models exist, the tree model has persisted, with good reason, as the primary method in historical linguistics for representing language evolution. The model assumes that linguistic features are inherited with slight changes over time, and that related languages hail from a single common ancestor via divergence of cognacy classes \cite{Pellard2026}. The tree model can be further constrained such that the tree has a \textit{bifurcating} structure (that is, that each internal node has exactly two out-branches) and has branches which have lengths proportional to time. This makes comparing events of divergence relevant: the tree model is able to hypothesise when two languages first diverged, and quantify how closely related languages are to each other. Although it is, like any model, unable to represent the full complexity of linguistic change, the model is well suited to cases of well-differentiated and geographically isolated languages \cite{Pellard2026}, thus being applicable to studying language diversity within a language family.
 
+\subsection{Tree Reconstruction Methods}
+\label{sec:treereconstructionmethods}
+Having considered the construction of linguistic data $\mathbf{D}$ in Section \ref{sec:datageneration} and the tree model $T$ in Section \ref{sec:trees}, a natural question is whether the underlying evolutionary tree $T$ can be inferred from the observed data $\mathbf{D}$. In particular, given a collection of related languages and meanings, quantities of interest include the topology of $T$ (the genealogical relationships between languages) and the ages of internal and root nodes corresponding to ancestral languages.
 
-\{Explain the tree, root and leaves\}. \{These are some questions that the field would have\}. 
+These questions, among many others, have been traditionally answered by hand by linguists \cite{Pellard2015}. One of the first quantitative approaches to estimating root ages was glottochronology, introduced by Swadesh (1952). By assuming a constant rate of evolution $r$ across meanings listed in the Swadesh list, Swadesh inferred that the proportion of cognates between languages $C$ gave an indication of the age of the most recent common ancestor (hereby abbreviated as MRCA) $t$:
 
+\begin{equation}
+    t = \frac{\log C}{2 \log r} \label{eq:swadeshconstantrate}
+\end{equation}
 
-While other models exist, the tree (or \textit{dendogram}) model is able to clearly 
+where $r = 0.81$ represents the estimated proportion of lexical items retained per 1,000 years was estimated via other languages where $t$ was known \cite{Swadesh1952}. However, this method had several drawbacks. Firstly, Swadesh's assumption of a universal constant $r$ was shown to be false using known MRCA ages $t$ \cite{Bergsland1962}, proving that the model in  (\ref{eq:swadeshconstantrate}) was too simplistic. Next, methods that summarise cognate data into percentage scores loses much information and reduces the power of the model to reconstruct language genealogy accurately \cite{Steel1988}. Additionally, given the stability concerns addressed in Section \ref{sec:datageneration}, the method was unable to quantify the uncertainty of $r$ and thus the uncertainties of any $t$ calculated. Finally, conducting pairwise analysis ignores the broader dependency structure between the languages, especially if the set of languages are already known to be related.  A model attempting to infer quantities of interest with regards to the true language tree $T^*$ must therefore therefore account for variable rates of lexical evolution, quantify inferential uncertainty, and incorporate the joint dependency structure between languages.
 
-
-\{Thus what are some ways that people have historically considered these things?\} \{Glottochronology\} \{Thus paving the way for more quantitative, sophisticated methods\}
 \section{Bayesian Phylogenetic Methods}
-    Bayesian phylogenetic methods
-\subsection{Site Independence}
-    The independence assumption
-    Why independence may fail in linguistic data
+\label{sec:bayesianphylomethods}
+Advanced quantitative methods have gained in popularity in recent years, in part due to advances in statistical methods, increased computational power and larger datasets \cite{Bhattacharya2018}. Through the seminal work of Gray and Atkinson (2003), Bayesian frameworks have become the primary method to infer topologies $T$ from $\mathbf{D}$. In particular, Gray and Atkinson (2003) compared languages to genes, thus applying phylogenetic methods from evolutionary biology to linguistic data \cite{Gray2003}. A Markov chain Monte Carlo (MCMC, see Section \ref{sec:bayesandmcmc}) method under a Bayesian framework was used to quantify uncertainty of the estimates, while applying a rate smoothing algorithm to relax the assumption of a universal constant $r$ as in \cite{Swadesh1952}. Such a method was applied on cognate data from 87 Indo-European languages to justify the age of the Proto-Indo-European root \cite{Gray2003}. 
+
+The application of phylogenetic analysis in language evolution is a natural extension to the language tree diagrams (which we will denote phylogenetic trees or phylogenies from here on) introduced in Section \ref{sec:trees}. Historical linguistics has long understood language diversification as a branching process where descendant languages emerge through gradual divergence from common ancestral forms \cite{Pellard2026}, making language evolution almost analogous to genetic evolution in the diversification process. Consequently, computational techniques originally developed in evolutionary biology, such as likelihood-based inference and Bayesian tree reconstruction can be adapted to linguistic data \cite{Greenhill2009}. 
+
+A central advantage of Bayesian phylogenetic methods is that they treat language history as a stochastic process on a space of possible trees $\mathcal{T}$ with varying rates of evolution upon different branches, allowing both the tree topology and parameters relating to the stochastic process to be inferred jointly from the data $\mathbf{D}$. Notably, these methods are robust to effects of horizontal transfer and borrowing \cite{Gray2003}. Additionally, Bayesian methods propose priors over parameters, which allow for diverse scenarios to be considered, weighted by their likelihood of occurrence \cite{hoffmann_bayesian_2021}. The methods thus yield a posterior distribution over the tree space, thus naturally presenting uncertainties in the form of posterior probabilities relating to estimates. These advantages allow the model to accommodate the difficulties associated with language genealogy reconstruction while resolving the issues found in Section \ref{sec:treereconstructionmethods}. As such, these methods have been employed extensively in analysis of other language families \cite{Savelyev2020, Robbeets2018, Greenhill2009, Grollemund2015, Bouckaert2018, Honkola2013, Lee2015, Gerardi2023} with strong methodological justification. A more rigorous analysis of the Bayesian phylogenetic inference method will be considered in Section \ref{sec:background}. 
+
+However, it would be unwise to blindly apply these methods directly to linguistics data. In particular, the evolutionary processes underlying language are considerably less well understood than those governing genetic evolution. Christiansen and Kirby (2003) also note that language evolution must be understood as a complex adaptive system rather than a simple tree-like branching process \cite{Christiansen2003}. Understanding the assumptions of the model and the extent by which historical linguistics violates these assumptions allows for stronger interpretation and thus application of the results.
+
+\subsection{Assumptions and Site Independence}
+We save most of the technical analysis of the Bayesian phylogenetic method to Section 
+\ref{sec:background} and focus our attention on assumptions of interest:  
+\begin{enumerate}
+    \item Data Generation: Data $\mathbf{D} \in [0, 1]^{n \times S}$ is generated with respect to true tree $T^*$ and parameters $\boldsymbol{\theta}^*$ of the evolutionary model, which the Bayesian phylogenetic method will attempt to recover.
+    \item Tree \& Model Priors: The trees $T \in \mathcal{T}$ and parameters $\boldsymbol{\theta} \in \boldsymbol{\Theta}$ are defined via prior distributions $p\left(T\right), p(\boldsymbol{\theta})$ respectively.
+    \item Conditionally Independent Sites: Sites $\mathbf{D}_i \in [0, 1]^n, i=1, ..., S$ such that $\mathbf{D} = \begin{pmatrix}
+        \mathbf{D_1} & \cdots & \mathbf{D_S}
+    \end{pmatrix}$ are conditionally independent for a given tree $T \in \mathcal{T}$ and parameters of model $\Theta$.
+\end{enumerate}
+
+These assumptions allow us to define a standard Bayesian phylogenetic framework, which inference is conducted through recovering posterior distributions over trees and the parameters given data $\mathbf{D}$. We consider the validity of these assumptions in the context of historical linguistics.
+
+Firstly, the data generation assumption encodes the notion that all data arises from a single underlying \textit{true} evolutionary process on a single latent tree $T^*$ with evolutionary parameters $\boldsymbol{\theta}^*$. While this is idealistic at best, the assumption is made to allow structured inference about genealogical relationships, provided the evolutionary (or vertical) processes dominate the signal rather than the horizontal transfers like borrowing. In this sense, the inferred tree should be interpreted as the best-supported explanation of the observed data under the assumed model, rather than as a uniquely determined historical object. This is usually reconciled by comparing results with archaeological and historical data \cite{Gerardi2023}.
+
+Similarly, the use of priors over trees and parameters serves to encode minimal structural assumptions about the model. Given the enormous space of possible tree topologies $\mathcal{T}$ and parameters relating to evolutionary processes, prior distributions ensures that inference remains well-posed. Furthermore, Gray and Atkinson (2003), in their seminal paper, also note the robustness of the method to different priors \cite{Gray2003}, signalling that prior selection is not a particular concern with respect to model misspecification.
+
+The most substantive modelling assumption is therefore the conditional independence of sites given tree $T$ and parameters $\boldsymbol{\theta}$. This assumption treats meanings and cognacy classes as evolving independently across lineages. While this simplification is crucial to computational tractability (see Section \ref{sec:likelihoodcomputation}) \cite{hoffmann_bayesian_2021}, it is clear that this is an idealisation of the data $\mathbf{D}$. In reality, lexical items are not independent units of evolution, but rather embedded in semantic networks and cultural systems that induce dependence in their rates of evolution. This suggests the phenomenon of \textit{epistasis}: that changes in one site of the data might be dependent on the identity of another site or sites \cite{Magee2021}. As a result, the application of the Bayesian phylogenetic model is a misspecifies the dataset $\mathbf{D}$ and may overstate the amount of independent evidence present. This can lead to inflated confidence in certain inferred relationships, particularly in cases where cognacy classes are driven by shared processes rather than independent evolutionary events. 
+
+While this does not invalidate the application of Bayesian phylogenetic methods in historical linguistics, it is worth investigating how damaging this misspecification is in recovering the true tree $T^*$ along with the evolutionary parameters $\boldsymbol{\theta}^*$ of the model.
+
 \section{Previous Work}
-\subsubsection{In Comparative Biology}
-            Maddison's Tail Colour Problem
-            Longobardi Correlated Issues
-\subsubsection{In Phylogenetic Inference}
-        In phylogenetic inference
-            see examples in readings file
-\subsubsection{In Linguistic Data}
-        Dependence in linguistic data
-            Kra-dai data
-\subsection{Outstanding gap in Literature}
-        Outstanding gap in literature
+The assumption of conditional independence between sites has long been recognised as a modelling misspecification in phylogenetics and comparative biology. Substantial work has investigated data which violate site-independence assumptions and have discussed the theoretical and practical implications across a range of phylogenetic settings.
+
+\textbf{In Comparative Biology and Phylogenetic Inference.}
+An influential discussion of site dependence appears in Maddison's (1993) analysis of correlated traits in comparative biology \cite{Maddison1993}, now coined Maddison's red/blue tail problem. In particular, Maddison demonstrates that when a hierarchially dependent character - such as tail colour - is coded as a separate character to the higher level structure (in this case, the presence of a tail) and scored as ``missing'', phylogenetic models treat missing entries as independent entries, allowing long-distance between distantly related clades. This results in a dependency that is biologically unjustified, since the common ancestor of both groups was tailless and thus had no tail colour at all. 
+
+Epistasis is prevalent even in comparative biology. These dependencies can manifest as interactions between genes \cite{Cohen2012}, between protein sites \cite{Dimmic2005, Kryazhimskiy2011} or between sites in RNA molecules \cite{Shapiro2006, Meyer2019, Golden2020}. Furthermore, Nasrallah et al. (2011) showed that disregarding epistasis decreases the accuracy of phylogenetic inference in simulations \cite{Nasrallah2011}, either by introducing bias or reducing the effective number of sites in the alignment \cite{Magee2021}.
+
+There have been many methods attempting to detect and account for site dependence in evolutionary sequence data. Shapiro et al. (2006) proposed a phylogenetic approach for detecting positive epistasis by comparing substitution patterns across a reconstructed phylogeny, identifying cases where paired sites exhibit coordinated evolutionary changes that are unlikely under an independent-sites model \cite{Shapiro2006}. In a related direction, Kryazhimskiy et al. (2011) developed a framework for quantifying epistatic interactions by modelling how substitutions at one site influence substitution probabilities at another, thereby explicitly incorporating dependence into the evolutionary process \cite{Kryazhimskiy2011}.
+
+Complementary to these model-based approaches, Poon et al. (2007) introduced an evolutionary network model combined with bootstrap procedures to assess the robustness of inferred interaction structures under phylogenetic uncertainty, allowing for the identification of stratified or structured dependencies among sites \cite{Poon2007}. More recently, posterior predictive approaches have been used to evaluate model adequacy directly: for instance, Magee et al. (2021) assessed whether standard independent-sites models sufficiently capture observed patterns of epistasis by comparing empirical data to replicated datasets generated under the fitted model, thereby providing a formal diagnostic for violations of site independence \cite{Magee2021}.
+
+\textbf{In Historical Linguistics.} Site dependence is not only prevalent in biological contexts but also in historical linguistics. In particular, work in syntactic phylogenetics has shown that linguistic features may exhibit structured patterns of non-independence, reflecting underlying grammatical constraints rather than freely evolving units. Longobardi et al. (2013, 2016) demonstrate that syntactic parameters used in phylogenetic reconstruction are not always statistically independent, but instead may cluster due to shared structural or functional properties of grammar \cite{Longobardi2013, Longobardi2016}. This introduces a potential mismatch between the theoretical structure of linguistic objects and the simplifying assumption of site independence commonly employed in Bayesian phylogenetic models. 
+
+There are many clear examples where data exhibits site dependent behaviour, most commonly found when non-language cultural factors are considered in phylogenetic analysis. Jordan and Shennan (2003) studied basketry techniques, which had inherent dependencies between traits and methods, along with language traits of Californian languages \cite{Jordan2003}. As previously mentioned, Buckley et al. (2025) considered loom data, in addition to language data, to uncover language phylogenies \cite{Buckley2025}. Clearly, the presence of certain traits of a loom are dependent on other traits being present, and thus a tiered approach to classify dependency structure of traits was introduced and tested. 
+
+\textbf{Outstanding gap in Literature.} Despite extensive evidence that site dependence arises across biological sequence evolution, syntactic structure, and broader cultural datasets, these strands of literature remain largely disconnected from the statistical assumptions underlying Bayesian phylogenetic inference in linguistics. In particular, while biological phylogenetics has developed a rich toolkit for detecting, modelling, and diagnosing violations of site independence (including epistasis models, network-based approaches, and posterior predictive checks), and while linguistic and cultural studies have documented clear cases of structured dependence among features, these insights have not been systematically incorporated into the likelihood framework used in modern Bayesian phylogenetic reconstruction of languages. Instead, most applications in linguistics data seem to disregard the violation of the site independence assumption and apply the standard phylogenetic models to the data. This creates a methodological gap that fails to account for the effect on posterior estimates and potential bias that is generated from model misspecification in linguistic and cultural data.
+
 \section{Research Questions and Contributions}
-    Research questions and contributions (Novel work)
-        (1) how does an increased proportion of fixed amounts of data being dependent (on the remaining independent data) affect 
-        reconstruction? if we didnt know how much data was actually dependent and assumed independence, how badly does this 
-        affect reconstruction? 
-        (2) how does adding dependent data to a set amount of independent data affect reconstruction? is it worth adding more 
-        data even though the data becomes misspecified by the model? 
+This thesis attempts to address this gap by analysing the implications of violating conditional site independence in lexical datasets and assessing its impact on inferred phylogenetic structure despite model misspecification. In particular, we ask two questions:
+\begin{enumerate}
+    \item How does an increased proportion of site-dependent data affect tree reconstruction? That is, given data of fixed size $S$ on $n$ related languages, how does (unknown) site dependence affect reconstruction of true tree $T^*$?
+    \item How does adding dependent data to independent data affect reconstruction? That is, given data that maintains site independence of size $S$ on $n$ related languages, how does adding data that is known to be site-dependent affect reconstruction of the true tree $T^*$?
+\end{enumerate}
+By addressing these questions through a simulation study, this thesis aims to clarify the extent to which violations of conditional site independence can distort phylogenetic inference in linguistic datasets. In particular, it seeks to quantify whether the presence of dependent structure influences accuracy and stability of inferred tree topologies, and whether introducing data that violates the assumptions of the model is still effective in phylogenetic reconstruction. In doing so, it provides a bridge between advances in model misspecification found in biological sequence evolution to applications in linguistic and cultural phylogenetics.
 
 \section{Thesis Structure}
-
-
-\section{ (TBD) helpful things (subequations, algorithms)}
-To write equations over multiple lines (like systems of equation or equations too long to fit the page), one can use the \textit{align} environment coupled to the \textit{subequations} environment like so
-\begin{subequations}
-\begin{align}
-    \mathbb{P}(0 \leadsto -a) &= D\int_0^\infty dt\, k_r e^{-k_r t}\int_0^t d\tau\,\partial_x u \big|_{x=-a}, \\
-    \mathbb{P}(0 \leadsto b) &= -D\int_0^\infty dt\, k_r e^{-k_r t}\int_0^t d\tau\,\partial_x u \big|_{x=b}.
-\end{align}
-\end{subequations}
-
-\begin{algorithm}[]
-\SetAlgoLined
-\SetKwInOut{KwInput}{Input}
-\SetKwInOut{KwOutput}{Output}
-\SetKwInOut{KwPre}{Pre}
-\SetKw{Return}{return}
-\SetKwProg{Fn}{Function}{}{end}
-\LinesNumbered
-\KwInput{$\textbf{m}$, such that $\mathbf{m}_i$ is the position of the $i$'th monitor\newline
-$\textbf{l}$, such that $\mathbf{l}_i$ is the position of the $i$'th landmark\newline
-$\mathbf{p}^m$, such that $\mathbf{p}^m_i$ is the ping latency from monitor $i$ to the target\newline
-$\mathbf{p}^l$, such that $\mathbf{p}^l_i$ is the set of ping latencies to landmark $i$}
-
-\BlankLine
-\KwPre{Compute $\hat{p}_m(d \mid l)$, an estimator giving the likelihood of the target being distance $d$ away from the monitor, given that the monitor records a latency of $l$ to that target. Implemented by training a KDE using $\mathbf{p}^l$.\newline
-Compute $\hat{p}_l(d \mid v)$, an estimator giving the likelihood of the target being distance $d$ away from the landmark, given a Canberra distance of $v$ between the target and the landmark, using training targets.
-}
-\BlankLine
-\KwOutput{Most likely location of the target}
-\BlankLine
-
-\Fn{Likelihood($x$, $\mathbf{v}$)} {
-MonitorScore $\gets \sum_{i=0}^{|\mathbf{m}|} \log{\hat{p}_m(d(x, \mathbf{m}_i) \mid l_i)}$\;
-LandmarkScore $\gets \sum_{i=0}^{|\mathbf{l}|} \log{\hat{p}_l(d(x, \mathbf{l}_i) \mid \mathbf{v}_i)}$\;
-\Return MonitorScore + LandmarkScore
-}
-
-\BlankLine
-$\mathbf{v} \gets $\{$\mathrm{canberra\_distance}(\mathbf{l}_i, \mathbf{p}^m) \mid \mathbf{l}_i \in \mathbf{l}$\}
-
-$\mathbf{C}$ $\gets$ Constraint-Based-Geolocation($\mathbf{m}$, $\mathbf{p}^m$)\;
-$\mathbf{C_l}$ $\gets$ \{$m \in \mathbf{m} \mid \mathbf{C}$ contains $m\} \cup \{l \in \mathbf{l} \mid \mathbf{C}$ contains $l$\}\;
-\BlankLine
-\Return argmax$_{x\in \mathbf{C_l}}$ Likelihood($x$)
-
- \caption{Algorithm example}
- \label{algorithm:posit}
-\end{algorithm}
+In Section \ref{sec:background}, we present the technical background of the Bayesian phylogenetic model, describing the theoretical implications of removing the conditional site independency assumption. Next, we provide the methodology used to conduct the simulation study that answers the aforementioned two questions in Section \ref{sec:methods}, validating the simulation framework in the process. Section \ref{sec:results} contains results from the simulation study which will be analysed and discussed in Section \ref{sec:discussion}. We conclude the thesis by summarising findings, considering limitations and possible extensions in Section \ref{sec:conclusion}.

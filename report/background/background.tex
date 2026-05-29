@@ -1,4 +1,5 @@
 \chapter{Background}
+\label{sec:background}
 \section{Phylogenetic Trees}
     Tree model and how to formulate likelihood on tree space 
 
@@ -9,7 +10,9 @@
     Tree priors (specifically Yule and others that I will use) 
 
 \section{Bayesian Phylogenetic Inference}
+\label{sec:bayesandmcmc}
 \subsection{Likelihood Computation}
+\label{sec:likelihoodcomputation}
 \subsection{Posterior Sampling with Markov Chain Monte Carlo methods}
 \subsection{Implementation in BEAST}
 
@@ -21,7 +24,7 @@
 \subsection{ZIP Construction}
 \subsection{CTMC Product Construction}
 Transition diagram
-\subsection{Likelihood Formulation}
+\subsection{Likelihood Computation}
 
 \section{Model Misspecification}
     Model misspecification induced by dependence
@@ -36,3 +39,51 @@ Transition diagram
         Autocorrelation, and thus ESS 
         Mixing of chains (visual) 
         Thinning of data perhaps 
+
+\section{ (TBD) helpful things (subequations, algorithms)}
+To write equations over multiple lines (like systems of equation or equations too long to fit the page), one can use the \textit{align} environment coupled to the \textit{subequations} environment like so
+\begin{subequations}
+\begin{align}
+    \mathbb{P}(0 \leadsto -a) &= D\int_0^\infty dt\, k_r e^{-k_r t}\int_0^t d\tau\,\partial_x u \big|_{x=-a}, \\
+    \mathbb{P}(0 \leadsto b) &= -D\int_0^\infty dt\, k_r e^{-k_r t}\int_0^t d\tau\,\partial_x u \big|_{x=b}.
+\end{align}
+\end{subequations}
+
+\begin{algorithm}[]
+\SetAlgoLined
+\SetKwInOut{KwInput}{Input}
+\SetKwInOut{KwOutput}{Output}
+\SetKwInOut{KwPre}{Pre}
+\SetKw{Return}{return}
+\SetKwProg{Fn}{Function}{}{end}
+\LinesNumbered
+\KwInput{$\textbf{m}$, such that $\mathbf{m}_i$ is the position of the $i$'th monitor\newline
+$\textbf{l}$, such that $\mathbf{l}_i$ is the position of the $i$'th landmark\newline
+$\mathbf{p}^m$, such that $\mathbf{p}^m_i$ is the ping latency from monitor $i$ to the target\newline
+$\mathbf{p}^l$, such that $\mathbf{p}^l_i$ is the set of ping latencies to landmark $i$}
+
+\BlankLine
+\KwPre{Compute $\hat{p}_m(d \mid l)$, an estimator giving the likelihood of the target being distance $d$ away from the monitor, given that the monitor records a latency of $l$ to that target. Implemented by training a KDE using $\mathbf{p}^l$.\newline
+Compute $\hat{p}_l(d \mid v)$, an estimator giving the likelihood of the target being distance $d$ away from the landmark, given a Canberra distance of $v$ between the target and the landmark, using training targets.
+}
+\BlankLine
+\KwOutput{Most likely location of the target}
+\BlankLine
+
+\Fn{Likelihood($x$, $\mathbf{v}$)} {
+MonitorScore $\gets \sum_{i=0}^{|\mathbf{m}|} \log{\hat{p}_m(d(x, \mathbf{m}_i) \mid l_i)}$\;
+LandmarkScore $\gets \sum_{i=0}^{|\mathbf{l}|} \log{\hat{p}_l(d(x, \mathbf{l}_i) \mid \mathbf{v}_i)}$\;
+\Return MonitorScore + LandmarkScore
+}
+
+\BlankLine
+$\mathbf{v} \gets $\{$\mathrm{canberra\_distance}(\mathbf{l}_i, \mathbf{p}^m) \mid \mathbf{l}_i \in \mathbf{l}$\}
+
+$\mathbf{C}$ $\gets$ Constraint-Based-Geolocation($\mathbf{m}$, $\mathbf{p}^m$)\;
+$\mathbf{C_l}$ $\gets$ \{$m \in \mathbf{m} \mid \mathbf{C}$ contains $m\} \cup \{l \in \mathbf{l} \mid \mathbf{C}$ contains $l$\}\;
+\BlankLine
+\Return argmax$_{x\in \mathbf{C_l}}$ Likelihood($x$)
+
+ \caption{Algorithm example}
+ \label{algorithm:posit}
+\end{algorithm}
