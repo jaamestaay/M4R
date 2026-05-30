@@ -6,20 +6,20 @@ This chapter provides the mathematical foundation for the simulation study found
 
 \section{Bayesian Phylogenetic Inference}
 \label{sec:phylogenetictrees}
-We start by considering the space of phylogenetic trees $\mathcal{T}$, building on the earlier definitions found in Chapter \ref{sec:introduction}. In particular, we focus our discussion on the space of bifurcating trees that have branches with lengths proportional to time, and assume that lexical data $\mathbf{D}$ can be generated via evolutionary models with parameteres $\boldsymbol{\theta}^* \in \boldsymbol{\Theta}$ on a true tree $T^* \in \mathcal{T}$.
+We start by considering the space of language (or in this case, phylogenetic) trees $\mathcal{T}$, building on the earlier definitions found in Chapter \ref{sec:introduction}. In particular, we focus our discussion on the space of bifurcating trees that have branches with lengths proportional to time, and assume that lexical data $\mathbf{D}$ can be generated via evolutionary models with parameteres $\boldsymbol{\theta}^* \in \boldsymbol{\Theta}$ on a true tree $T^* \in \mathcal{T}$.
 
 When considering phylogenetic trees in a Bayesian setting, 
 a natural starting point is to consider Bayes' theorem in the given context:
 
 \begin{definition} [Bayes' theorem]
-    For a given data set $\mathbf{D} \in [0, 1]^{n \times S}$ and model parameters $\boldsymbol{\theta} \in \boldsymbol{\Theta}$, we consider a tree $T \in \mathcal{T}$. Bayes' theorem states that the probability of the tree given the data and evolutionary model (the \textbf{posterior} probability) is proportional to the probability of observing the data given the tree and the evolutionary model (the \textbf{likelihood}) multiplied by the joint probability of the tree and evolutionary model (the joint \textbf{priors}):
+    For a given data set $\mathbf{D} \in \{0, 1\}^{n \times S}$ and model parameters $\boldsymbol{\theta} \in \boldsymbol{\Theta}$, we consider a tree $T \in \mathcal{T}$. Bayes' theorem states that the probability of the tree given the data and evolutionary model (the \textbf{posterior} probability) is proportional to the probability of observing the data given the tree and the evolutionary model (the \textbf{likelihood}) multiplied by the joint probability of the tree and evolutionary model (the joint \textbf{priors}):
     \begin{align}
         P(T | \mathbf{D}, \boldsymbol{\theta}) &= \frac{P(\mathbf{D} | T, \boldsymbol{\theta})P(T, \boldsymbol{\theta})}{P(\mathbf{D})} \\
         &\propto P(\mathbf{D} | T, \boldsymbol{\theta})P(T,\boldsymbol{\theta}) \label{eq:bayestheorem}
     \end{align}
 \end{definition}
 
-We note that (\ref{eq:bayestheorem}) follows naturally since we can treat $P(\mathbf{D})$ as a constant. Additionally, consider $\boldsymbol{\theta}$ as the set of all model parameters from the evolutionary model and the tree prior. Our goal is to find the posterior distribution $P(T | \mathbf{D}, \boldsymbol{\theta})$, either by direct calculation or by generating samples that follow it. However, due to the intractability of $P(\mathbf{D})$, it is unfeasible to explore the former method. We are therefore required to generate samples (of trees in space $\mathcal{T}$) that take on the posterior distribution. In many Bayesian methods, this requires defining and calculating likelihood $P(\mathbf{D} | T, \boldsymbol{\theta})$ and priors $P(T, \boldsymbol{\theta})$.
+We note that (\ref{eq:bayestheorem}) follows naturally since we can treat $P(\mathbf{D})$ as a (unknown) constant. Additionally, consider $\boldsymbol{\theta}$ as the set of all model parameters from the evolutionary model and the tree prior. Our goal is to model the distribution of trees informed by the data and the parameters, or the posterior distribution $P(T | \mathbf{D}, \boldsymbol{\theta})$, either by direct calculation or by generating samples that follow it. However, due to the intractability of $P(\mathbf{D})$, it is unfeasible to explore the former method. We are therefore required to generate samples (of trees in space $\mathcal{T}$) that take on the posterior distribution. In many Bayesian methods, this requires defining and calculating likelihood $P(\mathbf{D} | T, \boldsymbol{\theta})$ and priors $P(T, \boldsymbol{\theta})$.
 
 \subsection{Tree Priors: Yule models}
 We first consider defining the prior of the model, by decomposing it further as
@@ -28,14 +28,14 @@ We first consider defining the prior of the model, by decomposing it further as
 \end{equation}
 where $P(T|\boldsymbol{\theta})$ represents the tree prior, while $P(\boldsymbol{\theta})$ considers the (joint) distribution of all parameters of the model. While there exists many methods of generating trees, there are only a select few which are applicable in the context of historical linguistics \cite{hoffmann_bayesian_2021}. We limit our discussion to an elaboration of a the Yule model, common tree prior used in Bayesian phylogenetic model.
 
-The Yule model {\color{red} citation needed} can be defined as a pure birth process (see Definition \ref{def:birthprocess}) with a single intensity $\lambda \geq 0$, where $N_t$ refers to the number of branches at time $t$, $N_0 = 1$. We make a distinction here that the model is generated from the ancestral lineage and thus encodes time $0$ as the oldest point of the analysis, while final time $T$ where there are $n$ tips for $n$ languages represents the present. This is contrary to the common representation of time in phylogenetic analysis, where time $0$ represents the present age, or agglomerative tree generation methods like the coalescent process. Conditioning on the tree having $n$ tips and root age $T$, the prior distribution takes on form {\color{red}{citation required}}:
+The Yule model \cite{Yule1925} can be defined as a pure birth process (see Definition \ref{def:birthprocess}) with a single intensity $\lambda \geq 0$, where $N_t$ refers to the number of branches at time $t$, $N_0 = 1$. We make a distinction here that the model is generated from the ancestral lineage and thus encodes time $0$ as the oldest point of the analysis, while final time $T$ where there are $n$ tips for $n$ languages represents the present. This is contrary to the common representation of time in phylogenetic analysis, where time $0$ represents the present age, or agglomerative tree generation methods like the coalescent process. Conditioning on the tree having $n$ tips and root age $T$, the prior distribution takes on form \cite{Gernhard2008}:
 \begin{equation}
 \label{eq:yuleprior}
-    P(T | \lambda, T, n) = n! \lambda^{n-1}\prod_{i=1}^{n-1}\exp(-\lambda T)
+    P(T | \lambda, n) = n! \lambda^{n-1}\prod_{i=1}^{n-1}\exp(-\lambda T)
 \end{equation}
 where $\lambda$ is the only relevant parameter in $\boldsymbol{\theta}$ that affects the tree prior.
 
-\begin{definition} [Birth Process {\color{red} citation needed}]
+\begin{definition} [Birth Process \cite{Durrett2016}]
 \label{def:birthprocess}
 A birth process with intensity $\lambda \geq 0$ is a continuous-time stochastic process $\{N_t\}_{t \geq 0}$ with values in $\mathbb{N}_0$ that satisfies:
 \begin{enumerate}
@@ -53,9 +53,10 @@ A birth process with intensity $\lambda \geq 0$ is a continuous-time stochastic 
 where function $f$ is $o(\delta)$ if $\lim\limits_{\delta \to 0^+} \frac{f(\delta)}{\delta} = 0$.
 \end{definition}
 
-This model, as with all tree priors, incorporates the linguistic assumption that language diversify through repeated divergence events without horizontal transfer. As such, this adds a slight complexity to data generation: words or lexical items that are borrowed must be removed, which may require further linguistic arguments to determine \cite{Campbell2004}. We also note that due to the single arrival characteristic of Yule model, only bifurcating trees are generated. Moreover, since the model does not allow for deaths to occur, the model generates rooted binary trees whose tips are all extant languages. This means that all trees generated by the Yule model are \textit{ultrametric}, where the distance from (or age of) the root from every language is identical. {\color{red} maybe it's worth having a figure for ultrametric trees?} This presents an additional assumption of employing such a method: all languages are assumed to be extant at the present age. While this reduces the complexity of the model and reduces the number of parameters introduced by the tree prior (and thus simplifying (\ref{eq:yuleprior})), this means that any dataset that includes extinct languages in its dataset is misspecified by such a model and may introduce bias, especially with respect to rates of evolution and node ages \cite{hoffmann_bayesian_2021}. As such, other tree priors like birth-death processes would be of interest {\color{red} citation needed}. For the purposes of this simulation study, we will assume that all languages are extant.
+This model, as with all tree priors, incorporates the linguistic assumption that language diversify through repeated divergence events without horizontal transfer. As such, this adds a slight complexity to data generation: words or lexical items that are borrowed must be removed, which may require further linguistic arguments to determine \cite{Campbell2004}. We also note that due to the single arrival characteristic of Yule model, only bifurcating trees are generated. Moreover, since the model does not allow for deaths to occur, the model generates rooted binary trees whose tips are all extant languages. This means that all trees generated by the Yule model are \textit{ultrametric}, where the distance from (or age of) the root from every language is identical. {\color{red} maybe it's worth having a figure for ultrametric trees?} This presents an additional assumption of employing such a method: all languages are assumed to be extant at the present age. While this reduces the complexity of the model and reduces the number of parameters introduced by the tree prior (and thus simplifying (\ref{eq:yuleprior})), this means that any dataset that includes extinct languages in its dataset is misspecified by such a model and may introduce bias, especially with respect to rates of evolution and node ages \cite{hoffmann_bayesian_2021}. As such, other tree priors like birth-death processes would be of interest \cite{Gernhard2008}. For the purposes of this simulation study, we will assume that all languages are extant.
 
 \subsection{Evolution Model: Continuous-Time Markov Models}
+\label{sec:ctmc}
 Having defined the tree prior, evolutionary models attempt to explain the presence or absence of sites across the languages of the model. Since the data is binary, we need only consider two types of states: the presence (1) or absence (0) of a site. As the model is defined on continuous time, the binary continuous-time Markov chain (CTMC) model is a natural method to define the evolutionary process.
 
 Several assumptions have to be made to employ such a model. Firstly, the evolutionary process assumes the Markov property (see Definition \ref{def:markov}), which can be clearly justified in the context of historical linguistics. This induces the infinitesimal rate (or \textit{generator}) matrix $\mathbf{G} := (g_{ij})$ (see Definition \ref{def:generator}), which results in a time-dependent transition probability matrix to be the entries of the matrix\footnote{See Appendix \ref{app:transprob} for full proof of \ref{eq:transitionmatrixevolution}.}:
@@ -64,16 +65,16 @@ Several assumptions have to be made to employ such a model. Firstly, the evoluti
     \mathbf{P}(t) = \exp(\mathbf{G}t).
 \end{equation}
 
-\begin{definition} [Markov Property {\color{red} citation needed}]
+\begin{definition} [Markov Property \cite{Durrett2016}]
 \label{def:markov}
     A continuous-time process $\{X_t\}_{t \geq 0}$ defined on state space $E = \{0, 1\}$ satisfies the Markov property if 
     \begin{equation}
         P\left(X_{t_n} = i_n | X_{t_{n-1}} = i_{n-1}, \dots, X_{t_1} = i_{n-1}\right) = P\left(X_{t_n} = i_n | X_{t_{n-1}} = i_{n-1}\right),
     \end{equation}
-    for all $i_1, \dots i_n \in E, \ 0 \leq t_1 < \cdots < t_n < \infty$, where $n \in \mathbb{N}$.
+    for all $i_1, \dots, i_n \in E, \ 0 \leq t_1 < \cdots < t_n < \infty$, where $n \in \mathbb{N}$.
 \end{definition}
 
-\begin{definition} [Generator {\color{red} citation needed}]
+\begin{definition} [Generator \cite{Durrett2016}]
 \label{def:generator}
     The generator $\mathbf{G} := (g_{ij})_{i, j \in E}$ of the family of transition probability matrices $\{\mathbf{P}_t | t\geq 0 \}$ is given as 
     \begin{equation}
@@ -104,7 +105,24 @@ where the $-$ are the conventional notation used implied diagonal entries as def
     \label{fig:markovchain}
 \end{figure}
 
-For a simulation study, the generation of data through such evolutionary processes require particular consideration. For a given tree $T$, at each site, the state at the root is sampled and propagated down the tree via the CTMC model along each branch that has transition probabilities $\mathbf{P}(t)$ via (\ref{eq:transitionmatrixevolution}). This results in the generation of the site $\mathbf{D}_i$. If the assumption of conditional site independence is held, the process is repeated for every single site until the full binary data matrix $\mathbf{D} \in [0, 1]^{n \times S}$ is generated. This generation process is defined in Algorithm \ref{algo:ctmcdatageneration}. 
+We are thus able to calculate the likelihood $P(\mathbf{D}|T, \boldsymbol{\theta})$ for the model. For the sake of demonstration, we illustrate the likelihood only for a single site $\mathbf{D}_i$, saving full derivations for $\mathbf{D}$ in Sections \ref{sec:independent} and \ref{sec:dependent}. Given the binary phylogenetic tree $T = (V, E, r)$ with $n$ observed languages, where sites evolve via a binary CTMC with generator $\mathbf{G}$ and stationary distribution $\boldsymbol{\pi}$, the likelihood for a site $\mathbf{D}_i$ is
+
+\begin{align}
+    P(\mathbf{D}_i | T, \mathbf{G}, \boldsymbol{\pi}) &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} P(\mathbf{D}_i, \mathbf{x}_W | T, \mathbf{G}, \boldsymbol{\pi}) \\
+    &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} P(X_r = x_r) P(\mathbf{D}_i, \mathbf{x}_{W \setminus \{r\}} | T, \mathbf{G}, X_r = x_r) \\
+    &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} P(X_r = x_r) \prod_{(u, v) \in E} P(X_v = x_v | X_u = x_u), 
+\end{align}
+
+where $X_u$ is the random variable of the state at node $u$, and we employed the Markov property of the CTMC model. As defined previously, the first term corresponds to the stationary distribution $\boldsymbol{\pi}$ This reduces the problem to calculating transition probabilities, where (\ref{eq:transitionmatrixevolution}) is most relevant. This gives the expression
+
+\begin{align}
+    P(\mathbf{D}_i | T, \mathbf{G}, \boldsymbol{\pi}) &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} \pi_{x_r} \prod_{(u, v) \in E} \mathbf{P}(t_{u\to v})_{x_u x_v} \\
+    &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} \pi_{x_r} \prod_{(u, v) \in E} \exp(\mathbf{G}t_{u\to v})_{x_u x_v} \label{eq:sitelikelihood}
+\end{align}
+
+This decomposition is inefficient for large values of $n$: the set of internal nodes $W$ grows linearly with $n$, thus exponentially increases the number of internal terms in the sum of (\ref{eq:sitelikelihood}). Felsenstein (1973) introduced an efficient ``pruning'' method {\cite{Felsenstein1973}}, exploiting the structure of the tree to recursively evaluate likelihoods of subtrees \cite{Felsenstein2004}. This allows for efficient likelihood calculation that grows linearly rather than exponentially with $n$.
+
+For a simulation study, the generation of data through such evolutionary processes require particular consideration. For a given tree $T$, at each site, the state at the root is sampled and propagated down the tree via the CTMC model along each branch that has transition probabilities $\mathbf{P}(t)$ via (\ref{eq:transitionmatrixevolution}). This results in the generation of the site $\mathbf{D}_i$. If the assumption of conditional site independence is held, the process is repeated for every single site until the full binary data matrix $\mathbf{D} \in \{0, 1\}^{n \times S}$ is generated. This generative process is defined in Algorithm \ref{algo:ctmcdatageneration}. 
 
 \begin{algorithm}
 \SetAlgoLined
@@ -114,7 +132,7 @@ For a simulation study, the generation of data through such evolutionary process
 \SetKwProg{Fn}{Function}{}{end}
 \LinesNumbered
 \KwInput{
-    $T$, fixed topology tree with root $r$ of $n$ languages, where each edge $e$ has branch length $t_e$, \\
+    $T$, fixed topology tree with root $r$ of $n$ languages, where each edge $e := (u \to v)$ has branch length $t_e$, \\
     $\mathbf{G}$, rate matrix with parameters $\beta\pi_0, \beta\pi_1$, \\
     $\boldsymbol{\pi}$, stationary distribution of CTMC, \\
     $S$, number of sites of data.
@@ -124,55 +142,179 @@ For a simulation study, the generation of data through such evolutionary process
 \KwOutput{$\mathbf{D} \in [0,1]^{n\times S}$, where sites are columns $\mathbf{D}_1, \dots, \mathbf{D}_S$.}
 \BlankLine
 
-\Fn{Propagate(parent $p$, $\mathbf{G}$, children $(c_1, c_2)$, edge lengths $(t_{p \to c_1}, t_{p \to c_2})$)} {
-    \textbf{if} no children, \textbf{then} \Return; \\
-    $P_p = \exp(\mathbf{G}t_p)$; \\
-    $X_{c_1}, X_{c_2} \sim P_p(X_p, \cdot)$ independently; \\
-    \textit{Propagate}($c_1$, $\mathbf{G}$, children of $c_1$, corresponding edge lengths); \\
-    \textit{Propagate}($c_2$, $\mathbf{G}$, children of $c_2$, corresponding edge lengths);
+\Fn{Propagate($v$, $x_v$)}{
+    \For{each child $c$ of $v$}{
+        Let $e = (v \to c)$ with branch length $t_e$; \\
+        Compute transition matrix $P_e = \exp(\mathbf{G} t_e)$; \\
+        Sample:
+        \[
+        x_c \sim P_e(x_v, \cdot)
+        \] \\
+        \textit{Propagate}($c$, $x_c$);
+    }
 }
 \BlankLine
-\Fn{SiteGeneration($T$, $\mathbf{G}$, $\boldsymbol{\pi}$)} {
-    Sample root state $X_r \sim \boldsymbol{\pi}$; \\
-    \textit{Propagate}($r$, $\mathbf{G}$, children of $r$, corresponding edge lengths); \\
-\Return $\mathbf{D}_i = (X_1, \dots X_n)^T$
+\Fn{SiteGeneration($T$, $\mathbf{G}$, $\boldsymbol{\pi}$)}{
+    Sample root state:
+    \[
+    x_r \sim \boldsymbol{\pi}
+    \] \\
+    \textit{Propagate}($r$, $x_r$); \\
+    \Return vector of language states $(x_1, \dots, x_n)^T$
 }
 \BlankLine
-\textbf{for} $i = 1, ... S$ \textbf{do} $\mathbf{D}_i$ = \textit{SiteGeneration}(T, $\mathbf{G}$, $\boldsymbol{\pi}$)
-\BlankLine
+\For{$i = 1, \dots, S$}{
+    $\mathbf{D}_i \leftarrow$ \textit{SiteGeneration}($T$, $\mathbf{G}$, $\boldsymbol{\pi}$)
+}
+
 \Return $\mathbf{D} = (\mathbf{D}_1 \cdots \mathbf{D}_S)$
+
 
  \caption{Data Generation from binary CTMC model}
  \label{algo:ctmcdatageneration}
 \end{algorithm}
 
-{\color{red} good and bad of the model}
+The binary CTMC model is highly favoured since it is highly parsimonious and is computationally tractable. The evolution model introduces few parameters as discussed above, making likelihood calculations and thus Bayesian phylogenetic inference more efficient. However, these constraints insert more assumptions about the homogeneity and memorylessness properties of transitions between only two states, which may be an oversimplification of the complexity of evolution in real languages. Studies have shown that more complex models such as the binary covarion model \cite{Tuffley1998} perform better on linguistic data through allowing slow and fast rates of change \cite{hoffmann_bayesian_2021}. 
 
-{\color{red} Rate variation: Am i even doing that} 
+For the context of the simulation study conducted in this thesis, we limit our discussion and implementation to the binary CTMC. This provides a powerful baseline model to study the effects of model misspecification, where more complex evolutionary models can be discussed in future work.
+
+\subsection{Rate Variation}
+\label{sec:ratevariation}
+As noted by Bergsland and Vogt (1962), the rates of evolution across lineages and subsets of data varies considerably \cite{Bergsland1962}. For example, sites belonging to a meaning with few cognates have been shown to empirically evolve more slowly than a meaning with many cognates \cite{Pagel2006}. In order to accommodate for this, a site-specific rate multiplier $r_i$ is included in (\ref{eq:transitionmatrixevolution}). This includes $S$ more parameters for model, where the method of generating these rates (and thus their priors) is most commonly a Gamma distribution with mean $1$ and shape parameter $\alpha$ \cite{hoffmann_bayesian_2021}. Such a method preserves the expected rates, while allowing for substantial variation across sites. In practice, this improves the model by measuring heterogeneity of site evolution, which may support fitting real language data. 
+
+For the sake of the simulation study contained within this thesis, rate variation is intentionally excluded - all sites are assumed to evolve with a fixed rate $r_i = 1$. This is a design choice, with an objective to isolate the effects of model misspecification through conditional site independence. Allowing the rate variation would introduce additional structure that could confound inference, making it difficult to attribute observed effects as due to the violation of conditional site independence. This reduces the model to a \textit{homogeneous} CTMC model instead.
 
 \subsection{Posterior Sampling with Markov Chain Monte Carlo methods}
 \label{sec:mcmc}
-\subsection{Likelihood Computation}
-\label{sec:likelihoodcomputation}
+Having discussed the prior and likelihood probabilities, we are now well equipped to discuss sampling from the posterior.  As mentioned prior, the normalising constant of the posterior is often difficult to compute, which makes analytic expressions of the posterior distribution inaccessible. However, there are additional considerations in the context of historical linguistics, even if one were to apply a sampling based method. The size of the space of all possible binary phylogenetic trees $\mathcal{T}$ grows \textit{super}-exponentially (that is, grows at a rate faster than exponential increase) with the number of languages $n$ \cite{Schroeder1870}. In fact, the problem of finding the optimal tree is \textit{NP-hard} \cite{Foulds1982}. Moreover, the priors are defined on both discrete and continuous distributions, complicating the analysis of the model.
+
+These challenges motivate the use of simulation-based approaches to approximate the posterior distribution. Bayesian phylogenetic inference commonly relies on Markov Chain Monte Carlo (MCMC) methods to generate samples from $p^\star := P(T | \mathbf{D}, \boldsymbol{\theta})$ without the explicit computation of the normalising constant of ($\ref{eq:bayestheorem}$). The method attempts to construct a Markov chain of trees (and parameters) whose stationary distribution $\boldsymbol{\pi}$ is equal to $p^\star$, such that states of the chain are regarded as (dependent) samples from the posterior distribution. More formally, suppose we initialise the chain at some $\mathbf{z}^{(0)} = \{T^{(0)}, \boldsymbol{\theta}^{(0)}\}$, we generate chain $\{\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(t)}, \dots\}$ such that $T^{(t)} \sim p^\star$ after the chain is allowed to mix for an amount of time called the \texttt{burnin}. 
+
+This subsection aims to explain the methodology used in MCMC. In practice, these considerations within the algorithm have been neatly summarised in packages and applications such as BEAST, which will be discussed in Section \ref{sec:beast}.
+
+As the name of the algorithm suggests, the model generates a chain which fulfills the Markov property. This means that, given a current sample $\mathbf{z}^{(n)}$, in order to determine the next sample $\mathbf{z}^{(n+1)}$, we propose some $\mathbf{z}' \sim q(\cdot | \mathbf{z}^{(n)})$ by some \textit{proposal distribution} $q$, before assessing whether the proposal is suitable. 
+
+This proposal distribution $q$ is clearly multivariate in the context of historical linguistics, generating a new tree $T \in \mathcal{T}$ but also other parameters $\boldsymbol{\theta} \in \boldsymbol{\Theta}$. We assume that $q$ can be decomposed into independent proposals, particularly of $T$, and that all other parameters $\boldsymbol{\theta}$ can be proposed in a straightforward manner via conventional probability distributions. The proposal of a new tree $T'$ given tree $T^{(n)}$ is clearly non-trivial due to its non-Euclidean nature and requires extra treatment. There are many methods, such as the Nearest Neighbour Interchange (NNI) \cite{Li1996}, the Subtree Prune and Regraft (SPR) \cite{Hillis1996} and time-scaling operations, that generate a stochastic walk over the tree space $\mathcal{T}$. 
+
+Once the proposal $\mathbf{z}' = \{ T', \boldsymbol{\theta}' \}$ has been chosen via the proposal distribution $q$, it is evaluated based on an acceptance probability:
+
+\begin{align}
+    \alpha(\mathbf{z}^{(n)}, \mathbf{z}') &= \min \Bigg\{1, \frac{p^\star(\mathbf{z}')q(\mathbf{z}^{(n)}|\mathbf{z}')}{p^\star(\mathbf{z}^{(n)})q(\mathbf{z}'|\mathbf{z}^{(n)})}\Bigg\} \\
+    &= \min \Bigg\{1, \frac{P(\mathbf{D} | \mathbf{z}')P(\mathbf{z}')q(\mathbf{z}^{(n)}|\mathbf{z}')}{P(\mathbf{D} | \mathbf{z}^{(n)}))P(\mathbf{z}^{(n)}))q(\mathbf{z}'|\mathbf{z}^{(n)})}\Bigg\},\label{eq:mhacceptance}
+\end{align}
+
+that determines whether we accept the proposal as the next sample or not:
+\begin{align}
+    \mathbf{z}^{(n+1)} = \begin{cases}
+        \mathbf{z}' & \text{with probability } \alpha(\mathbf{z}^{(n)}, \mathbf{z}') \\
+        \mathbf{z}^{(n)} & \text{with probability } 1 - \alpha(\mathbf{z}^{(n)}, \mathbf{z}').
+    \end{cases}
+\end{align}
+
+Equation \ref{eq:mhacceptance} is paramount to the MCMC algorithm, state in full in Algorithm \ref{algo:mh}. The acceptance ratio is designed such that the resulting Markov chain $\{\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(t)}, \dots\}$ has stationary distribution $p^\star$\footnote{The proof of which can be found in {\color{red} either prove it in Appendix B or link a proof of it}.}. Crucially, the method does not require the knowledge of marginal probability $P(\mathbf{D})$, which allows the acceptance probabilities to be easily calculated by decomposition of the posterior probabilities into the likelihood and prior probabilities. 
+
+% MCMC Algorithm
+\begin{algorithm}
+\SetAlgoLined
+\SetKwInOut{KwInput}{Input}
+\SetKwInOut{KwOutput}{Output}
+\SetKw{Return}{return}
+\SetKwProg{Fn}{Function}{}{end}
+\LinesNumbered
+\KwInput{
+    $N$, number of samples to be generated, \\
+    $\mathbf{z}^{(0)}$, starting point of Markov chain.
+}
+
+\BlankLine
+\KwOutput{$\mathbf{Z} = \{\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(N)}\}$, resulting Markov chain with stationary distribution $p^\star$.}
+\BlankLine
+\For{$n = 1, \dots, N$}{
+    Sample proposal $\mathbf{z}' \sim q(\mathbf{z}^{(n-1)})$; \\
+    Calculate acceptance probability $\alpha(\mathbf{z}^{(n-1)}, \mathbf{z}')$ as in (\ref{eq:mhacceptance}); \\
+    Sample $u \sim \text{Uniform}[0, 1]$ \\
+    \eIf{$u < \alpha(\mathbf{z}^{(n-1)}, \mathbf{z}')$}{
+    \text{Accept Proposal: }
+    $\mathbf{z}^{(n)} \leftarrow \mathbf{z}'$;
+    }{
+    \text{Reject Proposal: }
+    $\mathbf{z}^{(n)} \leftarrow \mathbf{z}^{(n-1)}$;
+    }
+}
+
+\Return $\mathbf{Z} = \{\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(N)}\}$
+
+
+ \caption{Metropolis-Hastings (MCMC) algorithm, adapted from \cite{Douc2019}.}
+ \label{algo:mh}
+\end{algorithm}
+
+As such, MCMC methods are elegant yet practical algorithms to resolve the issues faced in Bayesian phylogenetic inference. The method itself also allows for a natural quantification of uncertainty through the discretisation of the posterior distribution. Furthermore, the method is highly flexible and can incorporate models and priors more complex than has been discussed in Section \ref{sec:bayesianphylomethods} so far.
+
+However, MCMC methods suffer from several limitations. Given the Markov structure of the chain, proposals cannot be conducted and evaluated in parallel. The Markov structure also causes samples to be highly dependent, requiring a large number of iterations. These two limitations constrain MCMC methods to require a large number of samples, thus requiring much computational runtime. Additionally, inference may be sensitive to poor mixing and multimodality of the posterior distribution, which is a common issue considering the space of phylogenetic trees $\mathcal{T}$.
+
+In particular, the algorithm does not guard against model misspecification issues. For example, if the likelihood function is misspecified through the violation of the conditional site independence critierion, the model does not address the potential biases arising from violations of the underlying modelling assumptions.
+
+
+
 \subsection{Implementation in BEAST}
 \label{sec:beast}
+There are many packages available for practical implementations of MCMC methods on phylogenetic trees, one of which is the \textit{Bayesian Evolutionary Analysis Sampling Trees}, or BEAST algorithm \cite{beast_documentation}. Given the observed cognate data, BEAST samples from the posterior distribution and constructs a Markov chain as described in this section. In particular, tree space $\mathcal{T}$ is explored through a collection of local and global proposal operators to facilitate sufficient exploration. The package incorporates high performance computing methods \cite{beagle_documentation} outside the scope of this thesis that ensures an efficient practical implementation of the inference process.
+
+In this thesis, BEAST is used as the inference engine for all inferences as detailed in Chapter \ref{sec:methods}. This enables a scalable and streamlined pipeline for direct assessment of the effect of model misspecification through conditional site dependence.
 
 \section{Independent Paradigm}
 \label{sec:independent}
-        likelihood calculations, quality checks and convergence guarantees under such a model 
-        
-        can make this section + model misspecification its own chapter if its too long
+Having discussed the entire methodology to recover phylogenetic trees, we examine the conditional site independence assumption in more detail. In particular, the effects of imposing the assumption in data generation, likelihood and posterior calculations and effective information brought forward by the (generated) data $\mathbf{D}$ will be considered. 
+
+Under the \textit{independent paradigm}, that is, where the conditional site independence assumption is imposed, data generation for the simulation study is conducted in a straightforward manner as discussed in Section \ref{sec:ctmc}. In particular, Algorithm \ref{algo:ctmcdatageneration} is implemented to generate independent sites $\mathbf{D}_i$ for $i = 1, ..., S$, which ensures site independence throughout the data. 
+
+We return to the likelihood calculations in (\ref{eq:sitelikelihood}). Clearly, on considering the full dataset $\mathbf{D}$, we can decompose the probability into a product of likelihood calculations at each site:
+\begin{align}
+    P(\mathbf{D} | T, \boldsymbol{\theta}) &= \prod_{i=1}^S P(\mathbf{D}_i | T, \boldsymbol{\theta}) \\
+    &= \prod_{i=1}^S P(\mathbf{D}_i | T, \mathbf{G}, \boldsymbol{\pi}) \label{eq:independentbreakdown}
+    %&= \prod_{i=1}^S \left[\sum_{\mathbf{x}^{(i)}_W \in \{0, 1\}^{|W|}} \pi_{x^{(i)}_r} \prod_{(u, v) \in E} \exp(\mathbf{G}t_{u\to v})_{x_u x_v}\right]
+\end{align}
+This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. 
+
+Intuitively, the independent paradigm also suggests that every new site provides an equal amount of information. As such, we can assume that as $S$ increases, the rate of increase of variance of sites should linearly increase. {\color{red} thinking if i should put in the effort to do this effective sample size thing. im too tired at this junction to think about math}.
+
+{\color{red} is it worth talking about the benefits here? probably not, but a light one if i think yes}
+
 \section{Dependent Paradigm}
 \label{sec:dependent}
-\subsection{ZIP Construction}
-\subsection{CTMC Product Construction}
-Transition diagram
-\subsection{Likelihood Computation}
+We turn our attention to the \textit{dependent paradigm}, where sites are not assumed to be generated independently from each other. The main implication of relaxing this assumption is that the decomposition in (\ref{eq:independentbreakdown}) is now invalid - we now have to consider how sites may interact with each other to determine the correct likelihood structure.
 
+While there are many approaches to construct such dependencies within simulated data $\mathbf{D}$, we focus our discussion on a methodology such that sites are generated in a hierarchial format. We construct $L$ tiers of data, where data from Tier $1$ refers to independently generated sites, while data from Tier $l = 2, ..., L$ are sites that are dependent on certain sites from Tier $l-1$. {\color{red} A diagram of the dependent data generation methodology is described in Figure \ref{fig:dependentgeneration}.} 
+
+\begin{figure}
+    \centering
+    % Probably a tikz picture?
+    % \includegraphics[width=0.5\linewidth]{}
+    \caption{A hierarchial approach to dependent site generation with $L$ tiers.}
+    \label{fig:dependentgeneration}
+\end{figure}
+
+This method thus requires us to answer two design questions:
+\begin{enumerate}
+    \item How does each site in Tier $l$ \textit{choose} which site (which we will call the \textit{parent} site) in Tier $l-1$ to depend on?
+    \item Upon choosing a parent site from Tier $l-1$, how is each dependent site (which we call the corresponding \textit{child} site) in Tier $l$ generated given the parent site?
+\end{enumerate}
+The answers to these questions then define the manner in which data is generated, and thus how likelihoods will be calculated. For the purposes of this simulation study, we generate dependencies via the Zero-Inflated Poisson (ZIP), discussed in Section \ref{sec:zip}, and generate dependent site values by considering the product of the result of CTMC runs, discussed in Section \ref{sec:ctmcproduct}.
+
+This method in particular is highly relevant to related works on dependent data. This hierarchial dependency structure corresponds to the issue posed by Maddison's red/blue tail problem \cite{Maddison1993}, where $L = 2$. Additionally, in the context of Bayesian phylolinguistic analysis, Buckley et al. (2025) considered loom data that also exhibited the same structure \cite{Buckley2025}, this time with $L = 4$. {\color{red} it might be worth saying that critics of the paper drew concerns about the model being misspecified on such data.} Consequently, investigating the extent of impact of applying Bayesian phylogenetic models, which assume conditional site independence, to hierarchially dependent data provides a frame of reference for assessing the consequences of model misspecification in settings where site dependencies are known or suspected to exist. Such analyses can thus address concerns of applying standard Bayesian phylogenetic models to data which exhibit such hierarchial dependency structures.
+
+\subsection{ZIP Construction}
+\label{sec:zip}
+{\color{red} define the ZIP poisson, FIND LITERATURE THAT DISCUSSES THIS MAYBE ON WIKIPEDIA, expectation and variance, maybe even a diagram if previous figure is not as descriptive on generation method}
+\subsection{CTMC Product Construction}
+\label{sec:ctmcproduct}
+{\color{red} Explanation of CTMC product. Derivation of transition diagram and thus exponential rates across two tiers (maybe more information needs to be derived?), and corresponding transition diagram. maybe something in between but im not sure. anyway end with the full algorithm for generating the data.}
+\subsection{Likelihood Computation}
+{\color{red} probably want to do a high level breakdown of how the likelihood should decompose, and then consider the case where we only have two sites, one dependent on the other, as a proof of concept of how everything else should cascade down.}
 \subsection{Model Misspecification}
 \label{sec:misspecification}
-    Model misspecification induced by dependence
-        Data generation under P\_dependent but being evaluated on model under P\_independent
+    {\color{red} Final bits about effective information if im going to talk about that. Attractiveness of the independent model - why would we even want to misspecify the model in the first place? it means the dependent model is too infeasibly difficult to explicitly calculate. thus what level of error are we willing to accept? yeah so i might want to make this its own section.}
 
 \section{Evaluation Metrics}
 \label{sec:evalmetrics}
@@ -184,12 +326,3 @@ Transition diagram
         Autocorrelation, and thus ESS 
         Mixing of chains (visual) 
         Thinning of data perhaps 
-
-\section{ (TBD) helpful things (subequations, algorithms)}
-To write equations over multiple lines (like systems of equation or equations too long to fit the page), one can use the \textit{align} environment coupled to the \textit{subequations} environment like so
-\begin{subequations}
-\begin{align}
-    \mathbb{P}(0 \leadsto -a) &= D\int_0^\infty dt\, k_r e^{-k_r t}\int_0^t d\tau\,\partial_x u \big|_{x=-a}, \\
-    \mathbb{P}(0 \leadsto b) &= -D\int_0^\infty dt\, k_r e^{-k_r t}\int_0^t d\tau\,\partial_x u \big|_{x=b}.
-\end{align}
-\end{subequations}
