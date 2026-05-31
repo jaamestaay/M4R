@@ -285,20 +285,20 @@ Intuitively, the independent paradigm also suggests that every new site provides
 \label{sec:dependent}
 We turn our attention to the \textit{dependent paradigm}, where sites are not assumed to be generated independently from each other. The main implication of relaxing this assumption is that the decomposition in (\ref{eq:independentbreakdown}) is now invalid - we now have to consider how sites may interact with each other to determine the correct likelihood structure.
 
-While there are many approaches to construct such dependencies within simulated data $\mathbf{D}$, we focus our discussion on a methodology such that sites are generated in a hierarchial format. We construct $L$ tiers of data, where data from Tier $1$ refers to independently generated sites, while data from Tier $l = 2, ..., L$ are sites that are dependent on certain sites from Tier $l-1$. {\color{red} A diagram of the dependent data generation methodology is described in Figure \ref{fig:dependentgeneration}.} 
+While there are many approaches to construct such dependencies within simulated data $\mathbf{D}$, we focus our discussion on a methodology such that sites are generated in a hierarchial format. We construct $L$ tiers of data, where data from Tier $1$ refers to independently generated sites, while data from Tier $l = 2, ..., L$ are sites that are dependent on certain sites from Tier $l-1$. A diagram of the dependent data generation methodology is described in Figure \ref{fig:dependentgeneration}.
 
 \begin{figure}
     \centering
-    % Probably a tikz picture?
-    % \includegraphics[width=0.5\linewidth]{}
-    \caption{A hierarchial approach to dependent site generation with $L$ tiers.}
+    \includegraphics[width=1\linewidth]{report/figures/datageneration.png}
+    \caption{A hierarchial approach to dependent site generation with $L$ tiers that generations data $\mathbf{D}$.}
     \label{fig:dependentgeneration}
 \end{figure}
 
 This method thus requires us to answer two design questions:
 \begin{enumerate}
-    \item How does each site in Tier $l$ \textit{choose} which site (which we will call the \textit{parent} site) in Tier $l-1$ to depend on?
-    \item Upon choosing a parent site from Tier $l-1$, how is each dependent site (which we call the corresponding \textit{child} site) in Tier $l$ generated given the parent site?
+    \item How does each site in Tier $l$ \textit{choose} which site (which we will call the \textit{parent} site) in Tier $l-1$ to depend on? With reference to Figure 
+    \ref{fig:dependentgeneration}, how are the start- and end-points arrows defining dependencies on previous tiers and sizes $N_2, \dots, N_L$ determined?
+    \item Upon choosing a parent site from Tier $l-1$, how is each dependent site (which we call the corresponding \textit{child} site) in Tier $l$ generated given the parent site? With reference to Figure \ref{fig:dependentgeneration}, how do the arrows transmit dependencies from the site in the previous tier?
 \end{enumerate}
 The answers to these questions then define the manner in which data is generated, and thus how likelihoods will be calculated. For the purposes of this simulation study, we generate dependencies via the Zero-Inflated Poisson (ZIP), discussed in Section \ref{sec:zip}, and generate dependent site values by considering the product of the result of CTMC runs, discussed in Section \ref{sec:ctmcproduct}.
 
@@ -306,6 +306,68 @@ This method in particular is highly relevant to related works on dependent data.
 
 \subsection{ZIP Construction}
 \label{sec:zip}
+We start by specifying the \textit{Zero-Inflated Poisson} (ZIP) random variable which generates the hierarchial dependencies, which will in turn describe the sizes of each tier of data generated. 
+
+\begin{definition} [Zero-Inflated Poisson (ZIP)]
+    Let $X$ be a discrete random variable. $X$ is said to follow a Zero-Inflated Poisson with parameters $p \in [0, 1]$ and $\lambda \geq 0$, or $X \sim \text{ZIP}(p, \lambda)$ if its density is given by 
+    \begin{equation}
+    \label{eq:zip}
+        f_X(x) = \begin{cases} p + (1-p)\exp(-\lambda) & x= 0 \\
+        (1-p)\exp(-\lambda) \frac{\lambda^x}{x!} & x \neq 0
+        \end{cases}
+    \end{equation}
+    In other words, $X$ can be represented as a product of independent random variables $X = YZ$, where $Y \sim \text{Bernoulli}(1 - p), Z \sim \text{Poisson}(\lambda)$.
+\end{definition}
+
+While dependency structure within linguistics data is widely acknowledged \cite{Longobardi2016}, the exact relationship between sites is not as clearly defined. The use of a ZIP random variable, instead of other conventional distributions like the standard Poisson distribution, is a design choice made with the context of historical linguistics in mind. The ZIP random variable is the generative model of choice as we require a flexible yet parsimonious model that allows both the absence of dependencies but also the substantial heterogeneity in number of dependent sites generated by a given site. By increasing $p$ (and thus increasing the value of $\lambda$ such that their expected values remain constant), the model generates dependencies much more \textit{sparsely}: for a given site, there are either no dependencies at all, or there are many dependencies. An example can be found in Figure \ref{fig:sparsegeneration}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/sparsegeneration.png}
+    \caption{Sparse vs Dense Data Generation using the ZIP random variable, where boxes refer to sites. Note that the tier sizes used are for presentation purposes only: they need not be equal.}
+    \label{fig:sparsegeneration}
+\end{figure}
+
+\begin{proposition}
+    Let $X$ be a ZIP random variable with parameters $p$ and $\lambda$. Then:
+    \begin{align}
+        E(X) &= (1-p)\lambda =:\mu, \\
+        Var(X) &= (1-p)\lambda + p(1-p)\lambda^2 = \mu(1+p\lambda) =:\sigma^2
+    \end{align}
+\end{proposition}
+\begin{proof}
+    This result follows directly from decomposing the expectation and variance of a product of independent variables:
+    \begin{align}
+        E(X) &= E(YZ) \\
+        &= E(Y)E(Z) \\
+        &= (1-p)\lambda := \mu, \\
+        Var(X) &= Var(YZ) \\
+        &= E(Y^2Z^2) - (E(YZ))^2 \\
+        &= E(Y^2)E(Z^2) - (E(Y)E(Z))^2 \\
+        &= E(Y)E(Z^2) - (E(Y)E(Z))^2 \label{eq:squared} \\
+        &= (1-p)(\lambda + \lambda^2) - (1-p)^2\lambda^2 \\
+        &= (1-p)\lambda + p(1-p)\lambda^2 \\
+        &= \mu(1 + p\lambda),
+    \end{align}
+    where we used $E(Y^2) = E(Y)$ of a Bernoulli distribution to derive (\ref{eq:squared}).
+\end{proof}
+
+This method of generating dependent data can also be seen as a branching process starting with $L_1$ individuals, with offspring distribution $\mathbf{d} = (P(X = k))_{k\geq 0}$, where $X \sim \text{ZIP}(p, \lambda)$. As such, we can interpret dependent tiers (Tiers $2, \dots, L)$ as later generations of the initial generation (Tier $1$), thus reframing the issue of determining the properties of random variables $N_2, ..., N_L$ in the context of finding the size of the population at a given generation. We can thus use results from branching processes to determine the site of the dataset at a given tier $l$:
+
+\begin{proposition}
+    Suppose independent data is generated at tier $1$ with $N_1$ sites, where dependent data is generated via a branching process with offspring following a ZIP distribution. Then the site of tier $l$, given by $N_l$, is a random variable with mean and variance given as 
+    \begin{align}
+        E(N_l) &= N_1 \mu^{l-1}, \\
+        Var(N_l) &= \begin{cases}
+            N_1 \sigma^2 \mu^{l-2} \frac{\mu^{l-1}-1}{\mu-1} & \mu \neq 1\\
+            N_1 \sigma^2 (l-1) & \mu = 1.
+        \end{cases}
+    \end{align}
+\end{proposition}
+\begin{proof}
+    branching theory, cite \cite{Dubrow2016}
+\end{proof}
+
 {\color{red} define the ZIP poisson, FIND LITERATURE THAT DISCUSSES THIS MAYBE ON WIKIPEDIA, expectation and variance, maybe even a diagram if previous figure is not as descriptive on generation method}
 \subsection{CTMC Product Construction}
 \label{sec:ctmcproduct}
