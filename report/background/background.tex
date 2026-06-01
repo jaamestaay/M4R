@@ -59,7 +59,7 @@ This model, as with all tree priors, incorporates the linguistic assumption that
 \label{sec:ctmc}
 Having defined the tree prior, evolutionary models attempt to explain the presence or absence of sites across the languages of the model. Since the data is binary, we need only consider two types of states: the presence (1) or absence (0) of a site. As the model is defined on continuous time, the binary continuous-time Markov chain (CTMC) model is a natural method to define the evolutionary process.
 
-Several assumptions have to be made to employ such a model. Firstly, the evolutionary process assumes the Markov property (see Definition \ref{def:markov}), which can be clearly justified in the context of historical linguistics. This induces the infinitesimal rate (or \textit{generator}) matrix $\mathbf{G} := (g_{ij})$ (see Definition \ref{def:generator}), which results in a time-dependent transition probability matrix to be the entries of the matrix\footnote{See Appendix \ref{app:transprob} for full proof of \ref{eq:transitionmatrixevolution}.}:
+The process assumes the Markov property (see Definition \ref{def:markov}), which can be clearly justified in the context of historical linguistics. {\color{red} maybe justify this.} This induces the infinitesimal rate (or \textit{generator}) matrix $\mathbf{G} := (g_{ij})$ (see Definition \ref{def:generator}), which results in a time-dependent transition probability matrix to be the entries of the matrix\footnote{See Appendix \ref{app:transprob} for full proof of \ref{eq:transitionmatrixevolution}.}:
 \begin{equation}
 \label{eq:transitionmatrixevolution}
     \mathbf{P}(t) = \exp(\mathbf{G}t).
@@ -83,32 +83,34 @@ Several assumptions have to be made to employ such a model. Firstly, the evoluti
     where $g_{ij}$ represents the exponential rate of moving from state $i$ to state $j$ where $i \neq j$, and $q_{ii} = -\sum_{j\neq i} q_{ij}$ are the outgoing rates.
 \end{definition}
 
-The computation of these probabilities are key to calculating the likelihood $P(\mathbf{D} | T, \boldsymbol{\theta})$. To facilitate efficient computation, we assume the existence of a time-reversible stationary distribution $\boldsymbol{\pi} = (\pi_0 \ \pi_1)$, where 
+The computation of these probabilities are key to calculating the likelihood $P(\mathbf{D} | T, \boldsymbol{\theta})$. To facilitate efficient computation, we assume the existence of a unique time-reversible stationary distribution $\boldsymbol{\pi} = (\pi_0 \ \pi_1)$, where 
 \begin{equation}
 \label{eq:detailedbalance}
     \boldsymbol{\pi}\mathbf{G} = \mathbf{0}, \ \  \pi_0 (\mathbf{P}(t))_{01} = \pi_1 (\mathbf{P}(t))_{10} \ \forall t.
 \end{equation}
 
-While there are many other evolutionary models, we base our exploration in the binary CTMC model. The evolutionary model used in Gray and Atkinson's seminal paper \cite{Gray2003}, the model assumes that the data $\mathbf{D}$ follows the stationary distribution of the Markov chain described in Figure \ref{fig:markovchain}. This implies exactly two parameters for the evolutionary model, given by $\boldsymbol{\pi} = (\pi_0, \pi_1)$, where 
-\begin{equation}
-\label{eq:parameters}
-    \mathbf{G} = \beta\begin{pmatrix}
+While there are many other evolutionary models, we base our exploration in the binary CTMC model. The evolutionary model used in Gray and Atkinson's seminal paper \cite{Gray2003}, the model assumes that the data $\mathbf{D}$ follows the transition diagram described in Figure \ref{fig:markovchain}. This implies exactly two parameters for the evolutionary model, given by $\{q_{01}, q_{10}\}$, where 
+\begin{align}
+    \mathbf{G} &= \begin{pmatrix}
+        - & q_{01} \\ q_{10} & -
+    \end{pmatrix} = \beta\begin{pmatrix}
     - & \pi_0 \\ \pi_1 & -
-\end{pmatrix},
-\end{equation}
+    \end{pmatrix}, \label{eq:parameters} \\
+    \boldsymbol{\pi} &= (\pi_0, \pi_1) = \left(\frac{q_{01}}{q_{01}q_{10}}, \frac{q_{10}}{q_{01}q_{10}}\right),
+\end{align}
 where the $-$ are the conventional notation used implied diagonal entries as defined in Definition \ref{def:generator} and $\beta$ is a scalar constant \footnote{Equation \ref{eq:parameters}, that is, that the stationary distribution of a binary CTMC is proportional to the transition rates of the chain, is proven in Appendix \ref{app:stationaryprob}.}.
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{report/figures/ctmc.png}
-    \caption{Markov Chain Diagram of binary CTMC model.}
+    \caption{Transition Diagram of binary CTMC model.}
     \label{fig:markovchain}
 \end{figure}
 
 We are thus able to calculate the likelihood $P(\mathbf{D}|T, \boldsymbol{\theta})$ for the model. For the sake of demonstration, we illustrate the likelihood only for a single site $\mathbf{D}_i$, saving full derivations for $\mathbf{D}$ in Sections \ref{sec:independent} and \ref{sec:dependent}. Given the binary phylogenetic tree $T = (V, E, r)$ with $n$ observed languages, where sites evolve via a binary CTMC with generator $\mathbf{G}$ and stationary distribution $\boldsymbol{\pi}$, the likelihood for a site $\mathbf{D}_i$ is
 
 \begin{align}
-    P(\mathbf{D}_i | T, \mathbf{G}, \boldsymbol{\pi}) &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} P(\mathbf{D}_i, \mathbf{x}_W | T, \mathbf{G}, \boldsymbol{\pi}) \\
+    P(\mathbf{D}_i | T, \mathbf{G}) &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} P(\mathbf{D}_i, \mathbf{x}_W | T, \mathbf{G}, \boldsymbol{\pi}) \\
     &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} P(X_r = x_r) P(\mathbf{D}_i, \mathbf{x}_{W \setminus \{r\}} | T, \mathbf{G}, X_r = x_r) \\
     &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} P(X_r = x_r) \prod_{(u, v) \in E} P(X_v = x_v | X_u = x_u), 
 \end{align}
@@ -116,7 +118,7 @@ We are thus able to calculate the likelihood $P(\mathbf{D}|T, \boldsymbol{\theta
 where $X_u$ is the random variable of the state at node $u$, and we employed the Markov property of the CTMC model. As defined previously, the first term corresponds to the stationary distribution $\boldsymbol{\pi}$ This reduces the problem to calculating transition probabilities, where (\ref{eq:transitionmatrixevolution}) is most relevant. This gives the expression
 
 \begin{align}
-    P(\mathbf{D}_i | T, \mathbf{G}, \boldsymbol{\pi}) &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} \pi_{x_r} \prod_{(u, v) \in E} \mathbf{P}(t_{u\to v})_{x_u x_v} \\
+    P(\mathbf{D}_i | T, \mathbf{G}) &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} \pi_{x_r} \prod_{(u, v) \in E} \mathbf{P}(t_{u\to v})_{x_u x_v} \\
     &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} \pi_{x_r} \prod_{(u, v) \in E} \exp(\mathbf{G}t_{u\to v})_{x_u x_v} \label{eq:sitelikelihood}
 \end{align}
 
@@ -133,8 +135,8 @@ For a simulation study, the generation of data through such evolutionary process
 \LinesNumbered
 \KwInput{
     $T$, fixed topology tree with root $r$ of $n$ languages, where each edge $e := (u \to v)$ has branch length $t_e$, \\
-    $\mathbf{G}$, rate matrix with parameters $\beta\pi_0, \beta\pi_1$, \\
-    $\boldsymbol{\pi}$, stationary distribution of CTMC, \\
+    $\mathbf{G}$, CTMC generator with parameters $q_{01}, q_{10}$, \\
+    $\boldsymbol{\pi}$, stationary distribution of CTMC with generator $\mathbf{G}$, \\
     $S$, number of sites of data.
 }
 
@@ -166,13 +168,16 @@ For a simulation study, the generation of data through such evolutionary process
 \For{$i = 1, \dots, S$}{
     $\mathbf{D}_i \leftarrow$ \textit{SiteGeneration}($T$, $\mathbf{G}$, $\boldsymbol{\pi}$)
 }
+{\color{red} maybe include ascertainment.}
 
 \Return $\mathbf{D} = (\mathbf{D}_1 \cdots \mathbf{D}_S)$
 
 
- \caption{Data Generation from binary CTMC model}
- \label{algo:ctmcdatageneration}
+\caption{Data Generation from binary CTMC model.}
+\label{algo:ctmcdatageneration}
 \end{algorithm}
+
+We note an additional constraint in the context of historical linguistics: sites are excluded if they are absent in all languages considered. This means that if certain sites are generated as a zero matrix $\mathbf{0}$, a process of \textit{ascertainment} takes place, where these sites are removed \cite{hoffmann_bayesian_2021}. This decreases the number of sites that are generated within the data. In order to account for this practically, an inflated value of $S$ is set, before performing sampling without replacement to derive the dataset $\mathbf{D}^{n\times S}$.
 
 The binary CTMC model is highly favoured since it is highly parsimonious and is computationally tractable. The evolution model introduces few parameters as discussed above, making likelihood calculations and thus Bayesian phylogenetic inference more efficient. However, these constraints insert more assumptions about the homogeneity and memorylessness properties of transitions between only two states, which may be an oversimplification of the complexity of evolution in real languages. Studies have shown that more complex models such as the binary covarion model \cite{Tuffley1998} perform better on linguistic data through allowing slow and fast rates of change \cite{hoffmann_bayesian_2021}. 
 
@@ -272,14 +277,12 @@ Under the \textit{independent paradigm}, that is, where the conditional site ind
 We return to the likelihood calculations in (\ref{eq:sitelikelihood}). Clearly, on considering the full dataset $\mathbf{D}$, we can decompose the probability into a product of likelihood calculations at each site:
 \begin{align}
     P(\mathbf{D} | T, \boldsymbol{\theta}) &= \prod_{i=1}^S P(\mathbf{D}_i | T, \boldsymbol{\theta}) \\
-    &= \prod_{i=1}^S P(\mathbf{D}_i | T, \mathbf{G}, \boldsymbol{\pi}) \label{eq:independentbreakdown}
+    &= \prod_{i=1}^S P(\mathbf{D}_i | T, \mathbf{G}) \label{eq:independentbreakdown}
     %&= \prod_{i=1}^S \left[\sum_{\mathbf{x}^{(i)}_W \in \{0, 1\}^{|W|}} \pi_{x^{(i)}_r} \prod_{(u, v) \in E} \exp(\mathbf{G}t_{u\to v})_{x_u x_v}\right]
 \end{align}
-This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. 
+This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. This implies that the likelihood calculation has a time-complexity of $\mathcal{O}(nS)$, scaling linearly with respect to number of languages $n$ and number of sites $S$.  
 
 Intuitively, the independent paradigm also suggests that every new site provides an equal amount of information. As such, we can assume that as $S$ increases, the rate of increase of variance of sites should linearly increase. {\color{red} thinking if i should put in the effort to do this effective sample size thing. im too tired at this junction to think about math}.
-
-{\color{red} is it worth talking about the benefits here? probably not, but a light one if i think yes}
 
 \section{Dependent Paradigm}
 \label{sec:dependent}
@@ -334,6 +337,7 @@ While dependency structure within linguistics data is widely acknowledged \cite{
         E(X) &= (1-p)\lambda =:\mu, \\
         Var(X) &= (1-p)\lambda + p(1-p)\lambda^2 = \mu(1+p\lambda) =:\sigma^2
     \end{align}
+    \label{prop:zipevar}
 \end{proposition}
 \begin{proof}
     This result follows directly from decomposing the expectation and variance of a product of independent variables:
@@ -357,34 +361,261 @@ This method of generating dependent data can also be seen as a branching process
 \begin{proposition}
     Suppose independent data is generated at tier $1$ with $N_1$ sites, where dependent data is generated via a branching process with offspring following a ZIP distribution. Then the site of tier $l$, given by $N_l$, is a random variable with mean and variance given as 
     \begin{align}
-        E(N_l) &= N_1 \mu^{l-1}, \\
+        E(N_l) &= N_1 \mu^{l-1}, \label{eq:branche}\\
         Var(N_l) &= \begin{cases}
             N_1 \sigma^2 \mu^{l-2} \frac{\mu^{l-1}-1}{\mu-1} & \mu \neq 1\\
-            N_1 \sigma^2 (l-1) & \mu = 1.
-        \end{cases}
+            N_1 \sigma^2 (l-1) & \mu = 1
+        \end{cases} \label{eq:branchvar},
     \end{align}
+    where $\mu$ and $\sigma^2$ is as defined in Proposition \ref{prop:zipevar}.
 \end{proposition}
 \begin{proof}
-    branching theory, cite \cite{Dubrow2016}
+    We employ theory from branching processes \cite{Dubrow2016}, where our initial population is $N_1$:
+    \begin{align}
+        E(N_l) &= \sum_{k=0}^\infty E(N_l|N_{l-1} = k) P(N_{l-1}=k) \\
+        &= \sum_{k=0}^\infty E\left(\sum_{i=1}^{N_{l-1}} X^{(l-1)}_{i} | N_{l-1} = k\right) P(N_{l-1}=k) \\
+        &= \sum_{k=0}^\infty E\left(\sum_{i=1}^{k} X^{(l-1)}_{i}\right) P(N_{l-1}=k) \\
+        &= \sum_{k=0}^\infty k\mu P(N_{l-1}=k) \\
+        &= \mu E(N_{l-1}),
+    \end{align}
+    where $X^{(l-1)}_{i} \sim \text{ZIP}(p, \lambda)$ representing the realisation of the offspring distribution for a single site $i$ in generation $l-1$. This results in a recursive relationship that gives (\ref{eq:branche}) as required. Similarly, for variance,
+    \begin{align}
+        Var(N_l) &= Var(E(N_l | N_{l-1}) + E(Var(N_l|N_{l-1}), \\
+        E(N_l|N_{l-1} = k) &= \mu k, \\
+        Var(N_l|N_{l-1} = k) &= Var\left(\sum_{i=1}^k X^{(l-1)}_{i}\right) = \sum_{i=1}^k Var\left(X^{(l-1)}_{i}\right) = \sigma^2 k, \\
+        \implies Var(N_l) &=\mu^2 Var(N_{l-1}) + \sigma^2\mu^{l-2} \\
+        &= \begin{cases}
+            n\sigma^2 & \mu = 1\\
+            \sigma^2 \mu^{l-2}\frac{\sigma^2 - 1}{\mu - 1}]& \mu \neq1 
+        \end{cases}.
+    \end{align}
 \end{proof}
 
-{\color{red} define the ZIP poisson, FIND LITERATURE THAT DISCUSSES THIS MAYBE ON WIKIPEDIA, expectation and variance, maybe even a diagram if previous figure is not as descriptive on generation method}
+With these estimates of $N_l$, we are able to calculate the expected size of data given number of independent sites $N_1$, ZIP parameters $(p, \lambda)$ and number of tiers $L$. We also note that these calculations are performed before ascertainment as introduced in Section \ref{sec:ctmc}. As a result, we expect values of $N_l$ to be smaller due to the removal of $\mathbf{0}$ vector sites. 
+
 \subsection{CTMC Product Construction}
 \label{sec:ctmcproduct}
-{\color{red} Explanation of CTMC product. Derivation of transition diagram and thus exponential rates across two tiers (maybe more information needs to be derived?), and corresponding transition diagram. maybe something in between but im not sure. anyway end with the full algorithm for generating the data.}
+Next we turn to the second design question of Section \ref{sec:dependent} - determining the dependency approach. While there are many methods to create dependency, we do so by setting the dependent site as the product of two binary CTMCs, one of them being the parent site from the previous tier. More formally, for site $\mathbf{D}_{l, k}$ dependent on $\mathbf{D}_{l-1, j}$, we generate $\tilde{\mathbf{D}}_{l, k}$ via the same binary CTMC, and multiply the two vectors element-wise:
+\begin{equation}
+\label{eq:dependencystructure}
+    \mathbf{D}_{l, k} := \mathbf{D}_{l-1, j} \odot \tilde{\mathbf{D}}_{l, k},
+\end{equation}
+where we use $\odot$ as the element-wise product operator. This method was implemented for several reasons. Firstly, the method was chosen for its straightforward implementation in light of binary characters. Next, such a method which employs the same binary CTMC (with the same generator $\mathbf{G}$) reduces confounding factors, where any effects are caused by the dependency structure. Finally, sites will be present in a specific language if and only if both $(\mathbf{D}_{l-1, j})_i = (\mathbf{D}_{l, k})_i = 1$. This is consistent with Maddison's red/blue tail problem, where a given species would have to have a tail (set up as one site), as well as whether they have a blue or red tail \cite{Maddison1993}. 
+
+We now prove the overall process induced from such a data generation method is a (non-binary) CTMC. The proofs as stated below will focus on the dependency from an independent site to site dependent on it. All other dependencies can be derived in a similar fashion.
+\begin{proposition}
+\label{prop:ctmcprod}
+    Consider the data generation method in (\ref{eq:dependencystructure}) with generator $\mathbf{G} = \begin{pmatrix}
+         - & q_{01} \\
+         q_{10 } & - \end{pmatrix}$, 
+         then $\mathbf{B}_{l, k}:= \{\mathbf{D}_{l-1, j}, \tilde{\mathbf{D}}_{l, k}\}$ and is also a CTMC of states $\mathcal{S} := \{00, 01, 10, 11\}$, with generator
+    \begin{equation}
+    \label{eq:ctmcprodgenerator}
+    \mathbf{G}_{\text{prod}} = \begin{pmatrix}
+        - & q_{01} & q_{01} & 0 \\
+         q_{10} & - & 0 & q_{01} \\
+         q_{10} & 0 & - & q_{01} \\
+         0 & q_{10} & q_{10} & - \\
+    \end{pmatrix}.
+    \end{equation}
+\end{proposition}
+\begin{proof}
+    We consider the transition probabilities over time $\delta > 0$ through (\ref{eq:transitionmatrixevolution}) as a sum of matrices:
+    \begin{align}
+        \mathbf{P}(\delta) &= \exp(\mathbf{G}\delta) \\
+        &= \mathbf{I} + \delta \mathbf{G} + o(\delta) \label{eq:expandP}
+    \end{align}
+    where we use $o(\delta)$ similarly to Definition \ref{def:birthprocess} but in a matrix form. With the constructed process $\mathbf{D}_{l, k}:= \{\mathbf{D}_{l-1, j}, \tilde{\mathbf{D}}_{l, k}\}$, we consider the transition probabilities over time $\delta$ from state $x = (x_1, x_2)$ to $x' = (x_1', x_2')$:
+    \begin{align}
+        (\mathbf{P}_{\text{prod}}(\delta))_{x, x'} &= P(\mathbf{B}_{l, k, t + \delta} = x' | \mathbf{D}_{l, k, t} = x) \\
+        &= P(\mathbf{D}_{l-1, j, t+\delta} = x_1', \tilde{\mathbf{D}}_{l, k, t+\delta} = x_2' | \mathbf{D}_{l-1, j, t} = x_1, \tilde{\mathbf{D}}_{l, k, t} = x_2) \\
+        &= P(\mathbf{D}_{l-1, j, t+\delta} = x_1' | \mathbf{D}_{l-1, j, t} = x_1)P(\tilde{\mathbf{D}}_{l, k, t+\delta} = x_2' | \tilde{\mathbf{D}}_{l, k, t} = x_2) \\
+        &= (\mathbf{P}(\delta))_{x_1, x_1'}(\mathbf{P}(\delta))_{x_2, x_2'}.
+    \end{align}
+    This result shows that we can represent the resulting transition probabilities as a Kronecker product $\mathbf{P}_{\text{prod}}(\delta) = \mathbf{P}(\delta) \otimes \mathbf{P}(\delta)$ \cite{Kronecker}. Using (\ref{eq:expandP}), we have that
+    \begin{align}
+        \mathbf{P}_{\text{prod}}(\delta) &= \mathbf{P}(\delta) \otimes \mathbf{P}(\delta) \\
+        &= (\mathbf{I}_2  + \delta \mathbf{G} + o(\delta)) \otimes (\mathbf{I}_2 + \delta \mathbf{G} + o(\delta)) \\
+        &= \mathbf{I}_2  \otimes \mathbf{I}_2  + \delta(\mathbf{G} \otimes \mathbf{I}_2 ) + \delta(\mathbf{I}_2  \otimes \mathbf{G}) + \delta^2(\mathbf{G} \otimes \mathbf{G}) + o(\delta) \\
+        &=  \mathbf{I}_4 + \delta  (\mathbf{G} \otimes \mathbf{I}_2  + \mathbf{I}_2  \otimes \mathbf{G})+ o(\delta),
+    \end{align}
+    where $\mathbf{I}_n \in \mathbb{R}^{n \times n}$ is the identity matrix in the $n$-dimensional square matrix to avoid confusion of notation. It is then clear that via a similar expansion to retrieve (\ref{eq:expandP}), $\mathbf{G}_{\text{prod}} = (\mathbf{G} \otimes \mathbf{I}_2  + \mathbf{I}_2  \otimes \mathbf{G})$. We prove that this gives (\ref{eq:ctmcprodgenerator}):
+    \begin{align}
+        \mathbf{G} \otimes \mathbf{I}_2  &= \begin{pmatrix}
+            -q_{01}\mathbf{I}_2  & q_{01}\mathbf{I}_2  \\
+            q_{10}\mathbf{I}_2  & -q_{10}\mathbf{I}_2 
+        \end{pmatrix} \\
+        &= \begin{pmatrix}
+            -q_{01} & 0 & q_{01} & 0 \\
+            0 & -q_{01} & 0 & q_{01} \\
+            q_{10} & 0 & -q_{10} & 0 \\
+            0 & q_{10} & 0 & -q_{10} \\
+        \end{pmatrix}\label{eq:GxI}, \\
+        \mathbf{I}_2 \otimes \mathbf{G} &= \begin{pmatrix}
+            \mathbf{G} & \mathbf{0} \\
+            \mathbf{0} & \mathbf{G} 
+        \end{pmatrix} \\
+        &= \begin{pmatrix}
+            -q_{01} &  q_{01} & 0 & 0 \\
+            q_{10} & -q_{10} & 0 & 0 \\
+            0 & 0 & -q_{01} &  q_{01} \\
+            0 & 0 & q_{10} & -q_{10} \\
+        \end{pmatrix}\label{eq:IxG}.
+    \end{align}
+    The addition of (\ref{eq:GxI}) and (\ref{eq:IxG}) gives the result as required.
+\end{proof}
+
+{\color{red} Insert figure} A transition diagram of the resulting CTMC model can be found in Figure \ref{fig:ctmcprod}. We now derive the stationary distribution for such a model.
+
+\begin{proposition}
+    The unique stationary distribution of the resulting CTMC defined in Proposition \ref{prop:ctmcprod} with generator given in (\ref{eq:ctmcprodgenerator}) is
+    \begin{align}
+        \tilde{\boldsymbol{\pi}} &= \boldsymbol{\pi} \otimes \boldsymbol{\pi} \\
+        &= (\pi_0^2, \pi_0\pi_1, \pi_0\pi_1, \pi_1^2),
+    \end{align}
+    where $\boldsymbol{\pi} = (\pi_0, \pi_1)$ is the stationary distribution of the original CTMC defined in (\ref{eq:detailedbalance}).
+\end{proposition}
+\begin{proof}
+    We use properties of a Kronecker product to propose $\tilde{\boldsymbol{\pi}}$ as a stationary distribution of the CTMC derived in Proposition \ref{prop:ctmcprod}. We already know from (\ref{eq:detailedbalance}), $\boldsymbol{\pi}\mathbf{G} = \mathbf{0}$, and thus
+    \begin{align}
+        (\boldsymbol{\pi} \otimes \boldsymbol{\pi}) (\mathbf{G} \otimes \mathbf{I}_2 ) &= \mathbf{0} \otimes \boldsymbol{\pi} = \mathbf{0}, \\
+        (\boldsymbol{\pi} \otimes \boldsymbol{\pi}) (\mathbf{I}_2 \otimes \mathbf{G}) &=\boldsymbol{\pi} \otimes  \mathbf{0} = \mathbf{0}, \\
+        \implies \tilde{\boldsymbol{\pi}}\mathbf{G}_{\text{prod}} &= (\boldsymbol{\pi} \otimes \boldsymbol{\pi}) (\mathbf{G} \otimes \mathbf{I}_2 + \mathbf{I}_2 \otimes \mathbf{G}) \\
+        &= (\boldsymbol{\pi} \otimes \boldsymbol{\pi}) (\mathbf{G} \otimes \mathbf{I}_2) + (\boldsymbol{\pi} \otimes \boldsymbol{\pi})(\mathbf{I}_2 \otimes \mathbf{G}) = \mathbf{0}.
+    \end{align}
+    Thus $\tilde{\boldsymbol{\pi}}$ is a stationary distribution of the CTMC with generator $\mathbf{G}_{\text{prod}}$. We now consider the uniqueness of $\tilde{\boldsymbol{\pi}}$. Clearly all states are connected, making the Markov chain generated from the CTMC irreducible. Since the state space is finite, we have that the CTMC must admit a unique stationary distribution {\color{red} citation required}.
+\end{proof}
+
+We note that when considering the dependent site $\mathbf{D}_{l, k}$, we compress the CTMC $\mathbf{B}_{l, k}$ as
+\begin{equation}
+    \mathbf{D}_{l, k} = \begin{cases}
+        0 & \mathbf{B}_{l, k} \in \{00, 01, 10\} \\
+        1 & \mathbf{B}_{l, k} \in \{11\}.
+    \end{cases}
+\end{equation}
+
+While this stochastic process is not a CTMC \footnote{It does not satisfy the Markov property. This statement is justified in Appendix {\color{red} i need to write this justification i think}.}, we note that the stationary distribution of the model does carry over as
+\begin{equation}
+    \breve{\boldsymbol{\pi}} = (1-\pi_1^2, \pi_1^2).
+\end{equation}
+
+We conclude this subsection with the full dependent data generation algorithm, presented in \ref{algo:dependentdatageneration}.
+
+\begin{algorithm}
+\SetAlgoLined
+\SetKwInOut{KwInput}{Input}
+\SetKwInOut{KwOutput}{Output}
+\SetKw{Return}{return}
+\SetKwProg{Fn}{Function}{}{end}
+\LinesNumbered
+\KwInput{
+    $T$, fixed topology tree with root $r$ of $n$ languages, where each edge $e := (u \to v)$ has branch length $t_e$, \\
+    $\mathbf{G}$, rate matrix with parameters $\beta\pi_0, \beta\pi_1$, \\
+    $\boldsymbol{\pi}$, stationary distribution of binary CTMC, \\
+    $N_1$, number of independent sites (Tier 1), \\
+    $L$, number of tiers, \\
+    $p$, probability of extra $0$s in the $\text{ZIP}$ random variable, \\
+    $\lambda$, the rate of the $\text{ZIP}$ random variable.
+}
+
+\BlankLine
+\KwOutput{$\mathbf{D} \in [0,1]^{n\times \hat{S}}$, where sites are columns $\mathbf{D}_1, \dots, \mathbf{D}_\hat{S}$.}
+\BlankLine
+% Independent Generation
+% For tier l, for site {l-1, i}, generate number of dependencies m
+% Generate m independent generations for tilde{d}, and set dependent data as product
+% combine all data together
+
+\Fn{DependentSiteGeneration($T$, $\mathbf{G}$, $\boldsymbol{\pi}$, $\mathbf{s}_{l-1}$)}{
+    Sample $\tilde{\mathbf{s}}$ via \textit{SiteGeneration}$(T, \mathbf{G}, \boldsymbol{\pi})$ (see Algorithm \ref{algo:ctmcdatageneration}); \\
+    \Return $\mathbf{s}_l := \mathbf{s}_{l-1} \odot \mathbf{s}'$;
+}
+\BlankLine
+
+\For{$i = 1, \dots, N_1$}{
+    $\mathbf{D}_i \leftarrow$ \textit{SiteGeneration}($T$, $\mathbf{G}$, $\boldsymbol{\pi}$);
+}
+$\mathbf{D}^{(1)} \leftarrow (\mathbf{D}_1 \cdots \mathbf{D}_{N_1})$;
+
+\For{$l = 2, ..., L$}{
+    $\mathbf{S} \leftarrow \mathbf{D}^{(l-1)}$; \\
+    $n_S =$ ncols($\mathbf{D}^{(l-1)}$); \\
+    \For{$\mathbf{s}_{i}^{(l-1)}$ in $\mathbf{S}$}{
+        Sample $n_i \sim \text{ZIP}(p, \lambda)$; \\
+        \For{$j = 1, ..., n_i$} {
+            $\mathbf{D}^{(l)}_{ij} \leftarrow$ \textit{DependentSiteGeneration($T$, $\mathbf{G}$, $\boldsymbol{\pi}$, $\mathbf{s}_{l-1}$)};
+        }
+    }
+    $\mathbf{D}^{(l)} \leftarrow (\mathbf{D}^{(l)}_{11} \cdots \mathbf{D}^{(l)}_{1n_1} \mathbf{D}^{(l)}_{21} \cdots \mathbf{D}^{(l)}_{n_Sn_L})$;
+}
+\Return $\mathbf{D} = (\mathbf{D}^{(1)} \cdots \mathbf{D}^{(L)});$
+
+
+ \caption{Dependent Data Generation using ZIP branching process and product of binary CTMCs.}
+ \label{algo:dependentdatageneration}
+\end{algorithm}
+
 \subsection{Likelihood Computation}
-{\color{red} probably want to do a high level breakdown of how the likelihood should decompose, and then consider the case where we only have two sites, one dependent on the other, as a proof of concept of how everything else should cascade down.}
+\label{sec:likelihoodcomp}
+having now discussed the intricacies of the dependent data generation model, we turn to analyse the difficulties of analysing the likelihood computations of such a model. Clearly, conditional site independence does not hold anymore, and we are not able to decompose the likelihood in a feasible manner. This comes with the additional cost of having to account for the latent CTMC variables that contribute to each dependent data generation. 
+
+Figure \ref{fig:dependentgeneration} provides a graphical interpretation, not just for understanding dependent data generation, but also of likelihood decomposition. This induces the dependency graph $\mathcal{G}$ (more precisely a directed acyclic graph), where edges (arrows) indicate how likelihoods of sites are dependent on another (parent) site. We present a high-level analysis that illustrates the complexity of likelihood computation under this model.
+
+Given dependency graph $\mathcal{G}$. We can decompose the likelihood by separating independent sites, given by sets of sites $\mathcal{I}$ and $\mathcal{D}$ respectively:
+\begin{align}
+     P(\mathbf{D} | T, \boldsymbol{\theta}) &= \prod_{i\in\mathcal{I}}P(\mathbf{D}_i|T, \boldsymbol{\theta})\prod_{j\in\mathcal{D}}P(\mathbf{D}_j|\mathcal{D}_{\text{pa}(j), T, \boldsymbol{\theta}}), \label{eq:dependentlikelihood} \\
+     P(\mathbf{D}_j|\mathcal{D}_{\text{pa}(j), T, \boldsymbol{\theta}}) &= \sum_{\tilde{\mathbf{D}}_{l, k}}\mathbbm{1}_{\{\mathbf{D_j} = D_{\text{pa}(j)} \odot \tilde{\mathbf{D}}_j\}}P\left(\tilde{\mathbf{D}}_{j}|T, \boldsymbol{\theta}\right),\label{eq:dependencyctmccalculation}
+\end{align}
+
+where $\mathbbm{1}$ is the indicator variable. The dependency structure thus induces statistical dependence between sites at both observed and parent nodes. This means that likelihood cannot be factorised site-wise, where exact likelihood evaluation requires considering the joint state of all sites within a dependency lineage. This increases the effective state space from a binary set of states to an exponentially increasing number of states, increasing the overall computational overhead of the calculation and thus the algorithm. Therefore, even with Felsenstein's pruning algorithm, the likelihood calculations make the dependency model infeasible for use.
+
 \subsection{Model Misspecification}
 \label{sec:misspecification}
-    {\color{red} Final bits about effective information if im going to talk about that. Attractiveness of the independent model - why would we even want to misspecify the model in the first place? it means the dependent model is too infeasibly difficult to explicitly calculate. thus what level of error are we willing to accept? yeah so i might want to make this its own section.}
+As seen in Section \ref{sec:independent}, the likelihood calculations decompose into simple evaluations using Felsenstein's algorithm. On the other hand, as seen in Section \ref{sec:likelihoodcomp}, the time-complexity of the dependency structure causes any model that requires likelihood evaluation to be infeasible. As such, while applying the model that assumes conditional site independence causes the model to be misspecified on dependent data, the model is still able to generate reconstructions of trees within a reasonable amount of computational runtime.
+
+However, there are several other reasons why a model assuming conditional site-independence may be preferred. Firstly, when fitting to real linguistic data, the dependency structure is usually unknown. This makes any meaningful application of model relaxing such an assumption require the user to manually specify the dependency structure $\mathcal{G}$, which often times requires many design choices and other assumptions about the data $\mathbf{D}$. On top of that, such a model requires a data generation algorithm as specified in this section thus far, which adds another design choice but also puts the model at risk of overparameterisation. In certain cases, where the size of data is small, this may cause identifiability issues and may be fundamentally impossible to apply since there are more parameters than sites.
+
+What remains to be seen, thus, is the effect of model misspecification under such models. While the assumption of conditoinal site independence yields substantial computational advantages, a model that is unable to recover the true tree $T^*$ with an acceptable level of accuracy has limited practical value. In other words, understanding the extent of the effect on reconstruction accuracy and bias in using the simplified model assuming conditional site independence allows one to understand the trade-offs involved in linguistic tree reconstruction. 
 
 \section{Evaluation Metrics}
 \label{sec:evalmetrics}
+We conclude this section with a discussion of evaluation metrics of both tree reconstruction and MCMC quality. The first section on tree recovery metrics (Section \ref{sec:treerecoverymetrics} considers methods for quantifying distances in the tree space $\mathcal{T}$, often dealing with a collection of trees $\tilde{T} := \{T_1, \dots, T_n\} \subseteq \mathcal{T}$ compared to some true tree $T^* \in \mathcal{T}$. The second section on MCMC diagnostics (Section \ref{sec:mcmcdiagnostics}) discusses the quantitative and qualitative methods to ensure the Markov chain is representative of the target posterior distribution $p^\star$ as detailed in Section \ref{sec:mcmc}.
 \subsection{Tree Recovery Metrics}
+\label{sec:treerecoverymetrics}
+To evaluate and compare the effects of violating conditional site-independence in linguistic data on phylogenetic tree reconstruction, it is essential to quantify discrepancies between a set of inferred trees $\tilde{T} := \{T_1, \dots, T_n\} \subseteq \mathcal{T}$ to the true tree $T^*$. While the space of trees $\mathcal{T}$ is a non-Euclidean space, there have been many specialised methods derived to quantify distances between trees. 
+
+The principal method for measuring distances between trees is the \textit{Robinson-Foulds} (RF) metric \cite{RF1981}. The method as defined in Definition \ref{def:rf} considers the clades formed in each tree and calculates the number of clades that only exist in one of the trees. The definition in (\ref{eq:rf}) is equivalent to $\text{RF}(T^*, T) = |\mathcal{C}(T^*)| + |\mathcal{C}(T)| - 2|\mathcal{C}(T^*) \cap \mathcal{C}(T)|$ \cite{Branco2024}. Clearly, a distance of zero between two trees with the same number of leaves implies that the trees have the same set of clades and are topologically equivalent, whereas larger RF distances will imply increasingly different tree structures.
+
+\begin{definition} [Robinson-Foulds Distance]
+\label{eq:rf}
+    The Robinson-Foulds (RF) Distance between two rooted trees $T$ and $T^*$, with unique labelling in leaves, is defined as
+    \begin{equation}
+        \label{eq:rf}
+        \text{RF}(T^*, T) = |\mathcal{C}(T^*) \setminus \mathcal{C}(T)| \cup |\mathcal{C}(T) \setminus\mathcal{C}(T^*)|,
+    \end{equation}
+    where $\mathcal{C}(T) := \{C(v) | v \in V\}$ is the set of all clades in rooted tree $T = (V, E, r)$.
+\end{definition}
+
+The RF distance is highly interpretable and simple to compute, the method is widely used to compare phylogenetic trees. However, the metric treats all clade disagreements equally, wherever the are on the tree. This method thus fails to consider biological or linguistic significance of clades \cite{Branco2024}. For the purposes of the simulation study contained within this thesis, the RF distance is still used as it is standard across literature and is a computationally efficient algorithm, fitting the needs of scalable experiments.
+
+Clearly, the RF distance has an upper bound (which is given as $2n-6$, for comparing trees of $n$ languages) \cite{Steel1993}. This allows us to compute the \textit{normalised RF} (nRF) distance, an extension of the RF distance \cite{Branco2024, Steel1993}, that normalises the RF-distance by its theoretical maximum, giving a distance score between $0$ and $1$ that allows comparison of pairs of trees with differing values of $n$. This is extremely useful in the context of the simulation study as detailed in Chapter \ref{sec:methods} as trees of varying sizes are compared.
+
+In addition to the RF distance, we consider a separate clade recovery metric, the \textit{clade recovery rate} {\color{red} this might be worth finding a citation for}, that measures the proportion of internal clades of $T^*$ that are recovered in inferred tree $T$. This is analogous to the recall metric in supervised machine learning contexts and can be defined as
+\begin{equation}
+\label{eq:claderecovery}
+    \text{CR} = \frac{|\mathcal{C}_{\mathcal{I}}(T^*) \cap \mathcal{C}_{\mathcal{I}}(T)|}{|\mathcal{C}_{\mathcal{I}}(T^*)|}
+\end{equation}
+
+{\color{red} if you find a paper that defines this then remove the machine learning thing.} Unlike RF distances, the method notably considers the set of all internal clades $\mathcal{C}_{\mathcal{I}}$ which thus explicitly evaluates the ability of the inference procedure to recover true groupings and thus explain distances in tree recovery more accurately. When considering a collection of trees $\tilde{T}$, one could then proportion the number of internal clades of $T^*$ that are \textit{highly} supported by $\tilde{T}$, that is, where the proportion of trees in $\tilde{T}$ that recover internal clade $c \in \mathcal{C}_{\mathcal{I}}(T^*)$ exceeds a threshold like $0.9$.
+
+Finally, it is worth considering how a collection of trees $\tilde{T}$ can be \textit{summarised} into a single tree for comparison. While these methods can be applied to all trees before considering the summary statistics of the values, another approach would be summarising the trees into some representative tree $\hat{T}$ before applying these methods. These methods are most common in Bayesian phylogenetic methods like MCMC {\color{red} insert citations that say this. lol}. 
+
+There are multiple (talk about MCC, Consensus as examples)
         Robinson-Foulds (RF) and nRF 
         Clade recovery (over 90\% of trees in posterior) 
         ... and maybe more if time allows 
 \subsection{MCMC Diagnostics}
+\label{sec:mcmcdiagnostics}
         Autocorrelation, and thus ESS 
         Mixing of chains (visual) 
         Thinning of data perhaps 
