@@ -740,3 +740,67 @@ abstract = {A metric on general phylogenetic trees is presented. This extends th
   pages = {126--141},
   doi = {10.1093/sysbio/42.2.126}
 }
+
+@article{OReilly2018,
+    author = {O’Reilly, Joseph E and Donoghue, Philip C J},
+    title = {The Efficacy of Consensus Tree Methods for Summarizing Phylogenetic Relationships from a Posterior Sample of Trees Estimated from Morphological Data},
+    journal = {Systematic Biology},
+    volume = {67},
+    number = {2},
+    pages = {354-362},
+    year = {2018},
+    month = {03},
+    abstract = {Consensus trees are required to summarize trees obtained through MCMC sampling of a posterior distribution, providing an overview of the distribution of estimated parameters such as topology, branch lengths, and divergence times. Numerous consensus tree construction methods are available, each presenting a different interpretation of the tree sample. The rise of morphological clock and sampled-ancestor methods of divergence time estimation, in which times and topology are coestimated, has increased the popularity of the maximum clade credibility (MCC) consensus tree method. The MCC method assumes that the sampled, fully resolved topology with the highest clade credibility is an adequate summary of the most probable clades, with parameter estimates from compatible sampled trees used to obtain the marginal distributions of parameters such as clade ages and branch lengths. Using both simulated and empirical data, we demonstrate that MCC trees, and trees constructed using the similar maximum a posteriori (MAP) method, often include poorly supported and incorrect clades when summarizing diffuse posterior samples of trees. We demonstrate that the paucity of information in morphological data sets contributes to the inability of MCC and MAP trees to accurately summarise of the posterior distribution. Conversely, majority-rule consensus (MRC) trees represent a lower proportion of incorrect nodes when summarizing the same posterior samples of trees. Thus, we advocate the use of MRC trees, in place of MCC or MAP trees, in attempts to summarize the results of Bayesian phylogenetic analyses of morphological data.},
+    issn = {1063-5157},
+    doi = {10.1093/sysbio/syx086},
+    url = {https://doi.org/10.1093/sysbio/syx086},
+    eprint = {https://academic.oup.com/sysbio/article-pdf/67/2/354/25092719/syx086.pdf},
+}
+
+@book{Gelman2013,
+  title={Bayesian Data Analysis, Third Edition},
+  author={Gelman, A. and Carlin, J.B. and Stern, H.S. and Dunson, D.B. and Vehtari, A. and Rubin, D.B.},
+  isbn={9781439840955},
+  lccn={2013039507},
+  series={Chapman \& Hall/CRC Texts in Statistical Science},
+  url={https://books.google.co.uk/books?id=ZXL6AQAAQBAJ},
+  year={2013},
+  publisher={Taylor \& Francis}
+}
+
+@article{Tracer,
+  author = {Rambaut, Andrew and Drummond, Alexei J. and Xie, Dong and Baele, Guy and Suchard, Marc A.},
+  title = {Posterior Summarisation in Bayesian Phylogenetics Using Tracer 1.7},
+  journal = {Systematic Biology},
+  year = {2018},
+  volume = {67},
+  number = {5},
+  pages = {901--904},
+  doi = {10.1093/sysbio/syy032}
+}
+
+@article{Tahiri2022,
+abstract = {Abstract
+Motivation
+Each gene has its own evolutionary history which can substantially differ from evolutionary histories of other genes. For example, some individual genes or operons can be affected by specific horizontal gene transfer or recombination events. Thus, the evolutionary history of each gene should be represented by its own phylogenetic tree which may display different evolutionary patterns from the species tree that accounts for the main patterns of vertical descent. However, the output of traditional consensus tree or supertree inference methods is a unique consensus tree or supertree.
+Results
+We present a new efficient method for inferring multiple alternative consensus trees and supertrees to best represent the most important evolutionary patterns of a given set of gene phylogenies. We show how an adapted version of the popular k-means clustering algorithm, based on some remarkable properties of the Robinson and Foulds distance, can be used to partition a given set of trees into one (for homogeneous data) or multiple (for heterogeneous data) cluster(s) of trees. Moreover, we adapt the popular Caliński–Harabasz, Silhouette, Ball and Hall, and Gap cluster validity indices to tree clustering with k-means. Special attention is given to the relevant but very challenging problem of inferring alternative supertrees. The use of the Euclidean property of the objective function of the method makes it faster than the existing tree clustering techniques, and thus better suited for analyzing large evolutionary datasets.
+Availability and implementation
+Our KMeansSuperTreeClustering program along with its C++ source code is available at: https://github.com/TahiriNadia/KMeansSuperTreeClustering.
+Supplementary information
+Supplementary data are available at Bioinformatics online.},
+author = {Tahiri, Nadia and Fichet, Bernard and Makarenkov, Vladimir},
+address = {England},
+copyright = {The Author(s) 2022. Published by Oxford University Press. All rights reserved. For permissions, please e-mail: journals.permissions@oup.com 2022},
+issn = {1367-4803},
+journal = {Bioinformatics},
+keywords = {Algorithms ;  Cluster analysis ;  Phylogeny ;  Software},
+language = {eng},
+number = {13},
+pages = {3367-3376},
+publisher = {Oxford University Press},
+title = {Building alternative consensus trees and supertrees using k-means and Robinson and Foulds distance},
+volume = {38},
+year = {2022},
+}
+
