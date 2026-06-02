@@ -1,16 +1,163 @@
 \chapter{Methods}
 \label{sec:methods}
+Having laid out the foundations of historical linguistics and Bayesian phylogenetic analysis, we turn our focus to assessing the impact of violating the conditional site independence assumption of the model. Two questions were raised in Section \ref{sec:qns} to study this, namely:
+\begin{enumerate}
+    \item How does an increased proportion of site-dependent data affect tree reconstruction? That is, given data of fixed size $S$ on $n$ related languages, how does (unknown) site dependence affect reconstruction of true tree $T^*$?
+    \item How does adding dependent data to independent data affect reconstruction? That is, given data that maintains site independence of size $S$ on $n$ related languages, how does adding data that is known to be site-dependent affect reconstruction of the true tree $T^*$?
+\end{enumerate}
+
+As considered in Chapter \ref{sec:background}, applying a model that does not assume independence to linguistic data causes likelihood calculations to be infeasible. As such, the study of model misspecification is relevant here. Question 1 aims to consider the impact of applying the model to data without knowing the true dependency structure of the data. This scenario is usually the case when fitting the model real linguistics data, as these dependencies are not only present but difficult to define without prior knowledge. Question 2, on the other hand, serves as a guide in situations where data is \textit{known} to have a clear dependency structure, such as in the example provided by Buckley et al. \cite{Buckley2025}, on whether including data that is misspecified by the model will affect tree reconstruction.
+
+This section aims to explain the methods conducted in the simulation study to answer these questions. The design is split into two \textit{experiments} that look to provide results that explain their respective questions. The data generation methods and simulatin design for both experiments are described, before considering the implementation of Bayesian phylogenetic analysis. Finally, several validation results are shown to provide a basis for the results that follow in Chapter \ref{sec:results}. The full implementation of the simulation study can be found in this \hyperlink{https://github.com/jaamestaay/M4R}{Github repository.}
 
 \section{Simulation Design}
-\subsection{Experiment 1} % I should name these things instead of 1 and 2
-    Answering (1) % ELABORATE ON DESIGN AS CLEARLY AS POSSIBLE
+\label{sec:simdesign}
+\subsection{Experiment 1}
+Experiment 1 serves to answer Question 1 of the simulation study, that is, how manipulating proportion of site-dependent data $q$. As such, for a fixed size $S$ of data across $n$ related languages, a proportion of the data will be set as \textit{independent} data, while the remaining proportion of data will be generated via the \textit{dependent} generation method described by Section \ref{sec:dependent}. 
+
+Additionally, within the dependent data generated, we vary the amount of tiers of the dependency scheme to consider the impact of the \textit{depth} of dependency of data as well. Given a fixed number of tiers $L$ (of which there are $L-1$ tiers that are generated with dependence), the dependent component is uniformly distributed across the $L-1$ dependent tiers. An algorithm detailing the dependent data generation in the context of Experiment 1 can be found in Algorithm \ref{algo:exp1datageneration}.
+
+\begin{algorithm}
+\SetAlgoLined
+\SetKwInOut{KwInput}{Input}
+\SetKwInOut{KwOutput}{Output}
+\SetKw{Return}{return}
+\SetKwProg{Fn}{Function}{}{end}
+\LinesNumbered
+\KwInput{
+    $T^*$, true topology tree with root $r$ of $n$ languages, \\
+    $\mathbf{G}$, rate matrix with parameters $\beta\pi_0, \beta\pi_1$, \\
+    $\boldsymbol{\pi}$, stationary distribution of binary CTMC, \\
+    $S$, total number of sites, \\
+    $q$, proportion of sites to be independent, \\
+    $L$, number of tiers, \\
+    $p$, probability of extra $0$s in the $\text{ZIP}$ random variable, \\
+    $\lambda$, the rate of the $\text{ZIP}$ random variable.
+}
+
+\BlankLine
+\KwOutput{$\mathbf{D} \in [0,1]^{n\times S}$, where sites are columns $\mathbf{D}_1, \dots, \mathbf{D}_S$.}
+\BlankLine
+% \Fn{DependentSiteGeneration($T^*$, $\mathbf{G}$, $\boldsymbol{\pi}$, $\mathbf{s}_{l-1}$)}{
+%     Sample $\tilde{\mathbf{s}}$ via \textit{SiteGeneration}$(T^*, \mathbf{G}, \boldsymbol{\pi})$ (see Algorithm \ref{algo:ctmcdatageneration}); \\
+%     \Return $\mathbf{s}_l := \mathbf{s}_{l-1} \odot \mathbf{s}'$;
+% }
+% \BlankLine
+
+$N_{\text{dep}} \leftarrow \lfloor \frac{S(1-q)}{L-1} \rfloor$; \\
+$N_1 \leftarrow  S - N_{\text{dep}}*(L-1)$; \\
+
+\For{$i = 1, \dots, N_1$}{
+    $\mathbf{D}_i \leftarrow$ \textit{SiteGeneration}($T^*$, $\mathbf{G}$, $\boldsymbol{\pi}$); (see Algorithm \ref{algo:ctmcdatageneration})
+}
+$\mathbf{D}^{(1)} \leftarrow (\mathbf{D}_1 \cdots \mathbf{D}_{N_1})$;
+
+\For{$l = 2, ..., L$}{
+    $\mathbf{S} \leftarrow \mathbf{D}^{(l-1)}$; \\
+    $n_S =$ ncols($\mathbf{D}^{(l-1)}$); \\
+    \For{$\mathbf{s}_{i}^{(l-1)}$ in $\mathbf{S}$}{
+        Sample $n_i \sim \text{ZIP}(p, \lambda)$; \\
+        \For{$j = 1, ..., n_i$} {
+            $\mathbf{D}^{(l)}_{ij} \leftarrow$ \textit{DependentSiteGeneration($T^*$, $\mathbf{G}$, $\boldsymbol{\pi}$, $\mathbf{s}_{l-1}$)}; (see Algorithm \ref{algo:dependentdatageneration})
+        }
+    }
+    $\mathbf{M}^{(l)} \leftarrow (\mathbf{D}^{(l)}_{11} \cdots \mathbf{D}^{(l)}_{1n_1} \mathbf{D}^{(l)}_{21} \cdots \mathbf{D}^{(l)}_{n_Sn_L})$; \\
+    Sample $N_{dep}$ sites from $\mathbf{M}^{(l)}$ without replacement to form $\mathbf{D}^{(l)}$;
+}
+\Return $\mathbf{D} = (\mathbf{D}^{(1)} \cdots \mathbf{D}^{(L)});$
+ \caption{Dependent Data Generation for Experiment 1.}
+ \label{algo:exp1datageneration}
+\end{algorithm}
+
+It is worth noting that because of ascertainment, the algorithm may return a smaller than requested amount of data. As such, a larger sample is generated before sampling without replacement is conducted, as found in Line 16 and 17 of Algorithm \ref{algo:exp1datageneration}. As such, not all dependent data generated will be stored in the final data matrix $\mathbf{D}$. While this may distort the final dependency structure of the data (as opposed to the expected behaviour as found in Section \ref{sec:zip}), this approach ensures data generated contain the prescribed proportions of independent and dependent sites, which is the primary objective in this experiment.
+
+For a given true tree $T^*$ and fixed $S$, 13 sets of data are generated: where one set is completely independent (acting as the control), generated through Algorithm \ref{algo:ctmcdatageneration}, while the remaining sets have some combination of proportion of independent data $q$ and total number of tiers used $L$:
+\begin{equation}
+    q \in \mathcal{Q}, L \in \mathcal{L},
+\end{equation}
+generated through Algorithm \ref{algo:exp1datageneration}. We repeat the experiment, varying the number of sites: 
+\begin{equation}
+\label{eq:3.2}
+    S\in \mathcal{S},
+\end{equation} 
+for true tree $T^*$, before generating new trees:
+\begin{equation}
+\label{eq:3.3}
+    T^* \in \mathcal{T},
+\end{equation} for a given $n$, and finally varying number of languages considered:
+\begin{equation}
+\label{eq:3.4}
+    n \in \mathcal{N}.
+\end{equation}
+This factorial design allows for a complete variation of relevant parameters, studying how model misspecification impacts tree reconstruction in a wide array of settings. The full list of parameters chosen for the implementation of Experiment 1 is found in Appendix \ref{app:simulationparameters}.
+
 \subsection{Experiment 2}
-    Answering (2) % CAN USE FIGURES TO ILLUSTRATE DESIGN AS CLEARLY AS POSSIBLE
+Experiment 2 serves to answer Question 2 of the simulation study, that is, whether including dependent data affects tree reconstruction. Additionally, as there are a multitude of dependency structures even within the scheme described in Section \ref{sec:dependent}, it is worth considering how differences in parameters $(p, \lambda)$ affect tree reconstruction as well. 
+
+Under such an experimental setup, preserving the dependency structure of the model during data generation is essential. Additionally, in order to isolate the effects of different dependency structures, we require that all data generation methods generate similar amounts of data across all tiers, such that results are not systematically affected by the total number of sites generated. However, although ZIP random variables can have fixed expectations, through Propositions \ref{prop:zipevar} and \ref{prop:zipgeneration}, the variance of sparse data generation schemes will be larger than dense data generation schemes. We treat this as an intrinsic property of the model chosen and incorporate it into the analysis.
+
+A factorial design similar to Experiment 1 is adopted for a complete variation of relevant parameters. For a given true tree $T^*$ and fixed \textit{number of independent sites} $N_1$, 13 sets of data are generated: one set with 1 tier of $N_1$ independently generated sites through Algorithm \ref{algo:ctmcdatageneration}, while remaining sets are generated with dependent data sites using some dependency generation scheme $w \in \mathcal{W}$ and number of tiers used $L \in \mathcal{L}$, generated through Algorithm \ref{algo:dependentdatageneration}. In particular, the set of schemes $\mathcal{W}$ considered used ZIP random variables that have a fixed expected value of $\mu = 3$. The experiment is repeated for a given true tree $T^*$ by varying the number of independent sites $N_1 \in \mathbb{U}$. The experiment is then repeated in the same fashion as Experiment 1 in (\ref{eq:3.3}, \ref{eq:3.4}), and the full list of parameters chosen for this implementation can be found in Appendix \ref{app:simulationparameters}.
+
 \section{Implementation}
-        What data is collected from each run? explain cluster submission 
-        How is data compiled and processed? 
+
+In this section we consider the full pipeline for analysis, as detailed in Figure \ref{fig:pipeline}. Given the factorial design of the experiments, running simulations for every configuration of $\{\mathcal{S} \text{ or }  \mathcal{U}, \mathcal{T}, \mathcal{N}\}$ can quickly become infeasible. However, this can be easily implemented with parallelisation on a High Performance Computing (HPC) cluster, where a single job only generates a single true tree $T^*$ of fixed size $n$ with fixed data sizes. This reduces the total time taken for all runs to complete, allowing the experiments to be run without compromising on exploring the parameter space, the number of simulations performed, or the statistical reliability of the resulting analyses.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{report/figures/implementationflowchart.png}
+    \caption{Pipeline for data generation (left), analysis (center) and data post-processing (right). The boxes are colour-coded by programme used: Python in blue, BEAST in red, and R in green.}
+    \label{fig:pipeline}
+\end{figure}
+
+The methods described in Section \ref{sec:simdesign} are first implemented in Python to generate data. Having generated the relevant data required for each experiment, these datasets must be converted into relevant files that BEAST is able to read. 
+
+Upon completion of data generation, Bayesian phylogenetic analysis is performed through BEAST, where parallelisation can occur once again by running all datasets concurrently. All BEAST runs are performed to obtain $1,000,000$ samples, of which the samples are thinned to obtain $10,000$ remaining samples, where the first $10\%$ of samples are (quite generously) discarded as \texttt{burnin}. The programme generates a number of files, most notably the \texttt{.trees} and \texttt{.log} files, which provide information of the samples obtained in the analysis. Useful information for analysing tree reconstruction can be collected from these files, namely:
+\begin{itemize}
+    \item RF and nRF distances,
+    \item Clade recovery rates, and the proportion of well-recovered clades, and 
+    \item ESS statistics.
+\end{itemize}
+Due to the wealth of packages that exist in R for phylogenetic analysis such as \texttt{phangorn} \cite{R1, R2} and \texttt{phytools} \cite{R3}, the analysis is completed in R and exported as a CSV file. Finally, all results from all jobs are compiled in Python to generate a complete data file with the required data for analysis.
+
 \section{Validation of Simulation Framework}
-        [1] More (independent) data leads to better recovery (may be worth explaining mathematically why this is true)
-        [2] Show that dependent generation is as expected (graphs showing amount of data generated, especially in answering (2))
-        [3] Likelihood sanity checks? Probably need to think about this later when I actually do likelihood calculations
-        [4] Actually known trees and known data? although this is less useful
+We now consider several validation plots relevant to the simulation study. We first empirically justify the claim that larger amounts of (independent) data improves tree reconstruction of the Bayesian phylogenetic methods used. 
+
+Through Figure \ref{fig:val1nrf}, we note several observations about the reconstruction of trees with respect to independent data size. As expected, an increase in the amount of independent data does improve the model's ability to reconstruct the true tree $T^*$. It can also be seen that while the lines tend toward zero, it seems that $1,000$ sites and above are more than enough to reconstruct the trees. Additionally, we note that increasing amount of languages $n$, for a fixed number of sites $S$, decreases the model's ability to reconstruct trees accurately. This is intuitively true as well: as the tree space becomes more complex, more information is required to reliably perform reconstruction of the posterior distribution and thus obtain the true tree.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/val1/nRFvsSize.png}
+    \caption{Mean nRF vs Independent Data Size, varying amount of languages.}
+    \label{fig:val1nrf}
+\end{figure}
+
+{\color{red} i might need to do this for MCC and consensus too leh. maybe not idk. but i definitely want to place a `goal' line for what is considered ideal, 1.0 for clade recovery and 0.0 for nRF}
+
+The same can be seen in Figure \ref{fig:val1clade}, where larger datasets result in higher clade recovery. The same analysis put forward for Figure \ref{fig:val1nrf} for the effect of number of languages is applicable here too: a larger set of languages generally requires more information (and thus more sites) to recover clades within the true tree.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/val1/CladevsSize.png}
+    \caption{Clade Recovery Rate vs Independent Data Size, varying amount of languages.}
+    \label{fig:val1clade}
+\end{figure}
+
+We include a final figure for this first validation analysis, where we consider the ESS values of the runs conducted for this exercise. From Figure \ref{fig:val1ess}, it is clear that all runs meet the Tracer benchmark of an effective sample size of $200$. However, it is interesting to note that for all sizes of the set of languages considered, ESS appears to decrease past a certain amount of sites. One interpretation of this is that increasing the size of the data beyond a certain point leads to increased correlation between samples, perhaps due to the programme being limited to smaller, local moves due to a more complex likelihood landscape. However, as ESS values never drop below $200$, there is little evidence that these changes in ESS values have any significant impact on tree reconstruction.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/val1/ESSvsSize.png}
+    \caption{Effective Sample Size (ESS) vs Independent Data Size, varying amount of languages.}
+    \label{fig:val1ess}
+\end{figure}
+
+We turn to validating the theoretical results derived in Section \ref{sec:zip} of the mean and variance of ZIP variables. We do this by generating dependent data as per Algorithm \ref{algo:dependentdatageneration}, taking note of each tier's respective sizes before ascertainment. These are then plotted against the theoretical values described in Proposition \ref{prop:zipgeneration}. Additionally, we generate varying ZIP parameters $(p, \lambda)$ that give an expected value of $\mu = 3$. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/val2/val2_ZIP.png}
+    \caption{Mean and Variance of Tier Size against number of tiers, varying the number of independent sites $N_1$ and ZIP parameters $(p, \lambda)$. {\color{red} too wide. maybe just do two graphs instead of four graphs. that way you can also remove the noisy one in independent sites = 10.} }
+    \label{fig:val2}
+\end{figure}
+
+The results of this validation can be found in Figure \ref{fig:val2}. These results clearly show that the implementation of the ZIP random variable matches the theoretical expectation and variance of the branching process of $N_l$. In particular, each model's exponential growth in tier sizes, which is considered through the gradients of the graph Figure \ref{fig:val2}, matches the theoretical exponential growth of mean and variance predicted by Proposition \ref{prop:zipgeneration}. 

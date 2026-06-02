@@ -67,7 +67,7 @@ The process assumes the Markov property (see Definition \ref{def:markov}), which
 
 \begin{definition} [Markov Property \cite{Durrett2016}]
 \label{def:markov}
-    A continuous-time process $\{X_t\}_{t \geq 0}$ defined on state space $E = \{0, 1\}$ satisfies the Markov property if 
+    A continuous-time process $\{X_t\}_{t \geq 0}$ defined on state space $\mathcal{S} = \{0, 1\}$ satisfies the Markov property if 
     \begin{equation}
         P\left(X_{t_n} = i_n | X_{t_{n-1}} = i_{n-1}, \dots, X_{t_1} = i_{n-1}\right) = P\left(X_{t_n} = i_n | X_{t_{n-1}} = i_{n-1}\right),
     \end{equation}
@@ -282,7 +282,7 @@ We return to the likelihood calculations in (\ref{eq:sitelikelihood}). Clearly, 
 \end{align}
 This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. This implies that the likelihood calculation has a time-complexity of $\mathcal{O}(nS)$, scaling linearly with respect to number of languages $n$ and number of sites $S$.  
 
-%Intuitively, the independent paradigm also suggests that every new site provides an equal amount of information. As such, we can assume that as $S$ increases, the rate of increase of variance of sites should linearly increase. 
+The independent paradigm also suggests that every new site provides an equal amount of information. From (\ref{eq:independentbreakdown} we can infer that the log-likelihood and thus the Fisher information of the model is additive with respect to the number of sites $S$. This means that an increase in $S$ should be inversely proportionate to the variance of the estimates obtained by the model. In the context of Bayesian phylogenetic analysis, more sites $S$ increases the model's ability to reconstruct the true tree $T^*$ and lead to better estimates.
 
 \section{Dependent Paradigm}
 \label{sec:dependent}
@@ -359,6 +359,7 @@ While dependency structure within linguistics data is widely acknowledged \cite{
 This method of generating dependent data can also be seen as a branching process starting with $L_1$ individuals, with offspring distribution $\mathbf{d} = (P(X = k))_{k\geq 0}$, where $X \sim \text{ZIP}(p, \lambda)$. As such, we can interpret dependent tiers (Tiers $2, \dots, L)$ as later generations of the initial generation (Tier $1$), thus reframing the issue of determining the properties of random variables $N_2, ..., N_L$ in the context of finding the size of the population at a given generation. We can thus use results from branching processes to determine the site of the dataset at a given tier $l$:
 
 \begin{proposition}
+\label{prop:zipgeneration}
     Suppose independent data is generated at tier $1$ with $N_1$ sites, where dependent data is generated via a branching process with offspring following a ZIP distribution. Then the site of tier $l$, given by $N_l$, is a random variable with mean and variance given as 
     \begin{align}
         E(N_l) &= N_1 \mu^{l-1}, \label{eq:branche}\\
@@ -534,13 +535,13 @@ We conclude this subsection with the full dependent data generation algorithm, p
 % combine all data together
 
 \Fn{DependentSiteGeneration($T$, $\mathbf{G}$, $\boldsymbol{\pi}$, $\mathbf{s}_{l-1}$)}{
-    Sample $\tilde{\mathbf{s}}$ via \textit{SiteGeneration}$(T, \mathbf{G}, \boldsymbol{\pi})$ (see Algorithm \ref{algo:ctmcdatageneration}); \\
+    Sample $\tilde{\mathbf{s}}$ via \textit{SiteGeneration}$(T, \mathbf{G}, \boldsymbol{\pi})$; (see Algorithm \ref{algo:ctmcdatageneration}) \\
     \Return $\mathbf{s}_l := \mathbf{s}_{l-1} \odot \mathbf{s}'$;
 }
 \BlankLine
 
 \For{$i = 1, \dots, N_1$}{
-    $\mathbf{D}_i \leftarrow$ \textit{SiteGeneration}($T$, $\mathbf{G}$, $\boldsymbol{\pi}$);
+    $\mathbf{D}_i \leftarrow$ \textit{SiteGeneration}($T$, $\mathbf{G}$, $\boldsymbol{\pi}$); (see Algorithm \ref{algo:ctmcdatageneration})
 }
 $\mathbf{D}^{(1)} \leftarrow (\mathbf{D}_1 \cdots \mathbf{D}_{N_1})$;
 
@@ -580,9 +581,9 @@ where $\mathbbm{1}$ is the indicator variable. The dependency structure thus ind
 \label{sec:misspecification}
 As seen in Section \ref{sec:independent}, the likelihood calculations decompose into simple evaluations using Felsenstein's algorithm. On the other hand, as seen in Section \ref{sec:likelihoodcomp}, the time-complexity of the dependency structure causes any model that requires likelihood evaluation to be infeasible. As such, while applying the model that assumes conditional site independence causes the model to be misspecified on dependent data, the model is still able to generate reconstructions of trees within a reasonable amount of computational runtime.
 
-However, there are several other reasons why a model assuming conditional site-independence may be preferred. Firstly, when fitting to real linguistic data, the dependency structure is usually unknown. This makes any meaningful application of model relaxing such an assumption require the user to manually specify the dependency structure $\mathcal{G}$, which often times requires many design choices and other assumptions about the data $\mathbf{D}$. On top of that, such a model requires a data generation algorithm as specified in this section thus far, which adds another design choice but also puts the model at risk of overparameterisation. In certain cases, where the size of data is small, this may cause identifiability issues and may be fundamentally impossible to apply since there are more parameters than sites.
+However, there are several other reasons why a model assuming conditional site-independence may be preferred. Firstly, when fitting to real linguistic data, the dependency structure is usually unknown. This makes any meaningful application of model relaxing such an assumption require the user to manually specify the dependency structure $\mathcal{G}$, which often times requires many design choices and other assumptions about the data $\mathbf{D}$. On top of that, such a model requires a data generation algorithm as specified in this section thus far, which adds another design choice but also puts the model at risk of overparameterisation. In certain cases, where the size of data is small, this may cause identifiability issues and may be fundamentally impossible to apply since there are more parameters than sites. 
 
-What remains to be seen, thus, is the effect of model misspecification under such models. While the assumption of conditoinal site independence yields substantial computational advantages, a model that is unable to recover the true tree $T^*$ with an acceptable level of accuracy has limited practical value. In other words, understanding the extent of the effect on reconstruction accuracy and bias in using the simplified model assuming conditional site independence allows one to understand the trade-offs involved in linguistic tree reconstruction. 
+What remains to be seen, thus, is the effect of model misspecification under such models. While the assumption of conditional site independence yields substantial computational advantages, a model that is unable to recover the true tree $T^*$ with an acceptable level of accuracy has limited practical value. Additionally, as seen from (\ref{eq:dependencyctmccalculation}), if sites do exhibit dependency structure, marginal information obtained by including these sites is considerably lower than independent sites, thus decreasing the \textit{effective size} of the dataset obtained. Blindly applying an model with this independence assumption would then inflate confidence or introduce bias in estimates as the model assumes a larger amount of information can be gained from the data. In other words, understanding the extent of the effect on reconstruction accuracy and bias in using the simplified model assuming conditional site independence allows one to understand the trade-offs involved in linguistic tree reconstruction. 
 
 \section{Evaluation Metrics}
 \label{sec:evalmetrics}
@@ -594,7 +595,7 @@ To evaluate and compare the effects of violating conditional site-independence i
 The principal method for measuring distances between trees is the \textit{Robinson-Foulds} (RF) metric \cite{RF1981}. The method as defined in Definition \ref{def:rf} considers the clades formed in each tree and calculates the number of clades that only exist in one of the trees. The definition in (\ref{eq:rf}) is equivalent to $\text{RF}(T^*, T) = |\mathcal{C}(T^*)| + |\mathcal{C}(T)| - 2|\mathcal{C}(T^*) \cap \mathcal{C}(T)|$ \cite{Branco2024}. Clearly, a distance of zero between two trees with the same number of leaves implies that the trees have the same set of clades and are topologically equivalent, whereas larger RF distances will imply increasingly different tree structures.
 
 \begin{definition} [Robinson-Foulds Distance]
-\label{eq:rf}
+\label{def:rf}
     The Robinson-Foulds (RF) Distance between two rooted trees $T$ and $T^*$, with unique labelling in leaves, is defined as
     \begin{equation}
         \label{eq:rf}
