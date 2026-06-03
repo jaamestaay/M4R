@@ -1,12 +1,27 @@
 \chapter{Additional Mathematical Derivations}
 
-{\color{red} preamble}
+In this appendix, we consider mathematical derivations of results used throughout the thesis. These were derivations that were not relevant to the main thrust of considering the violation of conditional site-independence in models, and thus were omitted from the main text and included here.
 
-\section{Transition Probabilities of Continuous-Time Markov Chain}
-\label{app:transprob}
 
 \section{Stationary Distribution of CTMC}
 \label{app:stationaryprob}
+Here we prove that the binary CTMC found in Figure \ref{fig:markovchain} has stationary distribution \begin{equation}
+\label{eq:stationarydistributionpi}
+\boldsymbol{\pi} = (\pi_0, \pi_1) = \left(\frac{q_{10}}{q_{01}+q_{10}}, \frac{q_{01}}{q_{01}+q_{10}}\right).
+\end{equation}
+
+We start by considering $\mathbf{G}$. We note that any stationary distribution $\boldsymbol{\pi}$ satisfies $\boldsymbol{\pi}\mathbf{G} = \boldsymbol{0}$. Clearly, this is true of (\ref{eq:stationarydistributionpi}):
+\begin{align}
+    \boldsymbol{\pi}\mathbf{G} &= \begin{pmatrix}\frac{q_{10}}{q_{01}+q_{10}} & \frac{q_{01}}{q_{01}+q_{10}}\end{pmatrix} \begin{pmatrix}
+        -q_{01} & q_{01} \\ q_{10} & -q_{10}
+    \end{pmatrix} \\
+    &= \begin{pmatrix}\frac{-q_{10}q_{01} +  q_{01}q_{10}}{q_{01}+q_{10}} & \frac{q_{10}q_{01} - q_{01}q_{10}}{q_{01}q_{10}}\end{pmatrix} = \mathbf{0}.
+\end{align}
+
+Thus $\boldsymbol{\pi}$ is a stationary distribution of the CTMC with generator $\mathbf{G}$. We now consider the uniqueness of $\boldsymbol{\pi}$. Clearly both states are connected, making the Markov chain generated from the CTMC irreducible. Since the state space is finite, we have that the CTMC must admit a unique stationary distribution \cite{Douc2019}.
 
 \section{Markov Property for Stochastic Process $\mathbf{D}_{l, k}$}
 \label{app:ctmcprodmarkov}
+
+We now turn to consider the fact that $\mathbf{D}_{l, k}$, the resulting binary encoding of the element-wise product of dependency $\mathbf{D}_{l-1, j}$ and simulated CTMC $\tilde{\mathbf{D}}_{l, k}$ as considered by (\ref{eq:dependencystructure}) in Section \ref{sec:ctmcproduct}, is not in fact a CTMC, because it does not satisfy the Markov property. 
+

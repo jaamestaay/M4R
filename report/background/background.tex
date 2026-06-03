@@ -59,7 +59,7 @@ This model, as with all tree priors, incorporates the linguistic assumption that
 \label{sec:ctmc}
 Having defined the tree prior, evolutionary models attempt to explain the presence or absence of sites across the languages of the model. Since the data is binary, we need only consider two types of states: the presence (1) or absence (0) of a site. As the model is defined on continuous time, the binary continuous-time Markov chain (CTMC) model is a natural method to define the evolutionary process.
 
-The process assumes the Markov property (see Definition \ref{def:markov}), which can be clearly justified in the context of historical linguistics. {\color{red} maybe justify this.} This induces the infinitesimal rate (or \textit{generator}) matrix $\mathbf{G} := (g_{ij})$ (see Definition \ref{def:generator}), which results in a time-dependent transition probability matrix to be the entries of the matrix\footnote{\color{red}See Appendix \ref{app:transprob} for full proof of \ref{eq:transitionmatrixevolution}.}:
+The process assumes the Markov property (see Definition \ref{def:markov}), which can be clearly justified in the context of historical linguistics. {\color{red} maybe justify this.} This induces the infinitesimal rate (or \textit{generator}) matrix $\mathbf{G} := (g_{ij})$ (see Definition \ref{def:generator}), which results in a time-dependent transition probability matrix to be the entries of the matrix \cite{Anderson1991}:
 \begin{equation}
 \label{eq:transitionmatrixevolution}
     \mathbf{P}(t) = \exp(\mathbf{G}t).
@@ -94,11 +94,11 @@ While there are many other evolutionary models, we base our exploration in the b
     \mathbf{G} &= \begin{pmatrix}
         - & q_{01} \\ q_{10} & -
     \end{pmatrix} = \beta\begin{pmatrix}
-    - & \pi_0 \\ \pi_1 & -
+    - & \pi_1 \\ \pi_0 & -
     \end{pmatrix}, \label{eq:parameters} \\
-    \boldsymbol{\pi} &= (\pi_0, \pi_1) = \left(\frac{q_{01}}{q_{01}q_{10}}, \frac{q_{10}}{q_{01}q_{10}}\right),
+    \boldsymbol{\pi} &= (\pi_0, \pi_1) = \left(\frac{q_{10}}{q_{01}+q_{10}}, \frac{q_{01}}{q_{01}+q_{10}}\right),
 \end{align}
-where the $-$ are the conventional notation used implied diagonal entries as defined in Definition \ref{def:generator} and $\beta$ is a scalar constant \footnote{\color{red}Equation \ref{eq:parameters}, that is, that the stationary distribution of a binary CTMC is proportional to the transition rates of the chain, is proven in Appendix \ref{app:stationaryprob}.}.
+where the $-$ are the conventional notation used implied diagonal entries as defined in Definition \ref{def:generator} and $\beta = {q_{01} + q_{10}}$ is a scalar constant \footnote{Equation \ref{eq:parameters}, that is, that the stationary distribution of a binary CTMC is proportional to the transition rates of the chain, is proven in Appendix \ref{app:stationaryprob}.}.
 
 \begin{figure}
     \centering
