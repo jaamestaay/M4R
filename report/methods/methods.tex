@@ -120,6 +120,7 @@ Upon completion of data generation, Bayesian phylogenetic analysis is performed 
 Due to the wealth of packages that exist in R for phylogenetic analysis such as \texttt{phangorn} \cite{R1, R2} and \texttt{phytools} \cite{R3}, the analysis is completed in R and exported as a CSV file. Finally, all results from all jobs are compiled in Python to generate a complete data file with the required data for analysis.
 
 \section{Validation of Simulation Framework}
+\label{sec:validation}
 We now consider several validation plots relevant to the simulation study. We first empirically justify the claim that larger amounts of (independent) data improves tree reconstruction of the Bayesian phylogenetic methods used. 
 
 Through Figure \ref{fig:val1nrf}, we note several observations about the reconstruction of trees with respect to independent data size. As expected, an increase in the amount of independent data does improve the model's ability to reconstruct the true tree $T^*$. It can also be seen that while the lines tend toward zero, it seems that $1,000$ sites and above are more than enough to reconstruct the trees. Additionally, we note that increasing amount of languages $n$, for a fixed number of sites $S$, decreases the model's ability to reconstruct trees accurately. This is intuitively true as well: as the tree space becomes more complex, more information is required to reliably perform reconstruction of the posterior distribution and thus obtain the true tree.
