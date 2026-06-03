@@ -19,7 +19,7 @@ do
         -o generated/experiment2/logs/out \
         -e generated/experiment2/logs/err \
         -v PREFIX=$PREFIX,METHOD=$METHOD,LEAVES=$LEAVES,SITES=$SITES,SEED=$SEED,OUTDIR=$OUTDIR \
-        setup_exp2/tree_comp.pbs)
+        setup_exp2/tree_comp_exp2.pbs)
       JOB_IDS+=("$JOB_ID")
     done
   done

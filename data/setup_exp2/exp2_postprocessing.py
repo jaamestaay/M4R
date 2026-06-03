@@ -7,7 +7,7 @@ seed_list = sys.argv[2].split(" ")
 sites_list = sys.argv[3].split(" ")
 
 def file_name_trees(leaves, seed, sites):
-    return f"experiment2/exp2_{leaves}_{seed}_{sites}/tree_comparison_results.csv"
+    return f"generated/experiment2/exp2_{leaves}_{seed}_{sites}/tree_comparison_results.csv"
 
 def process_data_trees(leaves, seed, sites, flag):
     data = pd.read_csv(file_name_trees(leaves, seed, sites))
@@ -18,7 +18,7 @@ def process_data_trees(leaves, seed, sites, flag):
     data['leaves'] = leaves
     data['independent_sites'] = sites
     data.to_csv(
-        "experiment2/postprocessing/exp2_combined_data.csv",
+        "generated/experiment2/postprocessing/exp2_combined_data.csv",
         mode="w" if flag else "a",
         header=flag,
         index=False
@@ -27,7 +27,7 @@ def process_data_trees(leaves, seed, sites, flag):
     #     print(file_name(leaves, seed, sites), data.shape[0])
 
 def file_name_sizes(leaves, seed, sites):
-    return f"experiment2/exp2_{leaves}_{seed}_{sites}/tier_sizes.csv"
+    return f"generated/experiment2/exp2_{leaves}_{seed}_{sites}/tier_sizes.csv"
 
 def process_data_sizes(leaves, seed, sites, flag):
     data = pd.read_csv(file_name_sizes(leaves, seed, sites))
@@ -35,7 +35,7 @@ def process_data_sizes(leaves, seed, sites, flag):
     data['leaves'] = leaves
     data['independent_sites'] = sites
     data.to_csv(
-        "experiment2/postprocessing/exp2_combined_sizes.csv",
+        "generated/experiment2/postprocessing/exp2_combined_sizes.csv",
         mode="w" if flag else "a",
         header=flag,
         index=False
