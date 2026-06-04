@@ -121,6 +121,8 @@ Due to the wealth of packages that exist in R for phylogenetic analysis such as 
 
 \section{Validation of Simulation Framework}
 \label{sec:validation}
+\subsection{Validation of Relationship between Data Size $S$ and Tree Reconstruction}
+\label{sec:sizevalidation}
 We now consider several validation plots relevant to the simulation study. We first empirically justify the claim that larger amounts of (independent) data improves tree reconstruction of the Bayesian phylogenetic methods used. 
 
 Through Figure \ref{fig:val1nrf}, we note several observations about the reconstruction of trees with respect to independent data size. As expected, an increase in the amount of independent data does improve the model's ability to reconstruct the true tree $T^*$. It can also be seen that while the lines tend toward zero, it seems that $1,000$ sites and above are more than enough to reconstruct the trees. Additionally, we note that increasing amount of languages $n$, for a fixed number of sites $S$, decreases the model's ability to reconstruct trees accurately. This is intuitively true as well: as the tree space becomes more complex, more information is required to reliably perform reconstruction of the posterior distribution and thus obtain the true tree.
@@ -132,8 +134,6 @@ Through Figure \ref{fig:val1nrf}, we note several observations about the reconst
     \label{fig:val1nrf}
 \end{figure}
 
-{\color{red} i might need to do this for MCC and consensus too leh.}
-
 The same can be seen in Figure \ref{fig:val1clade}, where larger datasets result in higher clade recovery. The same analysis put forward for Figure \ref{fig:val1nrf} for the effect of number of languages is applicable here too: a larger set of languages generally requires more information (and thus more sites) to recover clades within the true tree.
 
 \begin{figure}
@@ -143,7 +143,7 @@ The same can be seen in Figure \ref{fig:val1clade}, where larger datasets result
     \label{fig:val1clade}
 \end{figure}
 
-We include a final figure for this first validation analysis, where we consider the ESS values of the runs conducted for this exercise. From Figure \ref{fig:val1ess}, it is clear that all runs meet the Tracer benchmark of an effective sample size of $200$. However, it is interesting to note that for all sizes of the set of languages considered, ESS appears to decrease past a certain amount of sites. One interpretation of this is that increasing the size of the data beyond a certain point leads to increased correlation between samples, perhaps due to the programme being limited to smaller, local moves due to a more complex likelihood landscape. However, as ESS values never drop below $200$, there is little evidence that these changes in ESS values have any significant impact on tree reconstruction.
+We include a final figure for this first validation analysis, where we consider the ESS values of the runs conducted for this exercise. From Figure \ref{fig:val1ess} it is interesting to note that for all sizes of the set of languages considered, ESS appears to decrease past a certain amount of sites. One interpretation of this is that increasing the size of the data beyond a certain point leads to increased correlation between samples, perhaps due to the programme being limited to smaller, local moves due to a more complex likelihood landscape. Since there are instances in which ESS values drop below $200$, there is a reasonable probability of the Markov chain failing to reach stationarity, and thus we are required to remove these simulations from the analysis process.
 
 \begin{figure}
     \centering
@@ -152,6 +152,8 @@ We include a final figure for this first validation analysis, where we consider 
     \label{fig:val1ess}
 \end{figure}
 
+\subsubsection{Validation of ZIP variables}
+\label{sec:zipvalidation}
 We turn to validating the theoretical results derived in Section \ref{sec:zip} of the mean and variance of ZIP variables. We do this by generating dependent data as per Algorithm \ref{algo:dependentdatageneration}, taking note of each tier's respective sizes before ascertainment. These are then plotted against the theoretical values described in Proposition \ref{prop:zipgeneration}. Additionally, we generate varying ZIP parameters $(p, \lambda)$ that give an expected value of $\mu = 3$. 
 
 \begin{figure}

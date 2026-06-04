@@ -8,34 +8,28 @@ In a similar vein to Section \ref{sec:validation}, the metrics of concern are th
 We note, however, as the factorial design covers analysis across a variety of parameters in the parameter space, we present relevant cases of value that portray the general trend observed throughout the study. We show the full results in Appendix \ref{app:fullresults}.
 
 \section{Experiment 1}
-We first study changes in nRF of the posterior sample in Experiment 1 which can be found in Figure \ref{fig:exp1nrfmainsmall}. We can note clear 
+We first study changes in nRF of the posterior sample in Experiment 1 which can be found in Figure \ref{fig:exp1nrfmainsmall}. We can note a clear distinction between the independent control data and any of the dependent data used for tree reconstruction: virtually any amount of data that violates site independence seems to \textit{contaminate} the reconstruction, with nRF values always increasing. On the other hand, however, the proportion of site-dependent data does not impact nRF values as much, varying minimally across the total number of tiers used. These differences in tree reconstruction quality are expected: having a higher proportion of data that satisfies conditional site independence reproduces psoterior samples that have smaller nRF values. Additionally, we note the increase in uncertainty shown in the 95\% confidence regions of the nRF. {\color{red} it could be that the model is able to then pick up on this dependency structure and account for it in uncertainty?} Figure \ref{fig:exp1clademainsmall} tells a similar story: data that violates conditional site independence is clearly unable to recover as many internal clades as in the control, yet proportion of site dependency does not contribute as much to this decrease.
 
-{\color{red} make sure the images are all scaled properly so we can do comparison more realistically.}
+Moreover, we see that the effects of violating conditional site independence on tree reconstruction are more dramatic where the total number of sites $S$ is low. In Figure \ref{fig:exp1nrfmainsmall}, the biggest increase in nRF is where there $S$ is low, increasing by 0.13-0.17, while the nRF barely changes where $S$ is large. In Figure \ref{fig:exp1clademainsmall}, where $S=50$, there is a 7\% decrease in total clades recovered on average, whereas this drops to below 2\% where $S=5000$.
 
-\begin{figure}
+\begin{figure}[!htbp]
     \centering
-    \includegraphics[width=1\linewidth]{figures/exp1/small/nRFvsProportion.png}
-    \caption{nRF of posterior samples against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\%. This is an excerpt of the larger data found in Figure \ref{fig:exp1nrfmain}.}
+    \includegraphics[width=1\linewidth]{figures/exp1/meannRF_small.png}
+    \caption{nRF of posterior samples against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\%. This is an excerpt of the larger plot found in Figure \ref{fig:exp1nrfmain}.}
     \label{fig:exp1nrfmainsmall}
 \end{figure}
 
-1a. nRF vs Proportion
-- virtually any amount of data that violates site independence which is contained within dataset $\mathbf{D}$ seems to \textit{contaminate} the reconstruction, with nRF values dropping off quickly from the independent control
-{- \color{red} if im able to get some numerical values for these differences that will be stellar}
-- it seems that the proportion of site-dependent data (as represented by the different lines) doesn't have that much of an affect, albeit a small decrease as proportion increases
-- these effects are more clearly seen in situations where total amount of data is low: where the amount of data is high, the negative effects of dependent data on tree reconstruction is low. 
-- The depth of dependency structure does not seem very important...
--- ... possibly due to the fact that the amount of information gained in a site with deeper dependency structure is similar to that of a site that is, say, only dependent on an independent site. 
-- Variance is not a key issue here: standard deviation intuitively decreases as the number of sites increases; we expect low data scenarios to be generally more uncertain on trees rather than in high data scenarios.
--- Throughout all plots of the figure we note the systematic depreciation of tree reconstruction performance of the model if the data generated has inherent dependency structures.
--- Clearly the limiting issue here is not the proportion of data that is dependent, but rather the amount of data. The largest gains across the dataset are not by fulfilling site independence throughout the data, but instead having more data, even if the data violates site-independence.
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/exp1/HighSupportCladesProp_small.png}
+    \caption{Clade Recovery Rate of posterior samples against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\%. This is an excerpt of the larger plot found in Figure \ref{fig:exp1clademain}.}
+    \label{fig:exp1clademainsmall}
+\end{figure}
 
-1b. Clade Recovery Rate vs Proportion
-- A practically similar story being portrayed. 
-- In fact, the biggest gains in clade recovery come from increasing the amount of total sites from 50 to 500 across all languages.
+These figures show that there are indeed marginal losses in tree reconstruction as a result of presuming the independence assumption on data that violates it. However, the limiting issue here is not the proportion of data that is dependent, but rather the amount of information obtained from the data. The largest improvements of tree reconstruction as found in Figures \ref{fig:exp1nrfmainsmall} and \ref{fig:exp1clademainsmall} are not by fulfilling site independence throughout the data, but instead by having a larger amount of data to start with, even if the data violates conditional site independence. These findings corroborate with the validation plots found in Figures \ref{fig:val1nrf} and \ref{fig:val1clade}.
 
-1c. ESS
-- Dependency of data largely does not affect quality of samples. Only situation where this is at risk of going below 200 is where the tree is complex (say $n = 50$) but amount of sites is limited. This is all the analysis that i will need to do on this topic i think.
+We turn to the analyses of the MCC and Consensus trees.
+
 
 1d. nRF (MCC, Consensus)
 - It seems that the consensus tree actually performs the best out of all of them. But that could be because consensus trees are allowed to multifurcate where exact clade structures of the model are uncertain. RF typically rewards making conservative claims, which thus allows the nRF to perform much better than the posterior trees or MCC tree which are forced to make decisions on bifurcating structure for a given true tree $T^*$. Otherwise, no other differences.
