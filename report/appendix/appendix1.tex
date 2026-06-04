@@ -62,7 +62,9 @@ No. & Meaning & No. & Meaning & No. & Meaning & No. & Meaning & No. & Meaning \\
 Here we present the full results of the simulation study, as opposed to the summarised findings in Chapter \ref{sec:results}. We note that most findings and discussions are similar to that of Chapters \ref{sec:results} and \ref{sec:discussion}, where interesting points (which are not particularly relevant) not brought up prior will be discussed here.
 
 \subsection{Experiment 1}
-Here we present the full results of Experiment 1.  Figures \ref{fig:exp1nrfmain} and \ref{fig:exp1clademain} describe how the respective metrics are affected where a proportion of the data $\mathbf{D}$ have dependency structures, where the quality of the MCMC methods are also considered in Figure \ref{fig:exp1ess}. Finally, each of the metrics are also tested on the consensus and MCC trees of each run as found in Figures \ref{fig:exp1nrfcons}, \ref{fig:exp1cladecons}, \ref{fig:exp1nrfmcc} and \ref{fig:exp1clademcc}.
+Here we present the full results of Experiment 1.  Figures \ref{fig:exp1nrfmain} and \ref{fig:exp1clademain} describe how the respective metrics are affected where a proportion of the data $\mathbf{D}$ have dependency structures
+% , where the quality of the MCMC methods are also considered in Figure \ref{fig:exp1ess}
+. Each of the metrics are also tested on the consensus and MCC trees of each run as found in Figures \ref{fig:exp1nrfcons}, \ref{fig:exp1cladecons}, \ref{fig:exp1nrfmcc} and \ref{fig:exp1clademcc}.
 
 \begin{figure}[b]
     \centering
@@ -78,26 +80,24 @@ Here we present the full results of Experiment 1.  Figures \ref{fig:exp1nrfmain}
     \label{fig:exp1clademain}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{figures/exp1/jointESS.png}
-    \caption{ESS Values of runs against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red).}
-    \label{fig:exp1ess}
-\end{figure}
-
-We note that Figures \ref{fig:exp1nrfmain} and \ref{fig:exp1clademain} practically tell the same story as seen in Section \ref{sec:discussionexp1}. {\color{red} honestly not sure how much i need to talk about this.}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1\linewidth]{figures/exp1/jointESS.png}
+%     \caption{ESS Values of runs against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red).}
+%     \label{fig:exp1ess}
+% \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{figures/exp1/nRFConsensus.png}
-    \caption{nRF of Consensus Tree against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red).}
+    \caption{nRF of MRC Tree against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red).}
     \label{fig:exp1nrfcons}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{figures/exp1/CladeRecoveryConsensus.png}
-    \caption{Clade Recovery Rate of Consensus Tree against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red).}
+    \caption{Clade Recovery Rate of MRC Tree against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red).}
     \label{fig:exp1cladecons}
 \end{figure}
 
@@ -116,7 +116,9 @@ We note that Figures \ref{fig:exp1nrfmain} and \ref{fig:exp1clademain} practical
 \end{figure}
 
 \subsection{Experiment 2}
-Similarly to Experiment 1, the full results of Experiment 2 are presented here. Figures \ref{fig:exp2nrfmain} and \ref{fig:exp2clademain} describe the effect on metrics when dependent data are added to independent data. Figure \ref{fig:exp2ess} considers the effect of model misspecification on MCMC quality. The metrics are also tested on the consensus and MCC trees for each BEAST run as found in Figures \ref{fig:exp2nrfcons}, \ref{fig:exp2cladecons}, \ref{fig:exp2nrfmcc} and \ref{fig:exp2clademcc}.
+Similarly to Experiment 1, the full results of Experiment 2 are presented here. Figures \ref{fig:exp2nrfmain} and \ref{fig:exp2clademain} describe the effect on metrics when dependent data are added to independent data. 
+% Figure \ref{fig:exp2ess} considers the effect of model misspecification on MCMC quality. 
+The metrics are also tested on the consensus and MCC trees for each BEAST run as found in Figures \ref{fig:exp2nrfcons}, \ref{fig:exp2cladecons}, \ref{fig:exp2nrfmcc} and \ref{fig:exp2clademcc}.
 
 \begin{figure}
     \centering
@@ -132,24 +134,24 @@ Similarly to Experiment 1, the full results of Experiment 2 are presented here. 
     \label{fig:exp2clademain}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{figures/exp2/jointESS.png}
-    \caption{ESS of posterior sample against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue).}
-    \label{fig:exp2ess}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1\linewidth]{figures/exp2/jointESS.png}
+%     \caption{ESS of posterior sample against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue).}
+%     \label{fig:exp2ess}
+% \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{figures/exp2/nRFConsensus.png}
-    \caption{nRF of Consensus Tree against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue).}
+    \caption{nRF of MRC Tree against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue).}
     \label{fig:exp2nrfcons}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{figures/exp2/CladeRecoveryConsensus.png}
-    \caption{Clade Recovery Rate of Consensus Tree against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue).}
+    \caption{Clade Recovery Rate of MRC Tree against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue).}
     \label{fig:exp2cladecons}
 \end{figure}
 

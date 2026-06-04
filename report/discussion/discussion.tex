@@ -1,18 +1,28 @@
 \chapter{Discussion}
 \label{sec:discussion}
 
+Having summarised the key results of the simulation study in Chapter \ref{sec:results}, the results are interpreted in the this chapter to assess the impact of violating conditional site independence on Bayesian phylogenetic inference and to address the research questions posed in Section \ref{sec:qns}.
+
 \section{Experiment 1 - Impact of Dependence on Reconstruction Accuracy}
 \label{sec:discussionexp1}
+From the findings of Experiment 1, we answer the effects of applying Bayesian phylogenetic analysis on misspecified data - that is, data that does not satisfy conditional site independence. The principal result as detailed through Section \ref{sec:exp1results} is that any violation of the independence assumption hurts tree reconstruction accuracy, but the amount of dependence matters less. The drop in performance from data fully satisfying the assumption to any amount of dependent data is ubiquitous across Figures \ref{fig:exp1nrfmainsmall}, \ref{fig:exp1clademainsmall}, \ref{fig:exp1nrfcons}, \ref{fig:exp1cladecons}, \ref{fig:exp1nrfmcc} and \ref{fig:exp1clademcc}. This represents the primary fault of model misspecification as detailed in Section \ref{sec:misspecification}: by assuming conditional site independence, the likelihood evaluations assume that the data provides more (effective) information about true tree $T^*$, whereas the dependency structure decreases the effective information gained from all dependent samples. 
+
+However, it is notable that varying the depth of dependency has little effect on tree reconstruction. The relative invariance across depth of dependency structure suggests that the effective information derived from dependent sites are roughly equal, regardless of their depth. This can be explained by the fact that all dependencies are derived from a fixed proportion of the data set which is independently generated - thus all dependencies encode similar information that contributes to the independent site they inherit from. We can then note that the relevant quantity for reconstruction is not the total number of sites $S$ but rather the total number of independent sites $N_1$. This is seen through the differences in tree reconstruction quality between varying proportions of independent data, albeit having a smaller impact than the initial violation of conditional site independence.
+
+We note that across all dependency configurations, the main improvement in tree reconstruction quality is due to increasing $S$. For example, reconstructing true tree $T^*$ with $n$ languages will always perform better with $5000$ sites of data than $500$, even if the data violates conditional site independence. This means dependent sites do carry phylogenetic signal that, while less informative than independent sites, still contributes meaningfully to likelihood calculations and outweighs the losses from model misspecification in high data regimes. At large $S$, the posterior is already tightly concentrated around the true tree, and thus misspecification is practically irrelevant. On the contrary, the issues posed by model misspecification are most obvious in scenarios where only a small amount of data for this language exists. This extends the conclusion found in Section \ref{sec:sizevalidation}: obtaining a large amount of data is paramount to tree reconstruction, whether dependency structures exist within the data.
+
+Finally, we considered the differences in tree reconstruction for MRC and MCC trees. MRC trees tend to overperform with regards to nRF as the tree absorbs uncertainties into multifurcations rather than making clear choices. As such, under model misspecification, the posterior unknowingly inflates confidence in certain clades, which MRC is able to account for by practicing conservative clustering. On the other hand, MCC trees outperform MRC trees with regards to clade recovery since the MCC trees prioritise posterior probability which allows the model to retain true clades more often, even under misspecification. As such, the choice of summary tree should therefore be determined based on priorities, choosing MRC for overall tree reconstruction accuracy, while choosing MCC when clades and groups of languages are of interest.
+
 \section{Experiment 2 - Efficacy of Additional Dependent Data}
 \label{sec:discussionexp2}
 Answer questions
 Discuss tradeoffs 
 Discuss interesting results
 
-\section{Impact of Dependence on MCMC Behaviour}
-Across both sections
+\section{Impact of Data Dependence on MCMC Behaviour}
 
-it may not be very important to talk about this. so kiv
+
+Address the issue of lack of data being the primary problem with trees that do not reconstruct well!
 
 \section{Implications for Phylolinguistics}
-Implications for phylolinguistics
+Experiment 1: Keep this in mind: model misspecification causes worse tree reconstruction. {\color{red} so what? what should linguists keep in mind when they analyse linguistic data?}

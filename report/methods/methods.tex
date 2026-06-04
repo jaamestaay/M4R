@@ -116,7 +116,7 @@ Upon completion of data generation, Bayesian phylogenetic analysis is performed 
     \item RF and nRF distances,
     \item Clade recovery rates and the proportion of well-recovered clades, 
     \item ESS statistics, and
-    \item Representative (Consensus and MCC) trees, with the aforementioned metrics. 
+    \item Representative (MRC and MCC) trees, with the aforementioned metrics. 
 \end{itemize}
 Due to the wealth of packages that exist in R for phylogenetic analysis such as \texttt{phangorn} \cite{R1, R2} and \texttt{phytools} \cite{R3}, the analysis is completed in R and exported as a CSV file. Finally, all results from all jobs are compiled in Python to generate a complete data file with the required data for analysis.
 
@@ -144,7 +144,7 @@ The same can be seen in Figure \ref{fig:val1clade}, where larger datasets result
     \label{fig:val1clade}
 \end{figure}
 
-We include a final figure for this first validation analysis, where we consider the ESS values of the runs conducted for this exercise. From Figure \ref{fig:val1ess} it is interesting to note that for all sizes of the set of languages considered, ESS appears to decrease past a certain amount of sites. One interpretation of this is that increasing the size of the data beyond a certain point leads to increased correlation between samples, perhaps due to the programme being limited to smaller, local moves due to a more complex likelihood landscape. Since there are instances in which ESS values drop below $200$, there is a reasonable probability of the Markov chain failing to reach stationarity, and thus we are required to remove these simulations from the analysis process.
+We include a final figure for this first validation analysis, where we consider the ESS values of the runs conducted for this exercise. From Figure \ref{fig:val1ess} ESS appears to decrease for large datasets. One interpretation of this is that increasing the size of the data beyond a certain point leads to an overly-complex likelihood space, perhaps due to the programme being limited to smaller, local moves and thus increasing autocorrelation. Since there are instances in which ESS values drop below $200$, there is a reasonable probability of the Markov chain failing to reach stationarity, and thus we are required to remove these simulations from the analysis process.
 
 \begin{figure}
     \centering
