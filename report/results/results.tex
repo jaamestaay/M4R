@@ -10,19 +10,19 @@ We note, however, as the factorial design covers analysis across a variety of pa
 \section{Experiment 1}
 We first study changes in nRF of the posterior sample in Experiment 1 which can be found in Figure \ref{fig:exp1nrfmainsmall}. We can note a clear distinction between the independent control data and any of the dependent data used for tree reconstruction: virtually any amount of data that violates site independence seems to \textit{contaminate} the reconstruction, with nRF values always increasing. On the other hand, however, the proportion of site-dependent data does not impact nRF values as much, varying minimally across the total number of tiers used. These differences in tree reconstruction quality are expected: having a higher proportion of data that satisfies conditional site independence reproduces psoterior samples that have smaller nRF values. Additionally, we note the increase in uncertainty shown in the 95\% confidence regions of the nRF. {\color{red} it could be that the model is able to then pick up on this dependency structure and account for it in uncertainty?} Figure \ref{fig:exp1clademainsmall} tells a similar story: data that violates conditional site independence is clearly unable to recover as many internal clades as in the control, yet proportion of site dependency does not contribute as much to this decrease.
 
-Moreover, we see that the effects of violating conditional site independence on tree reconstruction are more dramatic where the total number of sites $S$ is low. In Figure \ref{fig:exp1nrfmainsmall}, the biggest increase in nRF is where there $S$ is low, increasing by 0.13-0.17, while the nRF barely changes where $S$ is large. In Figure \ref{fig:exp1clademainsmall}, where $S=50$, there is a 7\% decrease in total clades recovered on average, whereas this drops to below 2\% where $S=5000$.
+Moreover, we see that the effects of violating conditional site independence on tree reconstruction are more dramatic where the total number of sites $S$ is low. In Figure \ref{fig:exp1nrfmainsmall}, the biggest increase in nRF is where there $S$ is low, increasing by 0.12-0.18, while the nRF barely changes where $S$ is large. In Figure \ref{fig:exp1clademainsmall}, where $S=50$, there is a roughly 6\% decrease in total clades recovered on average, whereas this drops to below 2\% where $S=5000$.
 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=1\linewidth]{figures/exp1/meannRF_small.png}
-    \caption{nRF of posterior samples against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\%. This is an excerpt of the larger plot found in Figure \ref{fig:exp1nrfmain}.}
+    \caption{nRF of posterior samples against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red). This is an excerpt of the larger plot found in Figure \ref{fig:exp1nrfmain}.}
     \label{fig:exp1nrfmainsmall}
 \end{figure}
 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=1\linewidth]{figures/exp1/HighSupportCladesProp_small.png}
-    \caption{Clade Recovery Rate of posterior samples against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\%. This is an excerpt of the larger plot found in Figure \ref{fig:exp1clademain}.}
+    \caption{Clade Recovery Rate of posterior samples against depth of dependencies within each subplot, varying proportion of independent data from 20\% (blue) to 80\% (red). This is an excerpt of the larger plot found in Figure \ref{fig:exp1clademain}.}
     \label{fig:exp1clademainsmall}
 \end{figure}
 
