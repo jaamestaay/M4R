@@ -10,7 +10,7 @@ We note, however, as the factorial design covers analysis across a variety of pa
 \section{Experiment 1}
 {\color{red} it might be helpful to include a figure for the number of runs removed. kiv, not super important}
 
-We first study changes in tree reconstruction quality of the posterior sample in Experiment 1 which can be found in Figure \ref{fig:exp1nrfmainsmall}. We can note a clear distinction between the independent control data and any of the dependent data used for tree reconstruction: virtually any amount of data that violates site independence seems to \textit{contaminate} the reconstruction, with nRF values always increasing. On the other hand, however, the proportion of site-dependent data does not impact nRF values as much, varying minimally across the total number of tiers used. These differences in tree reconstruction quality are expected: having a higher proportion of data that satisfies conditional site independence reproduces psoterior samples that have smaller nRF values. Additionally, we note the increase in uncertainty shown in the 95\% confidence regions of the nRF. {\color{red} it could be that the model is able to then pick up on this dependency structure and account for it in uncertainty?} Figure \ref{fig:exp1clademainsmall} tells a similar story: data that violates conditional site independence is clearly unable to recover as many internal clades as in the control, yet proportion of site dependency does not contribute as much to this decrease.
+We first study changes in tree reconstruction quality of the posterior sample in Experiment 1. Figure \ref{fig:exp1nrfmainsmall} shows a clear distinction between the independent control data and any of the dependent data used for tree reconstruction: virtually any amount of data that violates site independence seems to \textit{contaminate} the tree reconstruction, with nRF values always increasing. On the other hand, however, the proportion of site-dependent data does not impact nRF values as much, varying minimally across the total number of tiers used. These differences in tree reconstruction quality are expected: having a higher proportion of data that satisfies conditional site independence reproduces psoterior samples that have smaller nRF values. Additionally, we note the increase in uncertainty shown in the 95\% confidence regions of the nRF. {\color{red} it could be that the model is able to then pick up on this dependency structure and account for it in uncertainty?} Figure \ref{fig:exp1clademainsmall} tells a similar story: data that violates conditional site independence is clearly unable to recover as many internal clades as in the control, yet proportion of site dependency does not contribute as much to this decrease.
 
 Moreover, we see that the effects of violating conditional site independence on tree reconstruction are more dramatic where the total number of sites $S$ is low. In Figure \ref{fig:exp1nrfmainsmall}, the biggest increase in nRF is where there $S$ is low, increasing by 0.12-0.18, while the nRF barely changes where $S$ is large. In Figure \ref{fig:exp1clademainsmall}, where $S=50$, there is a roughly 6\% decrease in total clades recovered on average, whereas this drops to below 2\% where $S=5000$.
 
@@ -41,4 +41,53 @@ We turn to the analyses of the MCC and Consensus trees. {\color{red}{edit this. 
 
 
 \section{Experiment 2}
-We turn our focus to 
+We now examine whether adding data that has a known dependency structure to independent data is valuable to tree reconstruction. Figure \ref{fig:exp2nrfmainsmall} shows an excerpt of nRF values against total depth of dependency within the dataset. 
+
+2a: RFs of Posterior
+
+- Depending on the amount of independent data and the number of languages:
+
+- \{tab\} If independent size is small and tree space is large, adding dependent data improves the model. However, if there exists sufficient data for the model to perform reconstruction better, then dependent data actually can hurt model performance. Similarly, adding data that has greater dependency depth follows the same relationship, but is more sensitive to these changes. This is best compared between the bottom left and top right subplots.
+
+- Dense relationships in dependency structures are more favourable in general, with the blue line being the lowest across most comparisons. Additionally, the variance of posterior nRF means seem to follow closely with variance of data generation in Proposition \ref{prop:zipgeneration}: the amount of data generated in the sparse method varies the most and seems to have the largest 95\% confidence intervals, especially in low data scenarios.
+
+2b: Clade Recovery of Posterior
+
+- Largest benefit of including dependent data. Clade Recovery Rate of the model increases quite dramatically: up to 25\%. There is almost always an improvement to clade recovery. Including higher order tiers still seems to improve clade recovery, albeit at lower rates.
+
+- Again, these improvements are more prounced where the original data size is low, which could signal that having more data does just improve the model's ability to reconstruct the tree, even though misspecification does decrease the benefit of doing so.
+
+- Sparse generations perform more poorly than dense generations, as seen in the nRF case. 
+
+- Variance of posterior clade recovery scales with sparsity as seen in the nRF case as well. 
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/exp2/meannRF_small.png}
+    \caption{nRF of posterior sample against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue). This is an excerpt of the larger plot found in Figure \ref{fig:exp2nrfmain}.}
+    \label{fig:exp2nrfmainsmall}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/exp2/HighSupportCladesProp_small.png}
+    \caption{Clade Recovery Rate of posterior sample against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue). This is an excerpt of the larger plot found in Figure \ref{fig:exp2clademain}.}
+    \label{fig:exp2clademainsmall}
+\end{figure}
+
+2c. nRF (MCC, Consensus)
+
+- Consensus: same as posterior, but there is less benefit overall. Much smaller improvements in low data scenarios but more pronounced deprovements in high data scenarios. The effects of sparse generations as compared to dense generations are also more defined as the number of independent sites increases.
+
+- MCC: Similar story with Consensus. 
+
+\textbf{- Consensus usually does better because it is more conservative, which is quite clearly encouraged in nRF calculations. Not so much in Clade Recovery though? This is the case across both experiments.}
+
+1e. Clade (MCC, Consensus)
+
+- Consensus: The large benefits seen in the posterior sample does not hold {\color{red} i really should try to explain this.}. Still some improvements, but much weaker and seems to even hurt in high data scenarios. 
+
+- MCC: Similar story with Consensus. Should elaborate this more.
+
+- Generally same story portrayed. However, it is definitely interesting that the differences between proportions of independent-data are more pronounced in the MCC trees. Perhaps this is the result of having to pick a specific `best' tree amongst the posterior sample, which cannot benefit from averaging across multiple trees. As such the information determined from the data is much more important, of which there is less effective information when a higher proportion of data is site-dependent.
