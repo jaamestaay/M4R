@@ -9,7 +9,8 @@ We note, however, as the factorial design covers analysis across a variety of pa
 
 \section{Experiment 1}
 {\color{red} it might be helpful to include a figure for the number of runs removed. kiv, not super important}
-We first study changes in nRF of the posterior sample in Experiment 1 which can be found in Figure \ref{fig:exp1nrfmainsmall}. We can note a clear distinction between the independent control data and any of the dependent data used for tree reconstruction: virtually any amount of data that violates site independence seems to \textit{contaminate} the reconstruction, with nRF values always increasing. On the other hand, however, the proportion of site-dependent data does not impact nRF values as much, varying minimally across the total number of tiers used. These differences in tree reconstruction quality are expected: having a higher proportion of data that satisfies conditional site independence reproduces psoterior samples that have smaller nRF values. Additionally, we note the increase in uncertainty shown in the 95\% confidence regions of the nRF. {\color{red} it could be that the model is able to then pick up on this dependency structure and account for it in uncertainty?} Figure \ref{fig:exp1clademainsmall} tells a similar story: data that violates conditional site independence is clearly unable to recover as many internal clades as in the control, yet proportion of site dependency does not contribute as much to this decrease.
+
+We first study changes in tree reconstruction quality of the posterior sample in Experiment 1 which can be found in Figure \ref{fig:exp1nrfmainsmall}. We can note a clear distinction between the independent control data and any of the dependent data used for tree reconstruction: virtually any amount of data that violates site independence seems to \textit{contaminate} the reconstruction, with nRF values always increasing. On the other hand, however, the proportion of site-dependent data does not impact nRF values as much, varying minimally across the total number of tiers used. These differences in tree reconstruction quality are expected: having a higher proportion of data that satisfies conditional site independence reproduces psoterior samples that have smaller nRF values. Additionally, we note the increase in uncertainty shown in the 95\% confidence regions of the nRF. {\color{red} it could be that the model is able to then pick up on this dependency structure and account for it in uncertainty?} Figure \ref{fig:exp1clademainsmall} tells a similar story: data that violates conditional site independence is clearly unable to recover as many internal clades as in the control, yet proportion of site dependency does not contribute as much to this decrease.
 
 Moreover, we see that the effects of violating conditional site independence on tree reconstruction are more dramatic where the total number of sites $S$ is low. In Figure \ref{fig:exp1nrfmainsmall}, the biggest increase in nRF is where there $S$ is low, increasing by 0.12-0.18, while the nRF barely changes where $S$ is large. In Figure \ref{fig:exp1clademainsmall}, where $S=50$, there is a roughly 6\% decrease in total clades recovered on average, whereas this drops to below 2\% where $S=5000$.
 
@@ -29,7 +30,7 @@ Moreover, we see that the effects of violating conditional site independence on 
 
 These figures show that there are indeed marginal losses in tree reconstruction as a result of presuming the independence assumption on data that violates it. However, the limiting issue here is not the proportion of data that is dependent, but rather the amount of information obtained from the data. The largest improvements of tree reconstruction as found in Figures \ref{fig:exp1nrfmainsmall} and \ref{fig:exp1clademainsmall} are not by fulfilling site independence throughout the data, but instead by having a larger amount of data to start with, even if the data violates conditional site independence. These findings corroborate with the validation plots found in Figures \ref{fig:val1nrf} and \ref{fig:val1clade}.
 
-We turn to the analyses of the MCC and Consensus trees.
+We turn to the analyses of the MCC and Consensus trees. {\color{red}{edit this. i might use different images.}}
 
 
 1d. nRF (MCC, Consensus)
@@ -40,5 +41,4 @@ We turn to the analyses of the MCC and Consensus trees.
 
 
 \section{Experiment 2}
-    Answering (2) 
-        nRF/clade recovery/ESS vs tiers 
+We turn our focus to 

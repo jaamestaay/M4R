@@ -114,8 +114,9 @@ The methods described in Section \ref{sec:simdesign} are first implemented in Py
 Upon completion of data generation, Bayesian phylogenetic analysis is performed through BEAST, where parallelisation can occur once again by running all datasets concurrently. All BEAST runs are performed to obtain $1,000,000$ samples, of which the samples are thinned to obtain $10,000$ remaining samples, where the first $10\%$ of samples are (quite generously) discarded as \texttt{burnin}. The programme generates a number of files, most notably the \texttt{.trees} and \texttt{.log} files, which provide information of the samples obtained in the analysis. Useful information for analysing tree reconstruction can be collected from these files, namely:
 \begin{itemize}
     \item RF and nRF distances,
-    \item Clade recovery rates, and the proportion of well-recovered clades, and 
-    \item ESS statistics.
+    \item Clade recovery rates and the proportion of well-recovered clades, 
+    \item ESS statistics, and
+    \item Representative (Consensus and MCC) trees, with the aforementioned metrics. 
 \end{itemize}
 Due to the wealth of packages that exist in R for phylogenetic analysis such as \texttt{phangorn} \cite{R1, R2} and \texttt{phytools} \cite{R3}, the analysis is completed in R and exported as a CSV file. Finally, all results from all jobs are compiled in Python to generate a complete data file with the required data for analysis.
 
