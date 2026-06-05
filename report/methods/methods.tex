@@ -8,7 +8,7 @@ Having laid out the foundations of historical linguistics and Bayesian phylogene
 
 As considered in Chapter \ref{sec:background}, applying a model that does not assume independence to linguistic data causes likelihood calculations to be infeasible. As such, the study of model misspecification is relevant here. Question 1 aims to consider the impact of applying the model to data without knowing the true dependency structure of the data. This scenario is usually the case when fitting the model real linguistics data, as these dependencies are not only present but difficult to define without prior knowledge. Question 2, on the other hand, serves as a guide in situations where data is \textit{known} to have a clear dependency structure, such as in the example provided by Buckley et al. \cite{Buckley2025}, on whether including data that is misspecified by the model will affect tree reconstruction.
 
-This section aims to explain the methods conducted in the simulation study to answer these questions. The design is split into two \textit{experiments} that look to provide results that explain their respective questions. The data generation methods and simulatin design for both experiments are described, before considering the implementation of Bayesian phylogenetic analysis. Finally, several validation results are shown to provide a basis for the results that follow in Chapter \ref{sec:results}. The full implementation of the simulation study can be found in this \hyperlink{https://github.com/jaamestaay/M4R}{Github repository.}
+This section aims to explain the methods conducted in the simulation study to answer these questions. The design is split into two \textit{experiments} that look to provide results that explain their respective questions. The data generation methods and simulatin design for both experiments are described, before considering the implementation of Bayesian phylolinguistic analysis. Finally, several validation results are shown to provide a basis for the results that follow in Chapter \ref{sec:results}. The full implementation of the simulation study can be found in this \hyperlink{https://github.com/jaamestaay/M4R}{Github repository.}
 
 \section{Simulation Design}
 \label{sec:simdesign}
@@ -137,7 +137,7 @@ Through Figure \ref{fig:val1nrf}, we note several observations about the reconst
 
 The same can be seen in Figure \ref{fig:val1clade}, where larger datasets result in higher clade recovery. The same analysis put forward for Figure \ref{fig:val1nrf} for the effect of number of languages is applicable here too: a larger set of languages generally requires more information (and thus more sites) to recover clades within the true tree.
 
-\begin{figure}
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.7\linewidth]{figures/val1/CladevsSize.png}
     \caption{Clade Recovery Rate vs Independent Data Size, varying amount of languages.}
@@ -146,7 +146,7 @@ The same can be seen in Figure \ref{fig:val1clade}, where larger datasets result
 
 We include a final figure for this first validation analysis, where we consider the ESS values of the runs conducted for this exercise. From Figure \ref{fig:val1ess} ESS appears to decrease for large datasets. One interpretation of this is that increasing the size of the data beyond a certain point leads to an overly-complex likelihood space, perhaps due to the programme being limited to smaller, local moves and thus increasing autocorrelation. Since there are instances in which ESS values drop below $200$, there is a reasonable probability of the Markov chain failing to reach stationarity, and thus we are required to remove these simulations from the analysis process.
 
-\begin{figure}
+\begin{figure} [!htbp]
     \centering
     \includegraphics[width=0.7\linewidth]{figures/val1/ESSvsSize.png}
     \caption{Effective Sample Size (ESS) vs Independent Data Size, varying amount of languages.}
@@ -157,7 +157,7 @@ We include a final figure for this first validation analysis, where we consider 
 \label{sec:zipvalidation}
 We turn to validating the theoretical results derived in Section \ref{sec:zip} of the mean and variance of ZIP variables. We do this by generating dependent data as per Algorithm \ref{algo:dependentdatageneration}, taking note of each tier's respective sizes before ascertainment. These are then plotted against the theoretical values described in Proposition \ref{prop:zipgeneration}. Additionally, we generate varying ZIP parameters $(p, \lambda)$ that give an expected value of $\mu = 3$. 
 
-\begin{figure}
+\begin{figure} [!htbp]
     \centering
     \includegraphics[width=1\linewidth]{figures/val2/val2_ZIP.png}
     \caption{Mean and Variance of Tier Size against number of tiers, varying the number of independent sites $N_1$ and ZIP parameters $(p, \lambda)$.}

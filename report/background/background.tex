@@ -28,7 +28,7 @@ We first consider defining the prior of the model, by decomposing it further as
 \end{equation}
 where $P(T|\boldsymbol{\theta})$ represents the tree prior, while $P(\boldsymbol{\theta})$ considers the (joint) distribution of all parameters of the model. While there exists many methods of generating trees, there are only a select few which are applicable in the context of historical linguistics \cite{hoffmann_bayesian_2021}. We limit our discussion to an elaboration of a the Yule model, common tree prior used in Bayesian phylogenetic model.
 
-The Yule model \cite{Yule1925} can be defined as a pure birth process (see Definition \ref{def:birthprocess}) with a single intensity $\lambda \geq 0$, where $N_t$ refers to the number of branches at time $t$, $N_0 = 1$. We make a distinction here that the model is generated from the ancestral lineage and thus encodes time $0$ as the oldest point of the analysis, while final time $T$ where there are $n$ tips for $n$ languages represents the present. This is contrary to the common representation of time in phylogenetic analysis, where time $0$ represents the present age, or agglomerative tree generation methods like the coalescent process. Conditioning on the tree having $n$ tips and root age $T$, the prior distribution takes on form \cite{Gernhard2008}:
+The Yule model \cite{Yule1925} can be defined as a pure birth process (see Definition \ref{def:birthprocess}) with a single intensity $\lambda \geq 0$, where $N_t$ refers to the number of branches at time $t$, $N_0 = 1$. We make a distinction here that the model is generated from the ancestral lineage and thus encodes time $0$ as the oldest point of the analysis, while final time $T$ where there are $n$ tips for $n$ languages represents the present. This is contrary to the common representation of time in phylogenetic analysis, where time $0$ represents the present age, or agglomerative tree generation methods like the coalescent process. Conditioning on the tree having $n$ languages and root age $T$, the prior distribution takes on form \cite{Gernhard2008}:
 \begin{equation}
 \label{eq:yuleprior}
     P(T | \lambda, n) = n! \lambda^{n-1}\prod_{i=1}^{n-1}\exp(-\lambda T)
@@ -59,7 +59,7 @@ This model, as with all tree priors, incorporates the linguistic assumption that
 \label{sec:ctmc}
 Having defined the tree prior, evolutionary models attempt to explain the presence or absence of sites across the languages of the model. Since the data is binary, we need only consider two types of states: the presence (1) or absence (0) of a site. As the model is defined on continuous time, the binary continuous-time Markov chain (CTMC) model is a natural method to define the evolutionary process.
 
-The process assumes the Markov property (see Definition \ref{def:markov}), which can be clearly justified in the context of historical linguistics. {\color{red} maybe justify this.} This induces the infinitesimal rate (or \textit{generator}) matrix $\mathbf{G} := (g_{ij})$ (see Definition \ref{def:generator}), which results in a time-dependent transition probability matrix to be the entries of the matrix \cite{Anderson1991}:
+The process assumes the Markov property (see Definition \ref{def:markov}), which can be used to model historical linguistics, where the current state of cognates usually encapsulates much of the information which produce future evolutions. This induces the infinitesimal rate (or \textit{generator}) matrix $\mathbf{G} := (g_{ij})$ (see Definition \ref{def:generator}), which results in a time-dependent transition probability matrix to be the entries of the matrix \cite{Anderson1991}:
 \begin{equation}
 \label{eq:transitionmatrixevolution}
     \mathbf{P}(t) = \exp(\mathbf{G}t).
@@ -280,7 +280,7 @@ We return to the likelihood calculations in (\ref{eq:sitelikelihood}). Clearly, 
 \end{align}
 This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. This implies that the likelihood calculation has a time-complexity of $\mathcal{O}(nS)$, scaling linearly with respect to number of languages $n$ and number of sites $S$.  
 
-The independent paradigm also suggests that every new site provides an equal amount of information. From (\ref{eq:independentbreakdown} we can infer that the log-likelihood and thus the Fisher information of the model is additive with respect to the number of sites $S$. This means that an increase in $S$ should be inversely proportionate to the variance of the estimates obtained by the model. In the context of Bayesian phylogenetic analysis, more sites $S$ increases the model's ability to reconstruct the true tree $T^*$ and lead to better estimates.
+The independent paradigm also suggests that every new site provides an equal amount of information. From (\ref{eq:independentbreakdown}) we can infer that the log-likelihood and thus the Fisher information of the model is additive with respect to the number of sites $S$. This means that an increase in $S$ should be inversely proportionate to the variance of the estimates obtained by the model. In the context of Bayesian phylogenetic analysis, more sites $S$ increases the model's ability to reconstruct the true tree $T^*$ and lead to better estimates.
 
 \section{Dependent Paradigm}
 \label{sec:dependent}
@@ -303,7 +303,7 @@ This method thus requires us to answer two design questions:
 \end{enumerate}
 The answers to these questions then define the manner in which data is generated, and thus how likelihoods will be calculated. For the purposes of this simulation study, we generate dependencies via the Zero-Inflated Poisson (ZIP), discussed in Section \ref{sec:zip}, and generate dependent site values by considering the product of the result of CTMC runs, discussed in Section \ref{sec:ctmcproduct}.
 
-This method in particular is highly relevant to related works on dependent data. This hierarchial dependency structure corresponds to the issue posed by Maddison's red/blue tail problem \cite{Maddison1993}, where $L = 2$. Additionally, in the context of Bayesian phylolinguistic analysis, Buckley et al. (2025) considered loom data that also exhibited the same structure \cite{Buckley2025}, this time with $L = 4$. {\color{red} it might be worth saying that critics of the paper drew concerns about the model being misspecified on such data.} Consequently, investigating the extent of impact of applying Bayesian phylogenetic models, which assume conditional site independence, to hierarchially dependent data provides a frame of reference for assessing the consequences of model misspecification in settings where site dependencies are known or suspected to exist. Such analyses can thus address concerns of applying standard Bayesian phylogenetic models to data which exhibit such hierarchial dependency structures.
+This method in particular is highly relevant to related works on dependent data. This hierarchial dependency structure corresponds to the issue posed by Maddison's red/blue tail problem \cite{Maddison1993}, where $L = 2$. Additionally, in the context of Bayesian phylolinguistic analysis, Buckley et al. (2025) considered loom data that also exhibited the same structure \cite{Buckley2025}, this time with $L = 4$. Consequently, investigating the extent of impact of applying Bayesian phylogenetic models, which assume conditional site independence, to hierarchially dependent data provides a frame of reference for assessing the consequences of model misspecification in settings where site dependencies are known or suspected to exist. Such analyses can thus address concerns of applying standard Bayesian phylogenetic models to data which exhibit such hierarchial dependency structures.
 
 \subsection{ZIP Construction}
 \label{sec:zip}
@@ -385,7 +385,7 @@ This method of generating dependent data can also be seen as a branching process
         \implies Var(N_l) &=\mu^2 Var(N_{l-1}) + \sigma^2\mu^{l-2} \\
         &= \begin{cases}
             n\sigma^2 & \mu = 1\\
-            \sigma^2 \mu^{l-2}\frac{\sigma^2 - 1}{\mu - 1}]& \mu \neq1 
+            \sigma^2 \mu^{l-2}\frac{\mu^{l-1} - 1}{\mu - 1}]& \mu \neq1 
         \end{cases}.
     \end{align}
 \end{proof}
@@ -577,7 +577,7 @@ where $\mathbbm{1}$ is the indicator variable. The dependency structure thus ind
 
 \subsection{Model Misspecification}
 \label{sec:misspecification}
-As seen in Section \ref{sec:independent}, the likelihood calculations decompose into simple evaluations using Felsenstein's algorithm. On the other hand, as seen in Section \ref{sec:likelihoodcomp}, the time-complexity of the dependency structure causes any model that requires likelihood evaluation to be infeasible. As such, while applying the model that assumes conditional site independence causes the model to be misspecified on dependent data, the model is still able to generate reconstructions of trees within a reasonable amount of computational runtime.
+As seen in Section \ref{sec:independent}, the likelihood calculations decompose into simple evaluations using Felsenstein's algorithm. On the other hand, as seen in Section \ref{sec:likelihoodcomp}, the time-complexity of the dependency structure causes any model that requires likelihood evaluation to be infeasible. As such, while applying the model that assumes conditional site independence causes dependent data to be misspecified, the model is still able to generate reconstructions of trees within a reasonable amount of computational runtime. This is the primary advantage of enforcing this assumption.
 
 However, there are several other reasons why a model assuming conditional site-independence may be preferred. Firstly, when fitting to real linguistic data, the dependency structure is usually unknown. This makes any meaningful application of model relaxing such an assumption require the user to manually specify the dependency structure $\mathcal{G}$, which often times requires many design choices and other assumptions about the data $\mathbf{D}$. On top of that, such a model requires a data generation algorithm as specified in this section thus far, which adds another design choice but also puts the model at risk of overparameterisation. In certain cases, where the size of data is small, this may cause identifiability issues and may be fundamentally impossible to apply since there are more parameters than sites. 
 
@@ -638,8 +638,8 @@ Firstly, while slightly informal, it is often informative to consider the mixing
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\linewidth]{report/figures/traceplot.png}
-    \caption{An example of a trace plot which has mixed well.}
+    \includegraphics[width=0.5\linewidth]{report/figures/traceplot.png}
+    \caption{An example of a trace plot of a Markov chain which has mixed well.}
     \label{fig:traceplot}
 \end{figure}
 
@@ -651,7 +651,7 @@ Next, we consider the autocorrelation sequence $(\rho_\tau)_{\tau \geq 1}$ of sa
     \text{ESS} = \frac{N}{1 + 2\sum_{\tau = 1}^\infty \rho_\tau}.
 \end{equation}
 
-The motivation for considering ESS is that the Markov chain generates dependent samples \cite{Gelman2013}. As such, when compared to an equally-sized independently generated data, the Markov chain holds less information. Through calculation of the ESS, we derive the size of independently generated samples from the posterior that would hold the same amount of information as the Markov chain. As such, a chain that has highly correlated samples will have a much smaller ESS. For the context of this study, we shall set $\text{ESS} \geq 200$ as a pragmatic threshold for the quality of samples obtained, with reference to the application \textit{Tracer} which sets the same benchmark for potentially problematic parameters \cite{Tracer}.
+The motivation for considering ESS is that the Markov chain generates dependent samples \cite{Gelman2013}. As such, when compared to an equally-sized independently generated data, the Markov chain holds less information. Through calculation of the ESS, we derive the size of independently generated samples from the posterior that would provide equal information as the Markov chain. As such, a chain that has highly correlated samples will have a much smaller ESS. For the context of this study, we shall set $\text{ESS} \geq 200$ as a pragmatic threshold for the quality of samples obtained, with reference to the application \textit{Tracer} which sets the same benchmark for potentially problematic parameters \cite{Tracer}.
 
 While (\ref{eq:ess}) is easily calculated for ordinary parameters $\boldsymbol{\theta}$, the autocorrelation sequence is much harder to define for the tree space. Instead, applications such as BEAST report the ESS for numerical quantities such as log-posterior and log-likelihood \cite{beast_documentation}, which provide a Euclidean expression for the similarity between trees.
 

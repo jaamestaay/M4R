@@ -7,6 +7,8 @@ In a similar vein to Section \ref{sec:validation}, the metrics of concern are th
 
 We note, however, as the factorial design covers analysis across a variety of parameters in the parameter space, we present relevant cases of value that portray the general trend observed throughout the study. We show the full results in Appendix \ref{app:fullresults}.
 
+{\color{red}might be able to include the other figures now, may help flow the discussion better. focus on editing later}
+
 \section{Experiment 1}
 \label{sec:exp1results}
 We first study changes in tree reconstruction quality of the posterior sample in Experiment 1. Figure \ref{fig:exp1nrfmainsmall} shows a clear distinction between the independent control data and any of the dependent data used for tree reconstruction: even small departures from conditional site independence reduce reconstruction accuracy relative to the fully independent control. 
@@ -41,18 +43,18 @@ We turn to the analyses of the MCC and MRC trees. Similar sentiments to the prev
 \label{sec:exp2results}
 We now examine whether adding data that has a known dependency structure to independent data is valuable to tree reconstruction. Figure \ref{fig:exp2nrfmainsmall} shows an excerpt of nRF values against total depth of dependency within the dataset. It can yet again be seen that the effects of such data sets are dependent on the amount of independent data as well as the complexity of the tree space considered. Clearly, in scenarios where the independent data size $N_1$ is small and the tree space is large (with say $n=50$ languages in the bottom left plot), adding dependent data lowers nRF values. The opposite is true for small tree spaces and large independent data sizes: in the top right plot, adding any amount of additional data leads to lower quality tree construction. It can also be noted that as more dependency tiers are added, marginal gains on tree reconstruction are smaller, signalling that even though a large amount of data is being added to the dataset, little information about the tree is being recovered.
 
-\begin{figure}
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=1\linewidth]{figures/exp2/meannRF_small.png}
     \caption{nRF of posterior sample against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue). This is an excerpt of the larger plot found in Figure \ref{fig:exp2nrfmain}.}
     \label{fig:exp2nrfmainsmall}
 \end{figure}
 
-The effect of different generation methods on tree reconstruction are clear to see. Denser methods with low $p$ and $\lambda$ for the ZIP random variable leads to systematically lower nRF values as compared to sparser methods. These differences in nRF values are most pronounced where the independent data size is high. Additionally, the variance of posterior nRF means seem to follow closely with variance of data generation in Proposition \ref{prop:zipgeneration}: the amount of data generated in the sparse method varies the most and seems to have the largest 95\% intervals, especially in low data scenarios. This is expected, as sparse structures create massive dependency clusters which reduce effective sample size more severely than in evenly distributed cluster sizes.
+The effect of different generation methods on tree reconstruction are clear to see. Firstly, we note that all generation methods already increase the uncertainty associated with estimating true tree $T^*$, suggesting that the violations of conditional site independence already introduces a degree of model misspecificaiton that propagates into the posterior samples. Denser methods with low $p$ and $\lambda$ for the ZIP random variable leads to systematically lower nRF values as compared to sparser methods. These differences in nRF values are most pronounced where the independent data size is high. Additionally, the variance of posterior nRF means seem to follow closely with variance of data generation in Proposition \ref{prop:zipgeneration}: the amount of data generated in the sparse method varies the most and seems to have the largest 95\% intervals, especially in low data scenarios. This is expected, as sparse structures create massive dependency clusters which reduce effective information more severely than in evenly distributed cluster sizes.
 
-Perhaps the clear-cut evidence of a significant impact of adding dependent data on tree reconstruction is found in the clade recovery rates in Figure \ref{fig:exp2clademainsmall}. We consistently see large improvements in clade recovery across all scenarios, even increasing as more dependency tiers are added, up to a maximum of 27.6\% of true clades. Once again, these improvements are most pronounced where the original data size is low, and dense generations still exhibit better clade recovery rates than sparse generations. 
+Perhaps the clearest evidence of a significant impact of adding dependent data on tree reconstruction is found in the clade recovery rates in Figure \ref{fig:exp2clademainsmall}. We consistently see large improvements in clade recovery across all scenarios, even increasing as more dependency tiers are added, up to a maximum of 27.6\% of true clades. Once again, these improvements are most pronounced where the original data size is low, and dense generations still exhibit better clade recovery rates than sparse generations. 
 
-\begin{figure}
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=1\linewidth]{figures/exp2/HighSupportCladesProp_small.png}
     \caption{Clade Recovery Rate of posterior sample against depth of dependency structure within each subplot, varying method of generation from most sparse (red) to most dense (blue). This is an excerpt of the larger plot found in Figure \ref{fig:exp2clademain}.}
