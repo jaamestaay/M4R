@@ -124,9 +124,13 @@ Due to the wealth of packages that exist in R for phylogenetic analysis such as 
 \label{sec:validation}
 \subsection{Validation of Relationship between Data Size $S$ and Tree Reconstruction}
 \label{sec:sizevalidation}
-We now consider several validation plots relevant to the simulation study. We first empirically justify the claim that larger amounts of (independent) data improves tree reconstruction of the Bayesian phylogenetic methods used. 
+We now consider several validation plots relevant to the simulation study. We first empirically justify the claim made in Section \ref{sec:independent} that larger amounts of (independent) data improves tree reconstruction of the Bayesian phylogenetic methods used. In particular, we attempt to show empirically that 
+\begin{equation}
+    P(T = T^* | \mathbf{D}) \to 1 \text{ as } S \to \infty
+\end{equation}
+for a given true tree $T^* \in \mathcal{T}$ with fixed $n$ and data $\mathbf{D} \in \{0, 1\}^{n x S}$, where $T \in \tilde{T}$ are samples derived from the Markov chain.
 
-Through Figure \ref{fig:val1nrf}, we note several observations about the reconstruction of trees with respect to independent data size. As expected, an increase in the amount of independent data does improve the model's ability to reconstruct the true tree $T^*$. It can also be seen that while the lines tend toward zero, it seems that $1,000$ sites and above are more than enough to reconstruct the trees. Additionally, we note that increasing amount of languages $n$, for a fixed number of sites $S$, decreases the model's ability to reconstruct trees accurately. This is intuitively true as well: as the tree space becomes more complex, more information is required to reliably perform reconstruction of the posterior distribution and thus obtain the true tree.
+Through Figure \ref{fig:val1nrf}, we note several observations about the reconstruction of trees with respect to independent data size. As expected, an increase in the amount of independent data does improve the model's ability to reconstruct the true tree $T^*$. It can also be seen that while the lines tend toward zero, it seems that $1000$ sites and above are more than enough to reconstruct the trees. Additionally, we note that increasing amount of languages $n$, for a fixed number of sites $S$, decreases the model's ability to reconstruct trees accurately. This is intuitively true as well: as the tree space becomes more complex, more information is required to reliably perform reconstruction of the posterior distribution and thus obtain the true tree.
 
 \begin{figure}
     \centering
@@ -153,7 +157,7 @@ We include a final figure for this first validation analysis, where we consider 
     \label{fig:val1ess}
 \end{figure}
 
-\subsubsection{Validation of ZIP variables}
+\subsection{Validation of ZIP variables}
 \label{sec:zipvalidation}
 We turn to validating the theoretical results derived in Section \ref{sec:zip} of the mean and variance of ZIP variables. We do this by generating dependent data as per Algorithm \ref{algo:dependentdatageneration}, taking note of each tier's respective sizes before ascertainment. These are then plotted against the theoretical values described in Proposition \ref{prop:zipgeneration}. Additionally, we generate varying ZIP parameters $(p, \lambda)$ that give an expected value of $\mu = 3$. 
 

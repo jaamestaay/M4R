@@ -25,5 +25,24 @@ Thus $\boldsymbol{\pi}$ is a stationary distribution of the CTMC with generator 
 
 We now turn to consider the fact that $\mathbf{D}_{l, k}$, the resulting binary encoding of the element-wise product of dependency $\mathbf{D}_{l-1, j}$ and simulated CTMC $\tilde{\mathbf{D}}_{l, k}$ as considered by (\ref{eq:dependencystructure}) in Section \ref{sec:ctmcproduct}, is not in fact a CTMC, because it does not satisfy the Markov property.
 
-{\color{red} need to continue writing this.}
+We define a partition on state space $\mathcal{S}$:
+\begin{equation}
+\label{eq:lumpability}
+    \mathcal{P} = \{\{00, 01, 10\},\{11\}\}
+\end{equation}
+This is a clear case of reducing the size of the state space. We employ the idea of \textit{Markov lumpability} \cite{Kemedy1976}:
+\begin{definition} [Lumpability]
+Suppose $(X_t)_{t\geq 0}$ is a CTMC with finite state space $\mathcal{S}$ and generator matrix $\mathbf{G} = (g_{xy})_{x, y \in \mathcal{S}}$, and $\mathcal{P} := \{P_1, ..., P_m\}$ is a partition of $\mathcal{S}$, then aggregated process $Y_t = i$ where $X_t \in B_i$, then we say that the CTMC is lumpable with respect to partition $\mathcal{P}$ if for every pair of blocks $P_i, P_j$, $\forall x, x' \in P_i$:
+\begin{equation}
+    \sum_{y\in P_j}g_{xy} = \sum_{y \in P_j}q_{x'y}.
+\end{equation}
+\end{definition}
+This condition can be interpreted as ensuring that the jump probability from block $P_i$ to block $P_j$ is constant, regardless of the state within $P_i$. 
 
+Clearly, this is an important property the Markov chain must have in order for the reduced state space stochastic process to be considered a Markov chain as well. We state the formal result without proof (of which can be found in \cite{Kemedy1976}):
+\begin{proposition} [Resulting process of lumped Markov chain is Markovian]
+\label{prop:markovprocesses}
+Suppose $(X_t)_{t\geq 0}$ is a CTMC with finite state space $\mathcal{S}$ and generator matrix $\mathbf{G} = (g_{xy})_{x, y \in \mathcal{S}}$, and $\mathcal{P} := \{P_1, ..., P_m\}$ is a partition of $\mathcal{S}$. Then the resulting aggregated process $(Y_t)_{t\geq0}$ is also a CTMC if and only if the CTMC is lumpable.
+\end{proposition}
+
+As such, in order to prove that $\mathbf{D}_{l, k}$ does not satisfy the Markov property, we need only show that $\mathbf{B}_{l, k}$ is not lumpable with respect to the partition (\ref{eq:lumpability}). This is true, as the generator $\mathbf{G}_{\text{prod}}$ as defined in (\ref{eq:ctmcprodgenerator}) shows: we note that both $\{01, 10\}$ have an equivalent jump probability to $\{11\}$, but that is not the case with state $\{00\}$, which has a zero transition probability to $\{11\}$. As such, from Proposition \ref{prop:markovprocesses}, we can conclude that the lumped chain $\mathbf{D}_{l, k}$ with respect to the partition $\mathcal{P}$ defined in \ref{eq:lumpability} indeed does not follow the Markov property.

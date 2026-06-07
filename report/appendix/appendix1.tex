@@ -59,7 +59,10 @@ No. & Meaning & No. & Meaning & No. & Meaning & No. & Meaning & No. & Meaning \\
 \section{Full Results of Simulation Study}
 \label{app:fullresults}
 
-Here we present the full results of the simulation study, encapsulating the summarised findings of Chapter \ref{sec:results}. We note that most findings and discussions are similar to that of Chapters \ref{sec:results} and \ref{sec:discussion}, {\color{red} where interesting points (which are not particularly relevant) not brought up prior will be discussed here.}
+Here we present the full results of the simulation study, encapsulating the summarised findings of Chapter \ref{sec:results}. We note that most findings and discussions are similar to that of Chapters \ref{sec:results} and \ref{sec:discussion}.
+% , where interesting points (which are not particularly relevant) not brought up prior will be discussed here
+
+We note that throughout both experiments, there were runs that had limited tree ESS (at times only providing 1 effective sample). This likely suggests that the model was unable to propose efficiently and indicates poor mixing. As reliable inference assumes sufficient convergence of the Markov chains to the posterior distribution, we exclude these cases in the analysis provided in Chapters \ref{sec:results} and \ref{sec:discussion}. 
 
 \subsection{Experiment 1}
 Here we present the full results of Experiment 1.  Figures \ref{fig:exp1nrfmain} and \ref{fig:exp1clademain} describe how the respective metrics are affected where a proportion of the data $\mathbf{D}$ have dependency structures

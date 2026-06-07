@@ -21,7 +21,7 @@ a natural starting point is to consider Bayes' theorem in the given context:
 
 We note that (\ref{eq:bayestheorem}) follows naturally since we can treat $P(\mathbf{D})$ as a (unknown) constant. Additionally, consider $\boldsymbol{\theta}$ as the set of all model parameters from the evolutionary model and the tree prior. Our goal is to model the distribution of trees informed by the data and the parameters, or the posterior distribution $P(T | \mathbf{D}, \boldsymbol{\theta})$, either by direct calculation or by generating samples that follow it. However, due to the intractability of $P(\mathbf{D})$, it is unfeasible to explore the former method. We are therefore required to generate samples (of trees in space $\mathcal{T}$) that take on the posterior distribution. In many Bayesian methods, this requires defining and calculating likelihood $P(\mathbf{D} | T, \boldsymbol{\theta})$ and priors $P(T, \boldsymbol{\theta})$.
 
-\subsection{Tree Priors: Yule models}
+\subsection{Tree Priors: Yule model}
 We first consider defining the prior of the model, by decomposing it further as
 \begin{equation}
     P(T, \boldsymbol{\theta}) = P(T|\boldsymbol{\theta})P(\boldsymbol{\theta}) \label{eq:priors}
@@ -122,7 +122,7 @@ where $X_u$ is the random variable of the state at node $u$, and we employed the
     &= \sum_{\mathbf{x}_W \in \{0, 1\}^{|W|}} \pi_{x_r} \prod_{(u, v) \in E} \exp(\mathbf{G}t_{u\to v})_{x_u x_v} \label{eq:sitelikelihood}
 \end{align}
 
-This decomposition is inefficient for large values of $n$: the set of internal nodes $W$ grows linearly with $n$, thus exponentially increases the number of internal terms in the sum of (\ref{eq:sitelikelihood}). Felsenstein (1973) introduced an efficient ``pruning'' method {\cite{Felsenstein1973}}, exploiting the structure of the tree to recursively evaluate likelihoods of subtrees \cite{Felsenstein2004}. This allows for efficient likelihood calculation that grows linearly rather than exponentially with $n$.
+This decomposition is inefficient for large values of $n$: the set of internal nodes $W$ grows linearly with $n$, thus exponentially increasing the number of internal terms in the sum of (\ref{eq:sitelikelihood}). Felsenstein (1973) introduced an efficient ``pruning'' method {\cite{Felsenstein1973}}, exploiting the structure of the tree to recursively evaluate likelihoods of subtrees \cite{Felsenstein2004}. This allows for efficient likelihood calculation that grows linearly rather than exponentially with $n$.
 
 For a simulation study, the generation of data through such evolutionary processes require particular consideration. For a given tree $T$, at each site, the state at the root is sampled and propagated down the tree via the CTMC model along each branch that has transition probabilities $\mathbf{P}(t)$ via (\ref{eq:transitionmatrixevolution}). This results in the generation of the site $\mathbf{D}_i$. If the assumption of conditional site independence is held, the process is repeated for every single site until the full binary data matrix $\mathbf{D} \in \{0, 1\}^{n \times S}$ is generated. This generative process is defined in Algorithm \ref{algo:ctmcdatageneration}. 
 
@@ -280,7 +280,17 @@ We return to the likelihood calculations in (\ref{eq:sitelikelihood}). Clearly, 
 \end{align}
 This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. This implies that the likelihood calculation has a time-complexity of $\mathcal{O}(nS)$, scaling linearly with respect to number of languages $n$ and number of sites $S$.  
 
-The independent paradigm also suggests that every new site provides an equal amount of information. From (\ref{eq:independentbreakdown}) we can infer that the log-likelihood and thus the Fisher information of the model is additive with respect to the number of sites $S$. This means that an increase in $S$ should be inversely proportionate to the variance of the estimates obtained by the model. In the context of Bayesian phylogenetic analysis, more sites $S$ increases the model's ability to reconstruct the true tree $T^*$ and lead to better estimates.
+The independent paradigm also suggests that every new site provides an equal amount of information. We formalise this idea by considering the Fisher information matrix $\mathcal{I}_{\text{data}}$ of such a formulation from (\ref{eq:independentbreakdown}):
+\begin{align}
+    \mathcal{I}_{\text{data}} &= -E\left[\nabla^2_{\boldsymbol{\theta}} \ln P(\mathbf{D}|T), \boldsymbol{\theta})\right] \\
+    &= -E\left[\sum_{i=1}^S\nabla^2_{\boldsymbol{\theta}} \ln P(\mathbf{D}_i|T, \mathbf{G})\right] \\
+    &= -\sum_{i=1}^SE\left[\nabla^2_{\boldsymbol{\theta}} \ln P(\mathbf{D}_i|T, \mathbf{G})\right] \\
+    &= S \mathcal{I}_{\text{site}}. \label{eq:independentinformation}
+\end{align}
+using the fact that sites under the independent paradigm are also identically distributed. This suggests that the information is additive with respect to sites: the amount of (effective) information contained in the data scales linearly with the number of (independent) sites $S$ contained in data $\mathbf{D}$. As such, an increase in $S$ will result in increasingly peaked likelihoods that, under standard regularity conditions, will lead to an improved estimate of true tree $T^*$:
+\begin{equation}
+    P(T=T^*|\mathbf{D}) \to 1 \text{ as } S \to \infty.
+\end{equation}
 
 \section{Dependent Paradigm}
 \label{sec:dependent}
@@ -290,7 +300,7 @@ While there are many approaches to construct such dependencies within simulated 
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{report/figures/datageneration.png}
+    \includegraphics[width=0.8\linewidth]{report/figures/datageneration.png}
     \caption{A hierarchial approach to dependent site generation with $L$ tiers that generations data $\mathbf{D}$.}
     \label{fig:dependentgeneration}
 \end{figure}
@@ -324,7 +334,7 @@ While dependency structure within linguistics data is widely acknowledged \cite{
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{figures/sparsegeneration.png}
+    \includegraphics[width=0.8\linewidth]{figures/sparsegeneration.png}
     \caption{Sparse vs Dense Data Generation using the ZIP random variable, where boxes refer to sites. Note that the tier sizes used are for presentation purposes only: they need not be equal.}
     \label{fig:sparsegeneration}
 \end{figure}
@@ -500,7 +510,7 @@ We note that when considering the dependent site $\mathbf{D}_{l, k}$, we compres
     \end{cases}
 \end{equation}
 
-While this stochastic process is not a CTMC \footnote{\color{red}It does not satisfy the Markov property. This statement is justified in Appendix \ref{app:ctmcprodmarkov}.}, we note that the stationary distribution of the model does carry over as
+While this stochastic process is not a CTMC \footnote{It does not satisfy the Markov property. This statement is justified in Appendix \ref{app:ctmcprodmarkov}.}, we note that the stationary distribution of the model does carry over as
 \begin{equation}
     \breve{\boldsymbol{\pi}} = (1-\pi_1^2, \pi_1^2).
 \end{equation}
@@ -569,11 +579,30 @@ Figure \ref{fig:dependentgeneration} provides a graphical interpretation, not ju
 
 Given dependency graph $\mathcal{G}$. We can decompose the likelihood by separating independent sites, given by sets of sites $\mathcal{I}$ and $\mathcal{D}$ respectively:
 \begin{align}
-     P(\mathbf{D} | T, \boldsymbol{\theta}) &= \prod_{i\in\mathcal{I}}P(\mathbf{D}_i|T, \boldsymbol{\theta})\prod_{j\in\mathcal{D}}P(\mathbf{D}_j|\mathcal{D}_{\text{pa}(j), T, \boldsymbol{\theta}}), \label{eq:dependentlikelihood} \\
-     P(\mathbf{D}_j|\mathcal{D}_{\text{pa}(j), T, \boldsymbol{\theta}}) &= \sum_{\tilde{\mathbf{D}}_{l, k}}\mathbbm{1}_{\{\mathbf{D_j} = D_{\text{pa}(j)} \odot \tilde{\mathbf{D}}_j\}}P\left(\tilde{\mathbf{D}}_{j}|T, \boldsymbol{\theta}\right),\label{eq:dependencyctmccalculation}
+     P(\mathbf{D} | T, \boldsymbol{\theta}) &= \prod_{i\in\mathcal{I}}P(\mathbf{D}_i|T, \boldsymbol{\theta})\prod_{j\in\mathcal{D}}P(\mathbf{D}_j|\mathbf{D}_{\text{pa}(j)}, T, \boldsymbol{\theta}), \label{eq:dependentlikelihood} \\
+     P(\mathbf{D}_j|\mathbf{D}_{\text{pa}(j)}, T, \boldsymbol{\theta}) &= \sum_{\tilde{\mathbf{D}}_{l, k}}\mathbbm{1}_{\{\mathbf{D_j} = \mathbf{D}_{\text{pa}(j)} \odot \tilde{\mathbf{D}}_j\}}P\left(\tilde{\mathbf{D}}_{j}|T, \boldsymbol{\theta}\right),\label{eq:dependencyctmccalculation}
 \end{align}
 
 where $\mathbbm{1}$ is the indicator variable. The dependency structure thus induces statistical dependence between sites at both observed and parent nodes. This means that likelihood cannot be factorised site-wise, where exact likelihood evaluation requires considering the joint state of all sites within a dependency lineage. This increases the effective state space from a binary set of states to an exponentially increasing number of states, increasing the overall computational overhead of the calculation and thus the algorithm. Therefore, even with Felsenstein's pruning algorithm, the likelihood calculations make the dependency model infeasible for use.
+
+However, assuming conditional independence on such dependent data will necessarily cause model misspecification. Additional dependent sites are unable to provide the same amount of additional information that independent sites provide. The key idea here is that information provided by new site $\mathbf{D}_{s+1}$ which has existing dependencies on $\mathbf{D} \in \{0, 1\}^{n \times S}$ will overlap with the information already obtained from $\mathbf{D}$, thus providing less additional effective information than an independent site would. As such, assuming independence of sites would artificially inflate the amount of effective information obtained by the model. More formally, we present a simple example concerning a single parent site $\mathbf{D}_1$ and one descendant  $\mathbf{D}_2$ for a single parameter $\theta$:
+\begin{proposition} [Effective Information of Dependent Sites]
+\label{prop:information}
+Given two sites, where parent site $\mathbf{D}_1$ generates $\mathbf{D}_2$ through the methods detailed in Section \ref{sec:dependent}, the Fisher information matrix of the data for a single variable $\theta$ $\mathcal{I}_{\text{data}} \leq 2\mathcal{I}_{\text{site}}$.
+\end{proposition}
+\begin{proof}
+Given a scalar parameter $\theta$,
+\begin{align}
+    \mathcal{I}_{\text{data}} &= -E\left[\frac{\partial^ 2}{\partial\theta^2} \log P(\mathbf{D}|\theta)\right] \\
+    &= -E\left[\frac{\partial^ 2}{\partial\theta^2} \log P(\mathbf{D}_1|T, \boldsymbol{\theta}) + \frac{\partial^ 2}{\partial\theta^2}\log P(\mathbf{D}_2|\mathbf{D}_1, T, \boldsymbol{\theta})\right] \\
+    &= \mathcal{I}_{\text{site}} - E\left[\frac{\partial^ 2}{\partial\theta^2}\log P(\mathbf{D}_2|\mathbf{D}_1, T, \boldsymbol{\theta})\right] \\
+    &\leq 2\mathcal{I}_{\text{site}},
+    \label{eq:dependentinformation}
+\end{align}
+since the degrees of freedom of the dependently generated site $\mathbf{D}_2$ is always smaller than or equal to that of $\mathbf{D}_1$. 
+\end{proof}
+
+This is contrary to the independent scenario, where $\mathcal{I}_{\text{data}} = 2\mathcal{I}_{\text{site}}$. As such, by assuming independence between sites, the amount of effective information gained about true tree $T^*$ is inflated. Consequently, information accumulates sublinearly relative to the independent case, which is the basis for the negative effects of model misspecification. This proposition provides the intuition that extends component-wise to the multivariate case, along with a more complicated dependency structure as seen in (\ref{eq:dependentlikelihood}).
 
 \subsection{Model Misspecification}
 \label{sec:misspecification}
