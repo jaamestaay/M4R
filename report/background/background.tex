@@ -278,9 +278,9 @@ We return to the likelihood calculations in (\ref{eq:sitelikelihood}). Clearly, 
     &= \prod_{i=1}^S P(\mathbf{D}_i | T, \mathbf{G}) \label{eq:independentbreakdown}
     %&= \prod_{i=1}^S \left[\sum_{\mathbf{x}^{(i)}_W \in \{0, 1\}^{|W|}} \pi_{x^{(i)}_r} \prod_{(u, v) \in E} \exp(\mathbf{G}t_{u\to v})_{x_u x_v}\right]
 \end{align}
-This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. This implies that the likelihood calculation has a time-complexity of $\mathcal{O}(nS)$, scaling linearly with respect to number of languages $n$ and number of sites $S$.  
+This reduces the likelihood calculations (and thus also the posterior calculations) related to the independent paradigm to the simpler problem of calculating likelihoods of individual sites, where we only require Felsenstein's pruning algorithm as described in Section \ref{sec:ctmc}. The algorithm propagates conditional likelihoods through the proposed tree $T$ from the leaves to the root node using dynamic programming, effectively setting the time-complexity of likelihood calculation as $\mathcal{O}(nS)$, scaling linearly with respect to number of languages $n$ and number of sites $S$.  
 
-The independent paradigm also suggests that every new site provides an equal amount of information. We formalise this idea by considering the Fisher information matrix $\mathcal{I}_{\text{data}}$ of such a formulation from (\ref{eq:independentbreakdown}):
+The independent paradigm also suggests that every new site provides an equal amount of information. We formalise this idea by considering the Fisher information matrix derived from (\ref{eq:independentinformation}):
 \begin{align}
     \mathcal{I}_{\text{data}} &= -E\left[\nabla^2_{\boldsymbol{\theta}} \ln P(\mathbf{D}|T), \boldsymbol{\theta})\right] \\
     &= -E\left[\sum_{i=1}^S\nabla^2_{\boldsymbol{\theta}} \ln P(\mathbf{D}_i|T, \mathbf{G})\right] \\
@@ -577,32 +577,61 @@ having now discussed the intricacies of the dependent data generation model, we 
 
 Figure \ref{fig:dependentgeneration} provides a graphical interpretation, not just for understanding dependent data generation, but also of likelihood decomposition. This induces the dependency graph $\mathcal{G}$ (more precisely a directed acyclic graph), where edges (arrows) indicate how likelihoods of sites are dependent on another (parent) site. We present a high-level analysis that illustrates the complexity of likelihood computation under this model.
 
-Given dependency graph $\mathcal{G}$. We can decompose the likelihood by separating independent sites, given by sets of sites $\mathcal{I}$ and $\mathcal{D}$ respectively:
+Given dependency graph $\mathcal{G}$, we can decompose the likelihood by separating independent sites, given by sets of sites $\mathcal{I}$ and $\mathcal{D}$ respectively:
 \begin{align}
      P(\mathbf{D} | T, \boldsymbol{\theta}) &= \prod_{i\in\mathcal{I}}P(\mathbf{D}_i|T, \boldsymbol{\theta})\prod_{j\in\mathcal{D}}P(\mathbf{D}_j|\mathbf{D}_{\text{pa}(j)}, T, \boldsymbol{\theta}), \label{eq:dependentlikelihood} \\
      P(\mathbf{D}_j|\mathbf{D}_{\text{pa}(j)}, T, \boldsymbol{\theta}) &= \sum_{\tilde{\mathbf{D}}_{l, k}}\mathbbm{1}_{\{\mathbf{D_j} = \mathbf{D}_{\text{pa}(j)} \odot \tilde{\mathbf{D}}_j\}}P\left(\tilde{\mathbf{D}}_{j}|T, \boldsymbol{\theta}\right),\label{eq:dependencyctmccalculation}
 \end{align}
 
-where $\mathbbm{1}$ is the indicator variable. The dependency structure thus induces statistical dependence between sites at both observed and parent nodes. This means that likelihood cannot be factorised site-wise, where exact likelihood evaluation requires considering the joint state of all sites within a dependency lineage. This increases the effective state space from a binary set of states to an exponentially increasing number of states, increasing the overall computational overhead of the calculation and thus the algorithm. Therefore, even with Felsenstein's pruning algorithm, the likelihood calculations make the dependency model infeasible for use.
+where $\mathbbm{1}$ is the indicator variable. The additional complexity of (\ref{eq:dependencyctmccalculation}) comes from evaluating the latent sites $\tilde{\mathbf{D}}_{l, k}$ that give the required form of $\mathbf{D}_{l, k}$. This means that likelihood cannot be factorised site-wise, where exact likelihood evaluation requires considering the joint state of all sites within a dependency lineage. This increases the effective state space from a binary set of states to an exponentially increasing number of states, increasing the overall computational overhead of the calculation and thus the algorithm. Therefore, even with Felsenstein's pruning algorithm, the likelihood calculations make the dependency model infeasible for use.
 
-However, assuming conditional independence on such dependent data will necessarily cause model misspecification. Additional dependent sites are unable to provide the same amount of additional information that independent sites provide. The key idea here is that information provided by new site $\mathbf{D}_{s+1}$ which has existing dependencies on $\mathbf{D} \in \{0, 1\}^{n \times S}$ will overlap with the information already obtained from $\mathbf{D}$, thus providing less additional effective information than an independent site would. As such, assuming independence of sites would artificially inflate the amount of effective information obtained by the model. More formally, we present a simple example concerning a single parent site $\mathbf{D}_1$ and one descendant  $\mathbf{D}_2$ for a single parameter $\theta$:
+However, assuming conditional independence on such dependent data will necessarily cause model misspecification. Additional dependent sites are unable to provide the same amount of additional information that independent sites provide. The key idea here is that information provided by new site $\mathbf{D}_{s+1}$ which has existing dependencies on $\mathbf{D} \in \{0, 1\}^{n \times S}$ will overlap with the information already obtained from $\mathbf{D}$, thus providing less additional effective information than an independent site would. As such, assuming independence of sites would artificially inflate the amount of effective information obtained by the model. We can see this through the fact that the Fisher information matrix under the dependent paradigm will decrease as dependent sites will, in general, have less degrees of freedom than in independent sites. 
+
+More formally, we present a simple example concerning the \textit{mutual information} of single parent site $\mathbf{D}_1$ and one descendant  $\mathbf{D}_2$ for a single parameter $\theta$:
 \begin{proposition} [Effective Information of Dependent Sites]
 \label{prop:information}
-Given two sites, where parent site $\mathbf{D}_1$ generates $\mathbf{D}_2$ through the methods detailed in Section \ref{sec:dependent}, the Fisher information matrix of the data for a single variable $\theta$ $\mathcal{I}_{\text{data}} \leq 2\mathcal{I}_{\text{site}}$.
+Under the dependent data generation scheme of Section \ref{sec:dependent}, define independent and identically distributed sites $\mathbf{D}_1, \tilde{\mathbf{D}}_2 \in \{0, 1\}^n$ generated from true tree $T^*$ and parameters $\boldsymbol{\theta}$, and define dependent site $\mathbf{D}_2 := \mathbf{D}_1 \odot 
+\tilde{\mathbf{D}}_2$. Therefore, the mutual information of $\mathbf{D}_1$ and $\mathbf{D}_2$ satisfies:
+\begin{equation}
+    I((\mathbf{D}_1, \mathbf{D}_2); T^*, \boldsymbol{\theta}) \leq 2I(\mathbf{D}_1; T^*, \boldsymbol{\theta}),
+\end{equation}
+thus decreasing information gained from two sites in the independent paradigm.
 \end{proposition}
 \begin{proof}
-Given a scalar parameter $\theta$,
+We use results from information theory. By the chain rule for conditional mutual information \cite{Dobrushin1959}:
+\begin{equation}
+    I((\mathbf{D}_1, \mathbf{D}_2); T^*, \boldsymbol{\theta}) = I(\mathbf{D}_1; T^*, \boldsymbol{\theta}) + I(\mathbf{D}_2; T^*, \boldsymbol{\theta}|\mathbf{D}_1),
+\end{equation}
+thus it suffices to show that $I(\mathbf{D}_2; T^*, \boldsymbol{\theta}|\mathbf{D}_1) \leq I(\mathbf{D}_1; T^*, \boldsymbol{\theta})$. From the data generation process, we note that we can represent the relationships between the aforementioned variables as a Markov chain conditional on $\mathbf{D}_1$:
+\begin{equation}
+    (T^*, \boldsymbol{\theta}) \to \tilde{\mathbf{D}}_2 \to \mathbf{D}_2,
+\end{equation}
+since $P(\mathbf{D}_2|\tilde{\mathbf{D}}_2, \mathbf{D}_1, T^*, \boldsymbol{\theta}) = \mathbbm{1}_{\{\mathbf{D}_2 = \mathbf{D}_1 \odot \tilde{\mathbf{D}}_2\}} = P(\mathbf{D}_2|\tilde{\mathbf{D}}_2, \mathbf{D}_1)$ from (\ref{eq:dependencyctmccalculation}). We can thus apply the Data Processing Inequality \cite{Thomas2012}:
 \begin{align}
-    \mathcal{I}_{\text{data}} &= -E\left[\frac{\partial^ 2}{\partial\theta^2} \log P(\mathbf{D}|\theta)\right] \\
-    &= -E\left[\frac{\partial^ 2}{\partial\theta^2} \log P(\mathbf{D}_1|T, \boldsymbol{\theta}) + \frac{\partial^ 2}{\partial\theta^2}\log P(\mathbf{D}_2|\mathbf{D}_1, T, \boldsymbol{\theta})\right] \\
-    &= \mathcal{I}_{\text{site}} - E\left[\frac{\partial^ 2}{\partial\theta^2}\log P(\mathbf{D}_2|\mathbf{D}_1, T, \boldsymbol{\theta})\right] \\
-    &\leq 2\mathcal{I}_{\text{site}},
-    \label{eq:dependentinformation}
+    I(\mathbf{D}_2; T^*, \boldsymbol{\theta}|\mathbf{D}_1) \leq I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta}|\mathbf{D}_1).
+    \label{eq:dpi}
 \end{align}
-since the degrees of freedom of the dependently generated site $\mathbf{D}_2$ is always smaller than or equal to that of $\mathbf{D}_1$. 
+We next consider the chain rule decompositions of $I(\tilde{\mathbf{D}}_2; \mathbf{D}_1, T^*, \boldsymbol{\theta})$:
+\begin{align}
+   I(\tilde{\mathbf{D}}_2; \mathbf{D}_1, T^*, \boldsymbol{\theta}) &= I(\tilde{\mathbf{D}}_2; \mathbf{D}_1) + I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta}|\mathbf{D}_1) \\
+   I(\tilde{\mathbf{D}}_2; \mathbf{D}_1, T^*, \boldsymbol{\theta}) &= I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta}) + I(\tilde{\mathbf{D}}_2; \mathbf{D}_1|T^*, \boldsymbol{\theta}) \\
+   \implies I(\tilde{\mathbf{D}}_2; \mathbf{D}_1) + I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta}|\mathbf{D}_1) &= I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta}) + I(\tilde{\mathbf{D}}_2; \mathbf{D}_1|T^*, \boldsymbol{\theta}) \\
+   &= I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta}) + 0 \\
+   \implies I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta}|\mathbf{D}_1) &\leq I(\tilde{\mathbf{D}}_2; T^*, \boldsymbol{\theta})\label{eq:indepinfo}
+\end{align}
+since $\mathbf{D}_1$ and $\tilde{\mathbf{D}}_2$ are independently generated and information is non-negative. Finally, we use the fact that  $\mathbf{D}_1,\tilde{\mathbf{D}}_2$ are identically distributed, we use the inequalities derived in (\ref{eq:dpi}) and (\ref{eq:indepinfo}) show that 
+\begin{align}
+    I(\mathbf{D}_2; T^*, \boldsymbol{\theta} | \mathbf{D}_1) &\leq I(\tilde{\mathbf{D}}_2;T^*, \boldsymbol{\theta}|\mathbf{D}_1) \\
+    &\leq I(\tilde{\mathbf{D}}_2; \boldsymbol{\theta}) = I(\mathbf{D}_1; \boldsymbol{\theta})
+\end{align}
+as required.
 \end{proof}
 
-This is contrary to the independent scenario, where $\mathcal{I}_{\text{data}} = 2\mathcal{I}_{\text{site}}$. As such, by assuming independence between sites, the amount of effective information gained about true tree $T^*$ is inflated. Consequently, information accumulates sublinearly relative to the independent case, which is the basis for the negative effects of model misspecification. This proposition provides the intuition that extends component-wise to the multivariate case, along with a more complicated dependency structure as seen in (\ref{eq:dependentlikelihood}).
+We note that this inequality are strict where $\mathbf{D}_1$ has at least one component equal to $0$: $\mathbf{D}_1 \neq \mathbf{1}$, which in general holds almost surely. This means that information derived from dependent sites will always be smaller than that of independent sites:
+\begin{equation}
+    I((\mathbf{D}_1, \mathbf{D}_1'); T^*, \boldsymbol{\theta}) \geq I((\mathbf{D}_1, \mathbf{D}_2); T^*, \boldsymbol{\theta}).
+\end{equation}
+As such, by assuming independence between sites, the amount of effective information gained about true tree $T^*$ is inflated. Consequently, information accumulates sublinearly relative to the independent case, which is the basis for the negative effects of model misspecification. This proposition provides the intuition that extends component-wise to the multivariate case, along with a more complicated dependency structure as seen in (\ref{eq:dependentlikelihood}).
 
 \subsection{Model Misspecification}
 \label{sec:misspecification}
@@ -633,15 +662,24 @@ The principal method for measuring distances between trees is the \textit{Robins
 
 The RF distance is highly interpretable and simple to compute, the method is widely used to compare phylogenetic trees. However, the metric treats all clade disagreements equally, wherever the are on the tree. This method thus fails to consider biological or linguistic significance of clades \cite{Branco2024}. For the purposes of the simulation study contained within this thesis, the RF distance is still used as it is standard across literature and is a computationally efficient algorithm, fitting the needs of scalable experiments.
 
-Clearly, the RF distance has an upper bound (which is given as $2n-6$, for comparing trees of $n$ languages) \cite{Steel1993}. This allows us to compute the \textit{normalised RF} (nRF) distance, an extension of the RF distance \cite{Branco2024, Steel1993}, that normalises the RF-distance by its theoretical maximum, giving a distance score between $0$ and $1$ that allows comparison of pairs of trees with differing values of $n$. This is extremely useful in the context of the simulation study as detailed in Chapter \ref{sec:methods} as trees of varying sizes are compared.
+Clearly, the RF distance has an upper bound, given as $2n-6$, for comparing trees of $n$ languages \cite{Steel1993}. This allows us to compute the \textit{normalised RF} (nRF) distance, an extension of the RF distance \cite{Branco2024, Steel1993}, that normalises the RF-distance by its theoretical maximum, giving a distance score between $0$ and $1$ that allows comparison of pairs of trees with differing values of $n$. This is extremely useful in the context of the simulation study as detailed in Chapter \ref{sec:methods} as trees of varying sizes are compared.
 
 In addition to the RF distance, we consider a separate clade recovery metric, the \textit{clade recovery rate}, that measures the proportion of internal clades of $T^*$ that are recovered in inferred tree $T$. This is analogous to the recall metric in supervised machine learning contexts and can be defined as
 \begin{equation}
 \label{eq:claderecovery}
-    \text{CR} = \frac{|\mathcal{C}_{\mathcal{I}}(T^*) \cap \mathcal{C}_{\mathcal{I}}(T)|}{|\mathcal{C}_{\mathcal{I}}(T^*)|}
+    \text{CR} = \frac{|\mathcal{C}_{\text{int}}(T^*) \cap \mathcal{C}_{\text{int}}(T)|}{|\mathcal{C}_{\text{int}}(T^*)|}
 \end{equation}
 
-Unlike RF distances, the method notably considers the set of all internal clades $\mathcal{C}_{\mathcal{I}}$ which thus explicitly evaluates the ability of the inference procedure to recover true groupings and thus explain distances in tree recovery more accurately. When considering a collection of trees $\tilde{T}$, one could then proportion the number of internal clades of $T^*$ that are \textit{highly} supported by $\tilde{T}$, that is, where the proportion of trees in $\tilde{T}$ that recover internal clade $c \in \mathcal{C}_{\mathcal{I}}(T^*)$ exceeds a threshold like $0.9$.
+Unlike RF distances, the method notably considers the set of all internal clades $\mathcal{C}_{\text{int}}$ which thus explicitly evaluates the ability of the inference procedure to recover true groupings and thus explain distances in tree recovery more accurately. When considering a collection of trees $\tilde{T}$, one could then proportion the number of internal clades of $T^*$ that are \textit{highly} supported by $\tilde{T}$, that is, where the proportion of trees in $\tilde{T}$ that recover internal clade $c \in \mathcal{C}_{\text{int}}(T^*)$ exceeds a threshold like $0.9$. We define the clade recovery metric for a collection of trees $\tilde{T}$ in Definition \ref{def:claderecovery}.
+
+\begin{definition}[Highly Supported Clade Recovery]
+\label{def:claderecovery}
+    Given a collection of trees $\tilde{T}$ attempting to recover true tree $T^*$. Let $r(c) := \frac{|\{T\in\tilde{T}:c \in \mathcal{C}_{\text{int}}(T)\}|}{|\tilde{T}|}$ be the rate of recovery of clade $c \in \mathcal{C}_{\text{int}}$. The proportion of highly supported recovered clades is defined as
+    \begin{equation}
+        \text{HSCR} := \frac{|\{c \in \mathcal{C}_{\text{int}}(T^*): r(c) > 0.9 \} |}{|\mathcal{C}_{\text{int}}(T^*)|}.
+    \end{equation}
+    
+\end{definition}
 
 Finally, it is worth considering how a collection of trees $\tilde{T}$ can be \textit{summarised} into a single tree for comparison. While these methods can be applied to all trees before considering the summary statistics of the values, another approach would be summarising the trees into some representative tree $\hat{T}$ before applying these methods. These methods are most common in Bayesian phylogenetic methods like MCMC where a posterior sample of trees are generated, rather than a single estimate \cite{OReilly2018, Tahiri2022, hoffmann_bayesian_2021}.
 
