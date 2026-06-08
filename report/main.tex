@@ -128,17 +128,31 @@
 
 % Abstract
 \begin{abstract}
-{\color{red}{language diversification
+In historical linguistics, Bayesian phylogenetic methods have quickly become the principal framework for reconstructing the evolution of languages from cognate data. One key assumption of such methods is conditional site independence: that cognacy classes evolve independently from each other. However, given the relative complexities of language evolution, linguistic and cultural datasets often exhibit dependencies between sites. This causes model misspecification: a mismatch in assumptions made by the model and the true characteristics of the data, the consequences for which remain poorly understood.
 
-what we aimed to do was answer two questions
+This thesis investigates the impact of violating the conditional site independence assumption on Bayesian phylogenetic inference, applied in linguistic contexts. A simulation study was conducted to answer two questions: (1) the extent by which unknown dependencies amongst sites of the data had negative effects on tree reconstruction, and (2) whether including known correlated sites (and thus causing model misspecification) affected tree reconstruction. These questions were posed to provide an understanding of the implications caused by such dependency structures and a framework for decision making for retaining dependent data.
 
-summary results of the two questions answered}}
+The results show that violating conditional site independence indeed reduces tree reconstruction quality relative to fully independent data. The depth of dependency, however, made little contribution to affecting the tree reconstruction quality. Instead, the greatest factor of reconstruction quality is the total \textit{effective} information contained within the dataset. In low-information scenarios, unknown dependencies cause larger deterioration while additional dependent data generally improves reconstruction despite violating model assumptions. On the other hand, in high-information scenarios, the drop in reconstruction quality due to unknown dependencies is minor, while marginal benefits of additional dependent sites diminish and thus may not justify their inclusion.
+
+These findings identify effective information as the underlying framework for understanding the effects of model misspecification in Bayesian phylolinguistics. They suggest that the implications of violating conditional site independence in such methods are a nuanced matter, where correlated sites present tradeoffs between introducing bias and additional effective information. Depending on the context at hand, these factors then determine whether their inclusion proves beneficial for phylogenetic reconstruction.
+
 \end{abstract}
  
 % Acknowledgements
 \clearpage
 \section*{Acknowledgments}
-{\color{red}Comment this out if not needed.}
+This thesis would not have been possible without the help and support of many.
+
+Above all, I thank the Lord for His goodness in my life, not least in the completion of this thesis. Mathematics and Linguistics are but two of the many \textit{good and perfect} gifts God has given us; our study of their complexities and intricacies serves only to reflect, in part, the order and creativity of His creation.
+
+I would like to express my sincere gratitude to my supervisor, Dr Robin Ryder, for his guidance and support throughout the course of this thesis. It has been a true privilege to have worked under his tutelage, not only through his insightful guidance and advice, which have been pivotal at key moments, but also because of his enthusiasm for historical linguistics. Our conversations have been invaluable in shaping not only this project but also my understanding of the field itself. 
+
+I thank Guillaume Jacques and Chris Buckley for their insights on the results of the thesis and their application in linguistic data. I am also grateful to Imperial College London's High Performance Computing service for providing the computational resources required for the simulations performed in this thesis.
+
+My family have been a source for great comfort. I thank my parents for their unconditional love and support throughout the course of my education. I may never be able to comprehend the extent of your sacrifices and trust you gave me to pursue my academic passions freely. I thank my brother for being an inspiration and, at times, a grounding presence, as we spur each other on in our pursuits.
+
+Finally, my undergraduate studies have been some of the best and most formative years of my life, for which I have my friends to thank. In particular, I thank DB, AJ, CM, YH, LN, GC, DK and EM for being constant presences in my time at university. Your love and encouragement have had real impact on my life which I will always cherish.
+
 \clearpage
 
 % Acknowledgements

@@ -8,7 +8,7 @@ Having laid out the foundations of historical linguistics and Bayesian phylogene
 
 As considered in Chapter \ref{sec:background}, applying a model that does not assume independence to linguistic data causes likelihood calculations to be infeasible. As such, the study of model misspecification is relevant here. Question 1 aims to consider the impact of applying the model to data without knowing the true dependency structure of the data. This scenario is usually the case when fitting the model real linguistics data, as these dependencies are not only present but difficult to define without prior knowledge. Question 2, on the other hand, serves as a guide in situations where data is \textit{known} to have a clear dependency structure, such as in the example provided by Buckley et al. \cite{Buckley2025}, on whether including data that is misspecified by the model will affect tree reconstruction.
 
-This section aims to explain the methods conducted in the simulation study to answer these questions. The design is split into two \textit{experiments} that look to provide results that explain their respective questions. The data generation methods and simulatin design for both experiments are described, before considering the implementation of Bayesian phylolinguistic analysis. Finally, several validation results are shown to provide a basis for the results that follow in Chapter \ref{sec:results}. The full implementation of the simulation study can be found in this \hyperlink{https://github.com/jaamestaay/M4R}{Github repository.}
+This section aims to explain the methods conducted in the simulation study to answer these questions. The design is split into two \textit{experiments} that look to provide results that explain their respective questions. The data generation methods and simulatin design for both experiments are described, before considering the implementation of Bayesian phylolinguistic analysis. Finally, several validation results are shown to provide a basis for the results that follow in Chapter \ref{sec:results}. The full implementation of the simulation study can be found in this \hyperlink{https://github.com/jaamestaay/M4R}{GitHub repository.}
 
 \section{Simulation Design}
 \label{sec:simdesign}
@@ -26,7 +26,7 @@ Additionally, within the dependent data generated, we vary the amount of tiers o
 \LinesNumbered
 \KwInput{
     $T^*$, true topology tree with root $r$ of $n$ languages, \\
-    $\mathbf{G}$, rate matrix with parameters $\beta\pi_0, \beta\pi_1$, \\
+    $\mathbf{G}$, rate matrix with parameters $q_{01}, q_{10}$, \\
     $\boldsymbol{\pi}$, stationary distribution of binary CTMC, \\
     $S$, total number of sites, \\
     $q$, proportion of sites to be independent, \\

@@ -1,4 +1,80 @@
 \chapter{Simulation Parameters}
 \label{app:simulationparameters}
 
-{\color{red} important for sure. need to write it down}
+We consider the parameters used for the simulation study put forward in Chapter \ref{sec:methods}. As mentioned prior, all simulations were conducted on a High Performance Computing (HPC) cluster on Imperial College London's \hyperlink{https://www.imperial.ac.uk/admin-services/ict/self-service/research-support/rcs/}{Research Computing Service}. Once again, all parameters and simulations can be found in the \hyperlink{https://github.com/jaamestaay/M4R}{GitHub repository} for the thesis.
+
+\section{Experiment 1}
+The parameters used in Experiment 1 can be found in Table \ref{tab:exp1para}. We note that the primary method of analysing effect of proportion of independent sites on tree reconstruction is found in varying $q \in \mathcal{Q}$. The values $l \in \mathcal{L}$ determine the number of dependency tiers used in the hierarchical generation process, allowing for analysis between dependency depths. Finally, while not significant to the experiment, the ZIP parameters $(p, \lambda) = (0.1, 45)$ were a design choice made to ensure the amount of data generated would be sufficient after ascertainment. 
+
+
+\begin{table}[htbp]
+\centering
+\label{tab:experiment1_parameters}
+\begin{tabular}{llll}
+\hline
+Row & Parameter & Usage & Value(s) \\
+\hline
+1 & $\mathcal{N}$ & Total number of languages in tree & $\{10,20,30,40,50\}$ \\
+2 & $\mathcal{S}$ & Total number of sites & $\{50,100,500,1000,5000\}$ \\
+3 & $N_T$ & True trees per combination of above& $30$ \\
+4 & $\mathcal{Q}$ & Proportion of independently generated sites  & $\{0.2,0.4,0.6,0.8\}$ \\
+5 & $\mathcal{L}$ & Total dependency tiers considered & $\{2,3,4\}$ \\
+6 & $\mathcal{W}$ & ZIP parameters ($p, \lambda)$ for dependent data$^*$ & $(0.1,45)$ \\
+7 & $q_{01}$ & Gain rate of site & $0.04$ \\
+8 & $q_{10}$ & Loss rate of site &$0.06$ \\
+9 & $\lambda$ & Birth intensity of Yule Tree Prior & $2.0$ \\
+\hline
+\end{tabular}
+\caption{Parameter settings for Experiment 1.}
+\label{tab:exp1para}
+\end{table}
+
+Based on rows 4 and 5, and including the independent dataset, for each combination of $n \in \mathcal{N}$ (row 1), $s \in \mathcal{S}$ (row 2) and a given true tree $T^*$, there were 13 datasets generated, of which all were run using the pipeline described in Chapter \ref{sec:methods}. As such, a total of $9750$ MCMC runs were conducted for Experiment 1.
+
+
+\section{Experiment 2}
+The parameters used in Experiment 2 can be found in Table \ref{tab:exp2para}. Unlike Experiment 1, only the number of independently generated sites $N_1 \in \mathbb{U}$ are fixed, and dependency structures are varied across the family of ZIP random variables. One can empirically check that $E(W) = 3$ is constant for $w\in\mathcal{W}$, which allowed for the total amount of dependent data generated to be comparable across various settings. This allows analysis to be conducted primarily on the dependency structure of the data generated rather than having to reconcile difference in expected number of dependent sites.
+\begin{table}[htbp]
+\centering
+\label{tab:experiment2_parameters}
+\begin{tabular}{llll}
+
+\hline
+Row & Parameter & Usage & Value(s) \\
+\hline
+1 & $\mathcal{N}$ & Total number of languages in tree & $\{10,20,30,40,50\}$ \\
+2 & $\mathbb{U}$ & Total number of independent sites $N_1$ & $\{10,50,100,200\}$ \\
+3 & $N_T$ & True trees per combination of above sets & $30$ \\
+4 & $\mathcal{L}$ & Total dependency tiers considered & $\{2,3,4\}$ \\
+5 & $\mathcal{W}$ & ZIP parameters ($p, \lambda)$ for dependent data & $\{(0.2,3.75),(0.5,6),(0.7,10),(0.9,30)\}$ \\
+6 & $q_{01}$ & Gain rate of site & $0.04$ \\
+7 & $q_{10}$ & Loss rate of site & $0.06$ \\
+8 & $\lambda$ & Birth intensity of Yule Tree Prior & $2.0$ \\
+\hline
+\end{tabular}
+\caption{Parameter settings for Experiment 2.}
+\label{tab:exp2para}
+\end{table}
+
+Once again, based on rows 4 and 5, and including the independent dataset, for each combination of $n \in \mathcal{N}$ (row 1), $N_1 \in \mathbb{U}$ (row 2) and a given true tree $T^*$, there were 13 datasets generated, of which all were run using the pipeline described in Chapter \ref{sec:methods}. As such, a total of $7800$ MCMC runs were conducted for Experiment 2.
+
+\section{MCMC Priors and Parameters}
+The priors and parameters used in the MCMC runs for both Experiments are found in Table \ref{tab:inference_settings}. All datasets were used to reconstruct posterior samples for their corresponding true tree $T^*$ via Bayesian phylogenetic models through BEAST. The log-normal distribution was chosen for the Yule prior. For each dataset, a total of $10^7$ iterations were run, only recording every $1000$ iterations, with a burn-in percentage of 10\%.  
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l p{7cm}}
+\hline
+Parameter & Setting \\
+\hline
+Tree prior & Yule process \\
+Prior on birth rate $\lambda$ &
+$\log \mathcal{N}(\mu = 1.0, \sigma = 1.5)$, offset $\nu = 0$ \\
+MCMC chain length & $10{,}000{,}000$ iterations \\
+Burn-in proportion & $10\%$ \\
+Sampling frequency & Every $1000$ iterations \\
+\hline
+\end{tabular}
+\caption{Bayesian inference settings used for all analyses.}
+\label{tab:inference_settings}
+\end{table}
